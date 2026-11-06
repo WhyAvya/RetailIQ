@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+plotly
+python-dotenv
+python-multipart
+pytest
+sqlalchemy
+psycopg[binary]
