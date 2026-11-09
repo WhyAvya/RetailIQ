@@ -1,10 +1,11 @@
 from collections.abc import Callable
 from datetime import date
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
 from starlette.concurrency import run_in_threadpool
 
 from backend.csv_utils import CSVValidationError, read_csv_dataframe, validate_csv_upload
@@ -24,12 +25,38 @@ from backend.dataset_selection import (
     calculate_selected_sales_by_region,
 )
 from backend.file_storage import FileStorageError, store_original_csv
+from backend.llm_service import (
+    LLMAuthenticationError,
+    LLMConfigurationError,
+    LLMInvalidResponseError,
+    LLMRateLimitError,
+    LLMTimeoutError,
+    LLMUnavailableError,
+)
+from backend.rag_preparation import MetadataValue
+from backend.rag_pipeline import (
+    InvalidPipelineRequestError,
+    PipelineDatasetNotFoundError,
+    RAGPipelineError,
+    answer_question,
+)
+from backend.rag_retrieval import (
+    MAX_TOP_K,
+    DatasetNotIndexedError,
+    InvalidRetrievalRequestError,
+    RetrievalUnavailableError,
+    retrieve_semantic_matches,
+)
 from backend.upload_metadata import (
     DatabaseOperationError,
     build_dataset_preview,
     get_upload_metadata,
     list_upload_metadata,
     persist_upload_or_cleanup,
+)
+from evaluation.report_service import (
+    EvaluationReportUnavailableError,
+    load_evaluation_dashboard_report,
 )
 
 app = FastAPI(title="RetailIQ API")
@@ -43,6 +70,66 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class RetrievalRequest(BaseModel):
+    upload_id: UUID
+    query: str = Field(min_length=1, max_length=2000)
+    top_k: int = Field(default=5, ge=1, le=MAX_TOP_K, strict=True)
+
+    @field_validator("query")
+    @classmethod
+    def query_must_contain_text(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("The retrieval query cannot be empty.")
+        return stripped
+
+
+class RetrievalMatchResponse(BaseModel):
+    rank: int
+    chunk_id: str
+    document: str
+    source_row: int | None
+    metadata: dict[str, MetadataValue]
+    similarity_score: float
+
+
+class RetrievalResponse(BaseModel):
+    upload_id: UUID
+    query: str
+    matches: list[RetrievalMatchResponse]
+
+
+class RAGAskRequest(BaseModel):
+    upload_id: UUID
+    question: str = Field(min_length=1, max_length=2000)
+    top_k: int = Field(default=5, ge=1, le=MAX_TOP_K, strict=True)
+
+    @field_validator("question")
+    @classmethod
+    def question_must_contain_text(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("The question cannot be empty.")
+        return stripped
+
+
+class RAGSourceResponse(BaseModel):
+    chunk_id: str
+    source_row: int | None
+    similarity_score: float
+    metadata: dict[str, MetadataValue]
+    document_excerpt: str
+
+
+class RAGAskResponse(BaseModel):
+    upload_id: UUID
+    question: str
+    answer: str
+    mode: Literal["analytics", "semantic_rag", "unsupported"]
+    sources: list[RAGSourceResponse]
+    calculation: dict[str, Any] | None = None
 
 
 def _analytics_http_exception(error: DatasetSelectionError) -> HTTPException:
@@ -273,3 +360,140 @@ async def analytics_dashboard(
         upload_id,
         _dashboard_filters(region, category, start_date, end_date),
     )
+
+
+@app.post("/api/rag/retrieve", response_model=RetrievalResponse)
+async def rag_retrieve(request: RetrievalRequest) -> RetrievalResponse:
+    try:
+        metadata = await run_in_threadpool(get_upload_metadata, request.upload_id)
+    except DatabaseOperationError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Dataset metadata is temporarily unavailable.",
+        ) from exc
+    if metadata is None:
+        raise HTTPException(status_code=404, detail="The selected dataset was not found.")
+
+    try:
+        matches = await run_in_threadpool(
+            retrieve_semantic_matches,
+            request.upload_id,
+            request.query,
+            request.top_k,
+        )
+    except InvalidRetrievalRequestError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except DatasetNotIndexedError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="The selected dataset has not been indexed for retrieval.",
+        ) from exc
+    except RetrievalUnavailableError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Semantic retrieval is temporarily unavailable.",
+        ) from exc
+
+    return RetrievalResponse(
+        upload_id=request.upload_id,
+        query=request.query,
+        matches=[
+            RetrievalMatchResponse(
+                rank=match.rank,
+                chunk_id=match.chunk_id,
+                document=match.document,
+                source_row=match.source_row,
+                metadata=match.metadata,
+                similarity_score=match.similarity_score,
+            )
+            for match in matches
+        ],
+    )
+
+
+@app.post("/api/rag/ask", response_model=RAGAskResponse)
+async def rag_ask(request: RAGAskRequest) -> RAGAskResponse:
+    try:
+        result = await run_in_threadpool(
+            answer_question,
+            request.upload_id,
+            request.question,
+            request.top_k,
+        )
+    except PipelineDatasetNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="The selected dataset was not found.") from exc
+    except InvalidPipelineRequestError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except DatasetNotIndexedError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="The selected dataset has not been indexed for retrieval.",
+        ) from exc
+    except DatabaseOperationError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Dataset metadata is temporarily unavailable.",
+        ) from exc
+    except DatasetSelectionError as exc:
+        raise _analytics_http_exception(exc) from exc
+    except RetrievalUnavailableError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Semantic retrieval is temporarily unavailable.",
+        ) from exc
+    except LLMConfigurationError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The language model is not configured.",
+        ) from exc
+    except LLMTimeoutError as exc:
+        raise HTTPException(status_code=504, detail="The language model request timed out.") from exc
+    except LLMRateLimitError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The language model is temporarily rate limited.",
+        ) from exc
+    except LLMAuthenticationError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="The language model provider rejected authentication.",
+        ) from exc
+    except (LLMInvalidResponseError, LLMUnavailableError) as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="The language model service returned an unusable response.",
+        ) from exc
+    except RAGPipelineError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="RAG processing is temporarily unavailable.",
+        ) from exc
+
+    return RAGAskResponse(
+        upload_id=UUID(result.upload_id),
+        question=result.question,
+        answer=result.answer,
+        mode=result.mode,
+        sources=[
+            RAGSourceResponse(
+                chunk_id=source.chunk_id,
+                source_row=source.source_row,
+                similarity_score=source.similarity_score,
+                metadata=source.metadata,
+                document_excerpt=source.document_excerpt,
+            )
+            for source in result.sources
+        ],
+        calculation=result.calculation,
+    )
+
+
+@app.get("/api/evaluation/report")
+async def evaluation_report() -> dict[str, Any]:
+    try:
+        return await run_in_threadpool(load_evaluation_dashboard_report)
+    except EvaluationReportUnavailableError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Evaluation reports are temporarily unavailable.",
+        ) from exc

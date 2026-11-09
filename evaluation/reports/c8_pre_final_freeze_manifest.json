@@ -1,0 +1,16 @@
+{
+  "freeze_id": "retailiq-c7-backend-freeze-v1",
+  "frozen_at_utc": "2026-11-09T13:41:27.374778+00:00",
+  "backend_files": {
+    "backend/query_planner.py": "a647daba6f3e7b9b86d202633618b8864cf70c19d2da5a08d3118f285e879883",
+    "backend/structured_analytics.py": "e5c3cbb5ca26a0a963d9e3af82a7a92a68a523c2d2fbde588d10eb939721b29a",
+    "backend/metadata_filtered_retrieval.py": "0bfc2e23d0a931c5cfd2ca1a328f31d83f26d50cec13508ca3f03f21167612cc",
+    "backend/rag_pipeline.py": "04c6f236e71bdcc4f26f32dc9908dbb69da42e44725fd83c6b7082818c984243",
+    "backend/llm_service.py": "9c3572104360da76d513103962f212e30d7bf7c619e808a1abe393a0a98ffd34"
+  },
+  "historical_c6_files": {
+    "evaluation/reports/hybrid_c6_held_out.json": "97a95a459a653ac47865df44d1ede838d30af6c80570a879bfe4b543d180777d",
+    "evaluation/reports/hybrid_c6_held_out.md": "f7c2962a59aeeeeb14121ccb306ea2f08f0c5160244dd35e15a17cb52c1281a3"
+  },
+  "policy": "Backend hashes were frozen before the independent questions were generated or evaluated."
+}

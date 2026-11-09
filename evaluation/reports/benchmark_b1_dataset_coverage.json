@@ -1,0 +1,32 @@
+{
+  "benchmark": "RetailIQ Benchmark B1",
+  "source_path": "data/sample_superstore.csv",
+  "source_sha256": "58fb59c63089e564d835e4aabe19d371757de1137a5bf1888243ae386c4b7a97",
+  "upload_id": "11111111-1111-1111-1111-111111111111",
+  "indexing_action": "none",
+  "rows_indexed_during_run": 0,
+  "coverage_before": {
+    "expected_rows": 9994,
+    "expected_chunks": 9994,
+    "stored_chunks": 9994,
+    "unique_stored_ids": 9994,
+    "unique_stored_rows": 9994,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "unexpected_chunk_ids": [],
+    "row_id_conflicts": [],
+    "complete": true
+  },
+  "coverage_after": {
+    "expected_rows": 9994,
+    "expected_chunks": 9994,
+    "stored_chunks": 9994,
+    "unique_stored_ids": 9994,
+    "unique_stored_rows": 9994,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "unexpected_chunk_ids": [],
+    "row_id_conflicts": [],
+    "complete": true
+  }
+}

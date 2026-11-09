@@ -1,0 +1,173 @@
+{
+  "benchmark_id": "retailiq-phase5-round1-v1",
+  "description": "Ground-truth questions for the 12-row RetailIQ sample dataset.",
+  "source": {
+    "filename": "retailiq_sample_12_rows.csv",
+    "original_upload_id": "6377aeff-8a64-47ac-9748-28e0b0523d56",
+    "row_count": 12,
+    "sha256": "029ad4b1efb2e65d96fa5ae8586f46024e20cf828202c11b97de85a047eaef8b",
+    "row_numbering": "1-based CSV data rows; header excluded"
+  },
+  "questions": [
+    {
+      "id": "SEM-001",
+      "question": "Which Technology Accessories records had profit of at least 300 sales units?",
+      "type": "semantic",
+      "expected_answer": "Wireless Mouse (row 1, profit 300), USB Hub (row 7, profit 350), and Keyboard (row 10, profit 450).",
+      "relevant_source_rows": [1, 7, 10],
+      "evaluation_notes": "High profit is explicitly defined as profit >= 300 for this question; category must be Technology and sub-category Accessories."
+    },
+    {
+      "id": "SEM-002",
+      "question": "Which furniture product made a loss, and what was its profit?",
+      "type": "semantic",
+      "expected_answer": "Study Table in row 6 made a loss of 300 sales units, with profit -300.",
+      "relevant_source_rows": [6],
+      "evaluation_notes": "A loss means Profit < 0. Row 6 is the only negative-profit record."
+    },
+    {
+      "id": "SEM-003",
+      "question": "Which products were sold in the West region, and what categories were they in?",
+      "type": "semantic",
+      "expected_answer": "Desk Chair was Furniture (row 3), USB Hub was Technology (row 7), and Desk Organizer was Office Supplies (row 8).",
+      "relevant_source_rows": [3, 7, 8],
+      "evaluation_notes": "All and only rows whose Region is West are relevant."
+    },
+    {
+      "id": "SEM-004",
+      "question": "Which products are associated with customer Aisha Sharma?",
+      "type": "semantic",
+      "expected_answer": "Aisha Sharma is associated with Wireless Mouse (row 1), Notebook Pack (row 2), and File Binder (row 5).",
+      "relevant_source_rows": [1, 2, 5],
+      "evaluation_notes": "Match the Customer Name exactly; repeated Order ID ORD-1001 remains represented by both source rows 1 and 2."
+    },
+    {
+      "id": "SEM-005",
+      "question": "Which South-region Technology phone products appear in the dataset?",
+      "type": "semantic",
+      "expected_answer": "Smartphone appears in row 4 and Phone Case appears in row 12.",
+      "relevant_source_rows": [4, 12],
+      "evaluation_notes": "Rows must simultaneously match Region South, Category Technology, and Sub-Category Phones."
+    },
+    {
+      "id": "SEM-006",
+      "question": "Which Office Supplies records had low sales, defined as sales below 700?",
+      "type": "semantic",
+      "expected_answer": "Notebook Pack had sales of 400 in row 2, and File Binder had sales of 650 in row 5.",
+      "relevant_source_rows": [2, 5],
+      "evaluation_notes": "Low sales is explicitly Sales < 700; the category must be Office Supplies."
+    },
+    {
+      "id": "SEM-007",
+      "question": "Which records had high profit, defined as profit of at least 800?",
+      "type": "semantic",
+      "expected_answer": "Desk Chair had profit 800 (row 3), Smartphone had profit 2500 (row 4), and Office Chair had profit 900 (row 9).",
+      "relevant_source_rows": [3, 4, 9],
+      "evaluation_notes": "High profit is explicitly Profit >= 800 across all categories."
+    },
+    {
+      "id": "SEM-008",
+      "question": "Which products were sold in the East region, and were they profitable?",
+      "type": "semantic",
+      "expected_answer": "Study Table in row 6 was loss-making with profit -300; Keyboard in row 10 was profitable with profit 450.",
+      "relevant_source_rows": [6, 10],
+      "evaluation_notes": "All East-region records are relevant; profitable means Profit > 0 and loss-making means Profit < 0."
+    },
+    {
+      "id": "SEM-009",
+      "question": "Which records sold a quantity of at least 5 units?",
+      "type": "semantic",
+      "expected_answer": "File Binder sold quantity 5 in row 5, and Printer Paper sold quantity 5 in row 11.",
+      "relevant_source_rows": [5, 11],
+      "evaluation_notes": "The threshold is Quantity >= 5."
+    },
+    {
+      "id": "SEM-010",
+      "question": "Which products were ordered during May 2026?",
+      "type": "semantic",
+      "expected_answer": "Printer Paper was ordered on 2026-05-06 in row 11, and Phone Case was ordered on 2026-05-22 in row 12.",
+      "relevant_source_rows": [11, 12],
+      "evaluation_notes": "Order Date must fall from 2026-05-01 through 2026-05-31 inclusive."
+    },
+    {
+      "id": "SEM-011",
+      "question": "Which customers appear in more than one CSV data row?",
+      "type": "semantic",
+      "expected_answer": "Aisha Sharma appears in rows 1, 2, and 5; Rohan Mehta appears in rows 3 and 8; Neha Singh appears in rows 4 and 12.",
+      "relevant_source_rows": [1, 2, 3, 4, 5, 8, 12],
+      "evaluation_notes": "A repeated customer is defined as a Customer ID occurring in more than one CSV row, not merely more than one distinct order."
+    },
+    {
+      "id": "SEM-012",
+      "question": "Which products belong to the Chairs sub-category, and what profit did each make?",
+      "type": "semantic",
+      "expected_answer": "Desk Chair made profit 800 in row 3, and Office Chair made profit 900 in row 9.",
+      "relevant_source_rows": [3, 9],
+      "evaluation_notes": "Match Sub-Category Chairs exactly."
+    },
+    {
+      "id": "SEM-013",
+      "question": "Which records had sales between 800 and 1500 inclusive?",
+      "type": "semantic",
+      "expected_answer": "Wireless Mouse had sales 1200 (row 1), USB Hub 1500 (row 7), Desk Organizer 900 (row 8), and Printer Paper 800 (row 11).",
+      "relevant_source_rows": [1, 7, 8, 11],
+      "evaluation_notes": "Both boundaries are inclusive: 800 <= Sales <= 1500."
+    },
+    {
+      "id": "SEM-014",
+      "question": "Which records had profit between 100 and 200 inclusive?",
+      "type": "semantic",
+      "expected_answer": "Notebook Pack had profit 100 (row 2), File Binder 150 (row 5), Desk Organizer 200 (row 8), Printer Paper 180 (row 11), and Phone Case 120 (row 12).",
+      "relevant_source_rows": [2, 5, 8, 11, 12],
+      "evaluation_notes": "Both boundaries are inclusive: 100 <= Profit <= 200."
+    },
+    {
+      "id": "SEM-015",
+      "question": "Which products and categories occur in the North region?",
+      "type": "semantic",
+      "expected_answer": "Wireless Mouse is Technology (row 1); Notebook Pack, File Binder, and Printer Paper are Office Supplies (rows 2, 5, and 11).",
+      "relevant_source_rows": [1, 2, 5, 11],
+      "evaluation_notes": "All and only rows whose Region is North are relevant."
+    },
+    {
+      "id": "NUM-001",
+      "question": "What is the total revenue across the dataset?",
+      "type": "numerical",
+      "expected_answer": "Total revenue is 45,150 sales units.",
+      "relevant_source_rows": [],
+      "evaluation_notes": "Computed directly as SUM(Sales) over all 12 rows: 45,150."
+    },
+    {
+      "id": "NUM-002",
+      "question": "What is the total profit across the dataset?",
+      "type": "numerical",
+      "expected_answer": "Total profit is 5,750 sales units.",
+      "relevant_source_rows": [],
+      "evaluation_notes": "Computed directly as SUM(Profit) over all 12 rows, including the -300 loss: 5,750."
+    },
+    {
+      "id": "NUM-003",
+      "question": "How many distinct orders are in the dataset?",
+      "type": "numerical",
+      "expected_answer": "There are 11 distinct orders.",
+      "relevant_source_rows": [],
+      "evaluation_notes": "Computed as COUNT(DISTINCT Order ID); ORD-1001 occurs in rows 1 and 2 and is counted once."
+    },
+    {
+      "id": "NUM-004",
+      "question": "What is the average order value?",
+      "type": "numerical",
+      "expected_answer": "Average order value is approximately 4,104.55 sales units per distinct order.",
+      "relevant_source_rows": [],
+      "evaluation_notes": "Computed as total revenue / distinct orders = 45,150 / 11 = 4,104.545454..., rounded to two decimals for display."
+    },
+    {
+      "id": "NUM-005",
+      "question": "What is the overall profit margin?",
+      "type": "numerical",
+      "expected_answer": "Overall profit margin is approximately 12.74%.",
+      "relevant_source_rows": [],
+      "evaluation_notes": "Computed as (5,750 / 45,150) * 100 = 12.735326...%, rounded to two decimals for display."
+    }
+  ]
+}

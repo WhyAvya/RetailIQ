@@ -1,0 +1,63 @@
+{
+  "operation": "metadata_only_update",
+  "source": {
+    "path": "data/sample_superstore.csv",
+    "sha256": "58fb59c63089e564d835e4aabe19d371757de1137a5bf1888243ae386c4b7a97",
+    "row_count": 9994
+  },
+  "upload_id": "11111111-1111-1111-1111-111111111111",
+  "collection": "retailiq_chunks",
+  "updated_chunk_count": 9994,
+  "documents_supplied_to_update": false,
+  "embeddings_supplied_to_update": false,
+  "ids_before": 9994,
+  "ids_after": 9994,
+  "audit_before": {
+    "expected_rows": 9994,
+    "stored_chunks": 9994,
+    "unique_chunk_ids": 9994,
+    "unique_source_rows": 9994,
+    "missing_source_rows": [],
+    "duplicate_source_rows": [],
+    "invalid_row_number_count": 0,
+    "cross_upload_row_count": 0,
+    "missing_field_counts": {
+      "city": 9994,
+      "country": 9994,
+      "customer_id": 9994,
+      "customer_name": 9994,
+      "discount": 9994,
+      "order_date_epoch_day": 9994,
+      "order_month": 9994,
+      "order_year": 9994,
+      "postal_code": 9994,
+      "product_id": 9994,
+      "product_name": 9994,
+      "profit": 9994,
+      "quantity": 9994,
+      "row_id": 9994,
+      "sales": 9994,
+      "segment": 9994,
+      "ship_date_epoch_day": 9994,
+      "ship_mode": 9994,
+      "state": 9994
+    },
+    "incorrect_type_counts": {},
+    "incorrect_value_counts": {},
+    "complete": false
+  },
+  "audit_after": {
+    "expected_rows": 9994,
+    "stored_chunks": 9994,
+    "unique_chunk_ids": 9994,
+    "unique_source_rows": 9994,
+    "missing_source_rows": [],
+    "duplicate_source_rows": [],
+    "invalid_row_number_count": 0,
+    "cross_upload_row_count": 0,
+    "missing_field_counts": {},
+    "incorrect_type_counts": {},
+    "incorrect_value_counts": {},
+    "complete": true
+  }
+}

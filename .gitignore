@@ -11,5 +11,9 @@ htmlcov/
 .neon
 *.pyc
 .chroma/
+backend/storage/chroma/
 .streamlit/secrets.toml
 backend/storage/uploads/
+.agents/
+.agents/
+.agents/

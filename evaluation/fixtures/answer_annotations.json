@@ -1,0 +1,91 @@
+{
+  "fixture_id": "retailiq-answer-quality-fixtures-v1",
+  "result_kind": "test_fixture_only",
+  "description": "Synthetic annotations used only to verify scoring mathematics. These are not live LLM results.",
+  "annotations": [
+    {
+      "id": "FIX-001",
+      "question_id": "SEM-001",
+      "question": "Which Technology Accessories records had profit of at least 300 sales units?",
+      "answer": "Wireless Mouse had profit 300, and USB Hub had profit 350.",
+      "retrieved_evidence_rows": [1, 7, 10],
+      "claims": [
+        {
+          "id": "C1",
+          "text": "Wireless Mouse had profit 300.",
+          "factual": true,
+          "supported": true,
+          "evidence_rows": [1]
+        },
+        {
+          "id": "C2",
+          "text": "USB Hub had profit 350.",
+          "factual": true,
+          "supported": true,
+          "evidence_rows": [7]
+        }
+      ],
+      "relevance_review": {
+        "score": 3,
+        "notes": "Directly answers the question with relevant records."
+      },
+      "reviewer": "fixture-author"
+    },
+    {
+      "id": "FIX-002",
+      "question_id": "SEM-002",
+      "question": "Which furniture product made a loss, and what was its profit?",
+      "answer": "Study Table lost 300, while Desk Chair lost 50.",
+      "retrieved_evidence_rows": [6, 3],
+      "claims": [
+        {
+          "id": "C1",
+          "text": "Study Table had profit -300.",
+          "factual": true,
+          "supported": true,
+          "evidence_rows": [6]
+        },
+        {
+          "id": "C2",
+          "text": "Desk Chair lost 50.",
+          "factual": true,
+          "supported": false,
+          "evidence_rows": []
+        }
+      ],
+      "relevance_review": {
+        "score": 2,
+        "notes": "Addresses the loss question but adds an unsupported claim."
+      },
+      "reviewer": "fixture-author"
+    },
+    {
+      "id": "FIX-003",
+      "question_id": "SEM-012",
+      "question": "Which products belong to the Chairs sub-category, and what profit did each make?",
+      "answer": "Office Chair had profit 900. I can also discuss regional sales.",
+      "retrieved_evidence_rows": [9, 3],
+      "claims": [
+        {
+          "id": "C1",
+          "text": "Office Chair had profit 900.",
+          "factual": true,
+          "supported": true,
+          "evidence_rows": [9]
+        },
+        {
+          "id": "C2",
+          "text": "I can also discuss regional sales.",
+          "factual": false,
+          "supported": false,
+          "evidence_rows": []
+        }
+      ],
+      "relevance_review": {
+        "score": 1,
+        "notes": "Partially answers the question but omits the other chair record."
+      },
+      "reviewer": "fixture-author"
+    }
+  ]
+}

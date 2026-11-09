@@ -1,0 +1,13 @@
+Order ID,Order Date,Customer ID,Customer Name,Region,Category,Sub-Category,Product Name,Sales,Profit,Quantity
+ORD-1001,2026-01-05,C001,Aisha Sharma,North,Technology,Accessories,Wireless Mouse,1200,300,2
+ORD-1001,2026-01-05,C001,Aisha Sharma,North,Office Supplies,Paper,Notebook Pack,400,100,4
+ORD-1002,2026-01-18,C002,Rohan Mehta,West,Furniture,Chairs,Desk Chair,5500,800,1
+ORD-1003,2026-02-03,C003,Neha Singh,South,Technology,Phones,Smartphone,18000,2500,1
+ORD-1004,2026-02-14,C001,Aisha Sharma,North,Office Supplies,Binders,File Binder,650,150,5
+ORD-1005,2026-03-02,C004,Arjun Patel,East,Furniture,Tables,Study Table,7200,-300,1
+ORD-1006,2026-03-11,C005,Diya Kapoor,West,Technology,Accessories,USB Hub,1500,350,3
+ORD-1007,2026-03-21,C002,Rohan Mehta,West,Office Supplies,Storage,Desk Organizer,900,200,2
+ORD-1008,2026-04-04,C006,Kabir Verma,South,Furniture,Chairs,Office Chair,6300,900,1
+ORD-1009,2026-04-17,C007,Meera Iyer,East,Technology,Accessories,Keyboard,2200,450,2
+ORD-1010,2026-05-06,C008,Ishaan Gupta,North,Office Supplies,Paper,Printer Paper,800,180,5
+ORD-1011,2026-05-22,C003,Neha Singh,South,Technology,Phones,Phone Case,500,120,2

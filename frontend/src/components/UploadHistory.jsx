@@ -81,7 +81,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
       const data = await responseData(response, 'The dataset preview could not be loaded.')
       if (previewControllerRef.current !== controller) return
       setSelectedId(uploadId)
-      onDatasetSelected?.(uploadId)
+      onDatasetSelected?.(uploadId, data.filename)
       setPreview(data)
     } catch (error) {
       if (error.name !== 'AbortError' && previewControllerRef.current === controller) {

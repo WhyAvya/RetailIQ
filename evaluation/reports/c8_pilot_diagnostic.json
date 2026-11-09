@@ -1,0 +1,4098 @@
+{
+  "evaluation_id": "retailiq-c8-independent-evaluation-v1",
+  "generated_at_utc": "2026-11-09T13:44:31.241628+00:00",
+  "benchmark_sha256": "31fba90cda900322ecc7e548e9c0718e411bda0c8fedba58b2ef531c06b1aed5",
+  "freeze_manifest_sha256": "6f2b7a199828555ee9fd873d9e0a8bb5955adfd6e91d1db47d7cd82abefe198b",
+  "question_count": 25,
+  "llm_calls": 0,
+  "metrics": {
+    "filtering_accuracy": 0.8,
+    "numerical_accuracy": 1.0,
+    "ranking_accuracy": 0.8,
+    "mixed_accuracy": 0.8,
+    "semantic_retrieval": {
+      "precision_at_3": 0.5333333333333333,
+      "precision_at_5": 0.5599999999999999,
+      "recall_at_3": 0.012649294617175729,
+      "recall_at_5": 0.021915491028626215,
+      "reciprocal_rank_at_5": 0.5
+    }
+  },
+  "results": [
+    {
+      "id": "C8-FIL-001",
+      "type": "filtering",
+      "question": "How many Consumer line items in the West had no discount?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Consumer line items in the West had no discount?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": "West",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Consumer",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "eq",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Consumer line items in the West had no discount?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": "West",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Consumer",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "eq",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 912,
+        "entity_count": 912,
+        "value": 912,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 912,
+      "expected_count": 912
+    },
+    {
+      "id": "C8-FIL-002",
+      "type": "filtering",
+      "question": "How many Corporate Technology line items had discount at least 20%?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Corporate Technology line items had discount at least 20%?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": "Technology",
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Corporate",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "gte",
+              "value": 0.2,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Corporate Technology line items had discount at least 20%?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": "Technology",
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Corporate",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "gte",
+                "value": 0.2,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 297,
+        "entity_count": 297,
+        "value": 297,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 297,
+      "expected_count": 297
+    },
+    {
+      "id": "C8-FIL-003",
+      "type": "filtering",
+      "question": "How many First Class line items ordered during 2016 had negative profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many First Class line items ordered during 2016 had negative profit?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": "First Class",
+          "customer_name": null,
+          "start_date": "2016-01-01",
+          "end_date": "2016-12-31",
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many First Class line items ordered during 2016 had negative profit?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": "First Class",
+            "customer_name": null,
+            "start_date": "2016-01-01",
+            "end_date": "2016-12-31",
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 387,
+        "entity_count": 387,
+        "value": 387,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": false,
+      "actual_count": 387,
+      "expected_count": 71
+    },
+    {
+      "id": "C8-FIL-004",
+      "type": "filtering",
+      "question": "How many Furniture line items ordered in California had sales over 500?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Furniture line items ordered in California had sales over 500?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": "Furniture",
+          "sub_category": null,
+          "state": "California",
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "sales",
+              "operator": "gt",
+              "value": 500.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Furniture line items ordered in California had sales over 500?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": "Furniture",
+            "sub_category": null,
+            "state": "California",
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "sales",
+                "operator": "gt",
+                "value": 500.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 101,
+        "entity_count": 101,
+        "value": 101,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 101,
+      "expected_count": 101
+    },
+    {
+      "id": "C8-FIL-005",
+      "type": "filtering",
+      "question": "How many East region line items took more than five calendar days to ship?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many East region line items took more than five calendar days to ship?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": "East",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "shipping_days",
+              "operator": "gt",
+              "value": 5.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many East region line items took more than five calendar days to ship?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": "East",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "shipping_days",
+                "operator": "gt",
+                "value": 5.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 496,
+        "entity_count": 496,
+        "value": 496,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 496,
+      "expected_count": 496
+    },
+    {
+      "id": "C8-NUM-001",
+      "type": "numerical",
+      "question": "What were total sales for each product category during 2015?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What were total sales for each product category during 2015?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": "2015-01-01",
+          "end_date": "2015-12-31",
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": "Category",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What were total sales for each product category during 2015?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": "2015-01-01",
+            "end_date": "2015-12-31",
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": "Category",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 2102,
+        "entity_count": 2102,
+        "value": null,
+        "records": [
+          {
+            "Category": "Furniture",
+            "value": 170518.237
+          },
+          {
+            "Category": "Office Supplies",
+            "value": 137233.463
+          },
+          {
+            "Category": "Technology",
+            "value": 162780.809
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "Furniture": 170518.237,
+        "Office Supplies": 137233.463,
+        "Technology": 162780.809
+      },
+      "expected_value": {
+        "Furniture": 170518.237,
+        "Office Supplies": 137233.463,
+        "Technology": 162780.809
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-NUM-002",
+      "type": "numerical",
+      "question": "Show total profit per sub-category in the West region.",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Show total profit per sub-category in the West region.",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": "West",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": "Sub-Category",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Show total profit per sub-category in the West region.",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": "West",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": "Sub-Category",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 3203,
+        "entity_count": 3203,
+        "value": null,
+        "records": [
+          {
+            "Sub-Category": "Accessories",
+            "value": 16484.5983
+          },
+          {
+            "Sub-Category": "Appliances",
+            "value": 8261.2699
+          },
+          {
+            "Sub-Category": "Art",
+            "value": 2374.097
+          },
+          {
+            "Sub-Category": "Binders",
+            "value": 16096.8016
+          },
+          {
+            "Sub-Category": "Bookcases",
+            "value": -1646.5117
+          },
+          {
+            "Sub-Category": "Chairs",
+            "value": 4027.5843
+          },
+          {
+            "Sub-Category": "Copiers",
+            "value": 19327.2351
+          },
+          {
+            "Sub-Category": "Envelopes",
+            "value": 1908.7624
+          },
+          {
+            "Sub-Category": "Fasteners",
+            "value": 275.1907
+          },
+          {
+            "Sub-Category": "Furnishings",
+            "value": 7641.2704
+          },
+          {
+            "Sub-Category": "Labels",
+            "value": 2303.1223
+          },
+          {
+            "Sub-Category": "Machines",
+            "value": -618.9264
+          },
+          {
+            "Sub-Category": "Paper",
+            "value": 12119.2364
+          },
+          {
+            "Sub-Category": "Phones",
+            "value": 9110.7426
+          },
+          {
+            "Sub-Category": "Storage",
+            "value": 8645.3222
+          },
+          {
+            "Sub-Category": "Supplies",
+            "value": 626.0464999999999
+          },
+          {
+            "Sub-Category": "Tables",
+            "value": 1482.6073000000001
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "Accessories": 16484.5983,
+        "Appliances": 8261.2699,
+        "Art": 2374.097,
+        "Binders": 16096.8016,
+        "Bookcases": -1646.5117,
+        "Chairs": 4027.5843,
+        "Copiers": 19327.2351,
+        "Envelopes": 1908.7624,
+        "Fasteners": 275.1907,
+        "Furnishings": 7641.2704,
+        "Labels": 2303.1223,
+        "Machines": -618.9264,
+        "Paper": 12119.2364,
+        "Phones": 9110.7426,
+        "Storage": 8645.3222,
+        "Supplies": 626.0465,
+        "Tables": 1482.6073
+      },
+      "expected_value": {
+        "Accessories": 16484.5983,
+        "Appliances": 8261.2699,
+        "Art": 2374.097,
+        "Binders": 16096.8016,
+        "Bookcases": -1646.5117,
+        "Chairs": 4027.5843,
+        "Copiers": 19327.2351,
+        "Envelopes": 1908.7624,
+        "Fasteners": 275.1907,
+        "Furnishings": 7641.2704,
+        "Labels": 2303.1223,
+        "Machines": -618.9264,
+        "Paper": 12119.2364,
+        "Phones": 9110.7426,
+        "Storage": 8645.3222,
+        "Supplies": 626.0465,
+        "Tables": 1482.6073
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-NUM-003",
+      "type": "numerical",
+      "question": "What was the average order value for the Corporate segment?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What was the average order value for the Corporate segment?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "mean",
+        "grain": "order",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Corporate",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "average_order_value",
+        "available": true,
+        "plan": {
+          "original_question": "What was the average order value for the Corporate segment?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "mean",
+          "grain": "order",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Corporate",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 3020,
+        "entity_count": 1514,
+        "value": 466.4110745046235,
+        "records": [],
+        "records_truncated": false
+      },
+      "actual_value": 466.4110745046235,
+      "expected_value": 466.411075,
+      "correct": true
+    },
+    {
+      "id": "C8-NUM-004",
+      "type": "numerical",
+      "question": "What was total sales for customer Aaron Bergman?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What was total sales for customer Aaron Bergman?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": "Aaron Bergman",
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What was total sales for customer Aaron Bergman?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": "Aaron Bergman",
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 6,
+        "entity_count": 6,
+        "value": 886.156,
+        "records": [],
+        "records_truncated": false
+      },
+      "actual_value": 886.156,
+      "expected_value": 886.156,
+      "correct": true
+    },
+    {
+      "id": "C8-NUM-005",
+      "type": "numerical",
+      "question": "Show total Technology sales for each order year.",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Show total Technology sales for each order year.",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": "Technology",
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": "order_year",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Show total Technology sales for each order year.",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": "Technology",
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": "order_year",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1847,
+        "entity_count": 1847,
+        "value": null,
+        "records": [
+          {
+            "order_year": 2014,
+            "value": 175278.233
+          },
+          {
+            "order_year": 2015,
+            "value": 162780.809
+          },
+          {
+            "order_year": 2016,
+            "value": 226364.18
+          },
+          {
+            "order_year": 2017,
+            "value": 271730.811
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "2014": 175278.233,
+        "2015": 162780.809,
+        "2016": 226364.18,
+        "2017": 271730.811
+      },
+      "expected_value": {
+        "2014": 175278.233,
+        "2015": 162780.809,
+        "2016": 226364.18,
+        "2017": 271730.811
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-RANK-001",
+      "type": "ranking",
+      "question": "What are the top four states by total profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top four states by total profit?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 4,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": "State",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top four states by total profit?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 4,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": "State",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 9994,
+        "value": null,
+        "records": [
+          {
+            "State": "California",
+            "Profit": 76381.38709999999
+          },
+          {
+            "State": "New York",
+            "Profit": 74038.5486
+          },
+          {
+            "State": "Washington",
+            "Profit": 33402.6517
+          },
+          {
+            "State": "Michigan",
+            "Profit": 24463.1876
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "State": "California",
+          "Profit": 76381.3871
+        },
+        {
+          "State": "New York",
+          "Profit": 74038.5486
+        },
+        {
+          "State": "Washington",
+          "Profit": 33402.6517
+        },
+        {
+          "State": "Michigan",
+          "Profit": 24463.1876
+        }
+      ],
+      "expected_records": [
+        {
+          "State": "California",
+          "Profit": 76381.3871
+        },
+        {
+          "State": "New York",
+          "Profit": 74038.5486
+        },
+        {
+          "State": "Washington",
+          "Profit": 33402.6517
+        },
+        {
+          "State": "Michigan",
+          "Profit": 24463.1876
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8-RANK-002",
+      "type": "ranking",
+      "question": "Which product category had the lowest total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Which product category had the lowest total sales?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": false,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "Category",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Which product category had the lowest total sales?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": false,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "Category",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 9994,
+        "value": null,
+        "records": [
+          {
+            "Category": "Office Supplies",
+            "Sales": 719047.032
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Category": "Office Supplies",
+          "Sales": 719047.032
+        }
+      ],
+      "expected_records": [
+        {
+          "Category": "Office Supplies",
+          "Sales": 719047.032
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8-RANK-003",
+      "type": "ranking",
+      "question": "What are the top 3 sub-categories by total quantity?",
+      "mode": "unsupported",
+      "plan": {
+        "original_question": "What are the top 3 sub-categories by total quantity?",
+        "status": "ambiguous",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "quantity",
+        "group_by": null,
+        "limit": 3,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "quantity",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": [
+          "A ranking must specify rows, orders, or products, or request a customer or grouped-dimension ranking."
+        ]
+      },
+      "calculation": {
+        "plan": {
+          "original_question": "What are the top 3 sub-categories by total quantity?",
+          "status": "ambiguous",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "quantity",
+          "group_by": null,
+          "limit": 3,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "quantity",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": [
+            "A ranking must specify rows, orders, or products, or request a customer or grouped-dimension ranking."
+          ]
+        },
+        "issues": [
+          "A ranking must specify rows, orders, or products, or request a customer or grouped-dimension ranking."
+        ]
+      },
+      "actual_records": [],
+      "expected_records": [
+        {
+          "Sub-Category": "Binders",
+          "Quantity": 5974.0
+        },
+        {
+          "Sub-Category": "Paper",
+          "Quantity": 5178.0
+        },
+        {
+          "Sub-Category": "Furnishings",
+          "Quantity": 3563.0
+        }
+      ],
+      "correct": false
+    },
+    {
+      "id": "C8-RANK-004",
+      "type": "ranking",
+      "question": "Who are the top 5 customers by total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Who are the top 5 customers by total sales?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "customer",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 5,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "Customer ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Who are the top 5 customers by total sales?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "customer",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 5,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "Customer ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 793,
+        "value": null,
+        "records": [
+          {
+            "Customer ID": "SM-20320",
+            "Sales": 25043.05
+          },
+          {
+            "Customer ID": "TC-20980",
+            "Sales": 19052.218
+          },
+          {
+            "Customer ID": "RB-19360",
+            "Sales": 15117.339
+          },
+          {
+            "Customer ID": "TA-21385",
+            "Sales": 14595.62
+          },
+          {
+            "Customer ID": "AB-10105",
+            "Sales": 14473.570999999998
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Customer ID": "SM-20320",
+          "Sales": 25043.05
+        },
+        {
+          "Customer ID": "TC-20980",
+          "Sales": 19052.218
+        },
+        {
+          "Customer ID": "RB-19360",
+          "Sales": 15117.339
+        },
+        {
+          "Customer ID": "TA-21385",
+          "Sales": 14595.62
+        },
+        {
+          "Customer ID": "AB-10105",
+          "Sales": 14473.571
+        }
+      ],
+      "expected_records": [
+        {
+          "Customer ID": "SM-20320",
+          "Sales": 25043.05
+        },
+        {
+          "Customer ID": "TC-20980",
+          "Sales": 19052.218
+        },
+        {
+          "Customer ID": "RB-19360",
+          "Sales": 15117.339
+        },
+        {
+          "Customer ID": "TA-21385",
+          "Sales": 14595.62
+        },
+        {
+          "Customer ID": "AB-10105",
+          "Sales": 14473.571
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8-RANK-005",
+      "type": "ranking",
+      "question": "What are the top four orders by total profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top four orders by total profit?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "order",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 4,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": "Order ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top four orders by total profit?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "order",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 4,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": "Order ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 5009,
+        "value": null,
+        "records": [
+          {
+            "Order ID": "CA-2016-118689",
+            "Profit": 8762.3891
+          },
+          {
+            "Order ID": "CA-2017-140151",
+            "Profit": 6734.472000000001
+          },
+          {
+            "Order ID": "CA-2017-166709",
+            "Profit": 5039.9856
+          },
+          {
+            "Order ID": "CA-2016-117121",
+            "Profit": 4946.37
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Order ID": "CA-2016-118689",
+          "Profit": 8762.3891
+        },
+        {
+          "Order ID": "CA-2017-140151",
+          "Profit": 6734.472
+        },
+        {
+          "Order ID": "CA-2017-166709",
+          "Profit": 5039.9856
+        },
+        {
+          "Order ID": "CA-2016-117121",
+          "Profit": 4946.37
+        }
+      ],
+      "expected_records": [
+        {
+          "Order ID": "CA-2016-118689",
+          "Profit": 8762.3891
+        },
+        {
+          "Order ID": "CA-2017-140151",
+          "Profit": 6734.472
+        },
+        {
+          "Order ID": "CA-2017-166709",
+          "Profit": 5039.9856
+        },
+        {
+          "Order ID": "CA-2016-117121",
+          "Profit": 4946.37
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8-MIX-001",
+      "type": "mixed",
+      "question": "For discounted chair line items in the West, which three made the most profit and what was total profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For discounted chair line items in the West, which three made the most profit and what was total profit?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "sum",
+        "grain": "row",
+        "filters": {
+          "region": "West",
+          "category": null,
+          "sub_category": "Chairs",
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "gt",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 3,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For discounted chair line items in the West, which three made the most profit and what was total profit?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "sum",
+          "grain": "row",
+          "filters": {
+            "region": "West",
+            "category": null,
+            "sub_category": "Chairs",
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "gt",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 3,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 207,
+        "entity_count": 207,
+        "value": 4027.584299999999,
+        "records": [
+          {
+            "Row ID": 8893,
+            "Order ID": "CA-2015-111038",
+            "Order Date": "12/1/2015",
+            "Ship Date": "12/6/2015",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "LC-16960",
+            "Customer Name": "Lindsay Castell",
+            "Segment": "Home Office",
+            "Country": "United States",
+            "City": "San Diego",
+            "State": "California",
+            "Postal Code": 92037,
+            "Region": "West",
+            "Product ID": "FUR-CH-10003973",
+            "Category": "Furniture",
+            "Sub-Category": "Chairs",
+            "Product Name": "GuestStacker Chair with Chrome Finish Legs",
+            "Sales": 2676.672,
+            "Quantity": 9,
+            "Discount": 0.2,
+            "Profit": 267.6672,
+            "source_row": 8893
+          },
+          {
+            "Row ID": 3044,
+            "Order ID": "CA-2017-149559",
+            "Order Date": "9/11/2017",
+            "Ship Date": "9/12/2017",
+            "Ship Mode": "Same Day",
+            "Customer ID": "KF-16285",
+            "Customer Name": "Karen Ferguson",
+            "Segment": "Home Office",
+            "Country": "United States",
+            "City": "Long Beach",
+            "State": "California",
+            "Postal Code": 90805,
+            "Region": "West",
+            "Product ID": "FUR-CH-10002320",
+            "Category": "Furniture",
+            "Sub-Category": "Chairs",
+            "Product Name": "Hon Pagoda Stacking Chairs",
+            "Sales": 2054.272,
+            "Quantity": 8,
+            "Discount": 0.2,
+            "Profit": 256.784,
+            "source_row": 3044
+          },
+          {
+            "Row ID": 3892,
+            "Order ID": "US-2016-163881",
+            "Order Date": "11/24/2016",
+            "Ship Date": "11/30/2016",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "SP-20860",
+            "Customer Name": "Sung Pak",
+            "Segment": "Corporate",
+            "Country": "United States",
+            "City": "Los Angeles",
+            "State": "California",
+            "Postal Code": 90036,
+            "Region": "West",
+            "Product ID": "FUR-CH-10001394",
+            "Category": "Furniture",
+            "Sub-Category": "Chairs",
+            "Product Name": "Global Leather Executive Chair",
+            "Sales": 1684.752,
+            "Quantity": 6,
+            "Discount": 0.2,
+            "Profit": 210.594,
+            "source_row": 3892
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          8893,
+          3044,
+          3892
+        ],
+        "value": 4027.584299999999
+      },
+      "expected": {
+        "top_source_rows": [
+          8893,
+          3044,
+          3892
+        ],
+        "value": 4027.5843
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-MIX-002",
+      "type": "mixed",
+      "question": "For profitable Storage line items in the East, which line item had the highest sales and what was average profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For profitable Storage line items in the East, which line item had the highest sales and what was average profit?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "row",
+        "filters": {
+          "region": "East",
+          "category": null,
+          "sub_category": "Storage",
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "profit",
+              "operator": "gt",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For profitable Storage line items in the East, which line item had the highest sales and what was average profit?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "row",
+          "filters": {
+            "region": "East",
+            "category": null,
+            "sub_category": "Storage",
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "profit",
+                "operator": "gt",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 185,
+        "entity_count": 185,
+        "value": null,
+        "records": [
+          {
+            "Row ID": 3071,
+            "Order ID": "CA-2014-119375",
+            "Order Date": "11/17/2014",
+            "Ship Date": "11/22/2014",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "YC-21895",
+            "Customer Name": "Yoseph Carroll",
+            "Segment": "Corporate",
+            "Country": "United States",
+            "City": "Newark",
+            "State": "Delaware",
+            "Postal Code": 19711,
+            "Region": "East",
+            "Product ID": "OFF-ST-10002011",
+            "Category": "Office Supplies",
+            "Sub-Category": "Storage",
+            "Product Name": "Smead Adjustable Mobile File Trolley with Lockable Top",
+            "Sales": 2934.33,
+            "Quantity": 7,
+            "Discount": 0.0,
+            "Profit": 792.2691,
+            "source_row": 3071
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          3071
+        ],
+        "value": null
+      },
+      "expected": {
+        "top_source_rows": [
+          3071
+        ],
+        "value": 57.503292
+      },
+      "correct": false
+    },
+    {
+      "id": "C8-MIX-003",
+      "type": "mixed",
+      "question": "Among Home Office customers, who had the highest total profit and how many distinct orders did that customer place?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Among Home Office customers, who had the highest total profit and how many distinct orders did that customer place?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "customer",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Home Office",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": "Customer ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": true,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Among Home Office customers, who had the highest total profit and how many distinct orders did that customer place?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "customer",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Home Office",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": "Customer ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": true,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1783,
+        "entity_count": 148,
+        "value": null,
+        "records": [
+          {
+            "Customer ID": "TA-21385",
+            "Profit": 4703.7883,
+            "distinct_order_count": 4,
+            "Customer Name": "Tom Ashbrook"
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "customer_id": "TA-21385",
+        "profit": 4703.7883,
+        "distinct_orders": 4
+      },
+      "expected": {
+        "customer_id": "TA-21385",
+        "profit": 4703.7883,
+        "distinct_orders": 4
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-MIX-004",
+      "type": "mixed",
+      "question": "For products containing 'keyboard', which category generated the most sales and which matching line item had the highest sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For products containing 'keyboard', which category generated the most sales and which matching line item had the highest sales?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "ranking",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": "keyboard"
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": "keyboard",
+        "ranking_metric": "sales",
+        "ranking_group_by": "Category",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": true,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For products containing 'keyboard', which category generated the most sales and which matching line item had the highest sales?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "ranking",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": "keyboard"
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": "keyboard",
+          "ranking_metric": "sales",
+          "ranking_group_by": "Category",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": true,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 160,
+        "entity_count": 160,
+        "value": null,
+        "records": [
+          {
+            "Category": "Technology",
+            "Sales": 32699.266,
+            "result_kind": "group_ranking"
+          },
+          {
+            "Row ID": 4882,
+            "Order ID": "CA-2017-143567",
+            "Order Date": "11/2/2017",
+            "Ship Date": "11/5/2017",
+            "Ship Mode": "Second Class",
+            "Customer ID": "TB-21175",
+            "Customer Name": "Thomas Boland",
+            "Segment": "Corporate",
+            "Country": "United States",
+            "City": "Henderson",
+            "State": "Kentucky",
+            "Postal Code": 42420,
+            "Region": "South",
+            "Product ID": "TEC-AC-10004145",
+            "Category": "Technology",
+            "Sub-Category": "Accessories",
+            "Product Name": "Logitech diNovo Edge Keyboard",
+            "Sales": 2249.91,
+            "Quantity": 9,
+            "Discount": 0.0,
+            "Profit": 517.4793,
+            "source_row": 4882,
+            "result_kind": "row_ranking"
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "group": {
+          "Category": "Technology",
+          "Sales": 32699.266
+        },
+        "top_source_rows": [
+          4882
+        ]
+      },
+      "expected": {
+        "group": {
+          "Category": "Technology",
+          "Sales": 32699.266
+        },
+        "top_source_rows": [
+          4882
+        ]
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-MIX-005",
+      "type": "mixed",
+      "question": "For product line items containing 'scissors' bought by Consumer customers, which line item had the highest sales and what was total quantity?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For product line items containing 'scissors' bought by Consumer customers, which line item had the highest sales and what was total quantity?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "sum",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Consumer",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": "scissors"
+        },
+        "metric": "quantity",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": "scissors",
+        "ranking_metric": "sales",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For product line items containing 'scissors' bought by Consumer customers, which line item had the highest sales and what was total quantity?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "sum",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Consumer",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": "scissors"
+          },
+          "metric": "quantity",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": "scissors",
+          "ranking_metric": "sales",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 53,
+        "entity_count": 53,
+        "value": 205.0,
+        "records": [
+          {
+            "Row ID": 2601,
+            "Order ID": "CA-2017-108553",
+            "Order Date": "4/23/2017",
+            "Ship Date": "4/29/2017",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "SK-19990",
+            "Customer Name": "Sally Knutson",
+            "Segment": "Consumer",
+            "Country": "United States",
+            "City": "New York City",
+            "State": "New York",
+            "Postal Code": 10024,
+            "Region": "East",
+            "Product ID": "OFF-SU-10002573",
+            "Category": "Office Supplies",
+            "Sub-Category": "Supplies",
+            "Product Name": "Acme 10\" Easy Grip Assistive Scissors",
+            "Sales": 122.71,
+            "Quantity": 7,
+            "Discount": 0.0,
+            "Profit": 36.813,
+            "source_row": 2601
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          2601
+        ],
+        "value": 205.0
+      },
+      "expected": {
+        "top_source_rows": [
+          2601
+        ],
+        "value": 205.0
+      },
+      "correct": true
+    },
+    {
+      "id": "C8-SEM-001",
+      "type": "semantic",
+      "question": "Find products related to cutting paper with scissors.",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Find products related to cutting paper with scissors.",
+        "status": "valid",
+        "query_type": "filter",
+        "operation": "records",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": "Paper",
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Find products related to cutting paper with scissors.",
+          "status": "valid",
+          "query_type": "filter",
+          "operation": "records",
+          "grain": "product",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": "Paper",
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1370,
+        "entity_count": 284,
+        "value": null,
+        "records": [
+          {
+            "Product ID": "OFF-PA-10002365",
+            "Product Name": "Xerox 1967",
+            "Sales": 89.424,
+            "Profit": 38.879999999999995,
+            "Quantity": 15,
+            "source_rows": [
+              13,
+              798,
+              2328,
+              5103,
+              9246
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000249",
+            "Product Name": "Easy-staple paper",
+            "Sales": 196.48,
+            "Profit": 85.8372,
+            "Quantity": 17,
+            "source_rows": [
+              35,
+              348,
+              2735,
+              7102,
+              8148,
+              8574
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001569",
+            "Product Name": "Xerox 232",
+            "Sales": 120.52799999999999,
+            "Profit": 56.5056,
+            "Quantity": 19,
+            "source_rows": [
+              57,
+              3671,
+              5682,
+              7844
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000587",
+            "Product Name": "Array Parchment Paper, Assorted Colors",
+            "Sales": 106.288,
+            "Profit": 49.504000000000005,
+            "Quantity": 15,
+            "source_rows": [
+              59,
+              3510,
+              6059,
+              9857
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003892",
+            "Product Name": "Xerox 1943",
+            "Sales": 743.432,
+            "Profit": 328.6752,
+            "Quantity": 16,
+            "source_rows": [
+              65,
+              653,
+              1393,
+              8176
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000482",
+            "Product Name": "Snap-A-Way Black Print Carbonless Ruled Speed Letter, Triplicate",
+            "Sales": 1016.7919999999999,
+            "Profit": 453.7624,
+            "Quantity": 28,
+            "source_rows": [
+              70,
+              652,
+              2939,
+              4339,
+              5292,
+              9547
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004675",
+            "Product Name": "Telephone Message Books with Fax/Mobile Section, 5 1/2\" x 3 3/16\"",
+            "Sales": 99.06,
+            "Profit": 40.766999999999996,
+            "Quantity": 17,
+            "source_rows": [
+              72,
+              1641,
+              2143,
+              3464,
+              3954,
+              6888
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000304",
+            "Product Name": "Xerox 1995",
+            "Sales": 121.82400000000001,
+            "Profit": 47.6928,
+            "Quantity": 22,
+            "source_rows": [
+              92,
+              688,
+              818,
+              3898,
+              4952,
+              9810
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003177",
+            "Product Name": "Xerox 1999",
+            "Sales": 98.49600000000001,
+            "Profit": 41.2128,
+            "Quantity": 17,
+            "source_rows": [
+              93,
+              2199,
+              2522,
+              5373,
+              6628,
+              7692,
+              9092
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003256",
+            "Product Name": "Avery Personal Creations Heavyweight Cards",
+            "Sales": 103.86,
+            "Profit": 37.8512,
+            "Quantity": 11,
+            "source_rows": [
+              100,
+              4793,
+              9703
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004040",
+            "Product Name": "Universal Premium White Copier/Laser Paper (20Lb. and 87 Bright)",
+            "Sales": 129.168,
+            "Profit": 55.9728,
+            "Quantity": 24,
+            "source_rows": [
+              103,
+              1276,
+              1678,
+              4033,
+              8276
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004965",
+            "Product Name": "Xerox 1921",
+            "Sales": 55.944,
+            "Profit": 17.4825,
+            "Quantity": 7,
+            "source_rows": [
+              116,
+              3816,
+              4211
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002377",
+            "Product Name": "Xerox 1916",
+            "Sales": 831.98,
+            "Profit": 342.58,
+            "Quantity": 20,
+            "source_rows": [
+              132,
+              1841,
+              3806,
+              6168,
+              6960,
+              7795,
+              8999
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001804",
+            "Product Name": "Xerox 195",
+            "Sales": 164.328,
+            "Profit": 70.54079999999999,
+            "Quantity": 27,
+            "source_rows": [
+              134,
+              1732,
+              1846,
+              2699,
+              6597,
+              7443,
+              8317,
+              9156
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001736",
+            "Product Name": "Xerox 1880",
+            "Sales": 623.744,
+            "Profit": 285.64639999999997,
+            "Quantity": 18,
+            "source_rows": [
+              135,
+              2938,
+              4731,
+              5510,
+              7538
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004327",
+            "Product Name": "Xerox 1911",
+            "Sales": 603.54,
+            "Profit": 279.736,
+            "Quantity": 13,
+            "source_rows": [
+              144,
+              2253,
+              4895,
+              5003,
+              8918
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001950",
+            "Product Name": "Southworth 25% Cotton Antique Laid Paper & Envelopes",
+            "Sales": 200.16,
+            "Profit": 80.898,
+            "Quantity": 26,
+            "source_rows": [
+              154,
+              189,
+              5104,
+              8907,
+              9903
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002254",
+            "Product Name": "Xerox 1883",
+            "Sales": 881.092,
+            "Profit": 354.0196,
+            "Quantity": 37,
+            "source_rows": [
+              155,
+              3735,
+              4203,
+              5218,
+              6489,
+              8404,
+              8442
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002751",
+            "Product Name": "Xerox 1920",
+            "Sales": 89.7,
+            "Profit": 40.365,
+            "Quantity": 15,
+            "source_rows": [
+              161,
+              4815,
+              6744,
+              9085
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000659",
+            "Product Name": "Adams Phone Message Book, Professional, 400 Message Capacity, 5 3/6\u201d x 11\u201d",
+            "Sales": 94.928,
+            "Profit": 43.1364,
+            "Quantity": 14,
+            "source_rows": [
+              172,
+              3493,
+              8188
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001144",
+            "Product Name": "Xerox 1913",
+            "Sales": 865.4879999999999,
+            "Profit": 375.0448,
+            "Quantity": 17,
+            "source_rows": [
+              173,
+              1969,
+              2671,
+              8397,
+              8487
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000061",
+            "Product Name": "Xerox 205",
+            "Sales": 150.336,
+            "Profit": 69.4656,
+            "Quantity": 24,
+            "source_rows": [
+              192,
+              249,
+              816,
+              6653
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002749",
+            "Product Name": "Wirebound Message Books, 5-1/2 x 4 Forms, 2 or 4 Forms per Page",
+            "Sales": 72.25200000000001,
+            "Profit": 31.3092,
+            "Quantity": 12,
+            "source_rows": [
+              200,
+              1500,
+              2020
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002666",
+            "Product Name": "Southworth 25% Cotton Linen-Finish Paper & Envelopes",
+            "Sales": 166.704,
+            "Profit": 67.044,
+            "Quantity": 20,
+            "source_rows": [
+              201,
+              359,
+              3345,
+              4428
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004000",
+            "Product Name": "While You Were Out Pads, 50 per Pad, 4 x 5 1/4, Green Cycle",
+            "Sales": 50.138000000000005,
+            "Profit": 18.778100000000002,
+            "Quantity": 13,
+            "source_rows": [
+              221,
+              1564,
+              3578,
+              4235
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002479",
+            "Product Name": "Xerox 4200 Series MultiUse Premium Copy Paper (20Lb. and 84 Bright)",
+            "Sales": 139.392,
+            "Profit": 52.272,
+            "Quantity": 30,
+            "source_rows": [
+              237,
+              952,
+              2119,
+              2265,
+              2894,
+              3689,
+              3923,
+              5167
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003349",
+            "Product Name": "Xerox 1957",
+            "Sales": 95.904,
+            "Profit": 39.7224,
+            "Quantity": 17,
+            "source_rows": [
+              238,
+              3279,
+              4133,
+              6391,
+              7430,
+              8379
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004082",
+            "Product Name": "Adams Telephone Message Book w/Frequently-Called Numbers Space, 400 Messages per Book",
+            "Sales": 223.44,
+            "Profit": 111.72,
+            "Quantity": 28,
+            "source_rows": [
+              247,
+              2077,
+              5324,
+              5350,
+              6251,
+              6318,
+              8524
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004569",
+            "Product Name": "Wirebound Message Books, Two 4 1/4\" x 5\" Forms per Page",
+            "Sales": 109.584,
+            "Profit": 49.084500000000006,
+            "Quantity": 15,
+            "source_rows": [
+              251,
+              859,
+              3361,
+              4816,
+              7230,
+              9699
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002615",
+            "Product Name": "Ampad Gold Fibre Wirebound Steno Books, 6\" x 9\", Gregg Ruled",
+            "Sales": 106.72200000000001,
+            "Profit": 47.187,
+            "Quantity": 25,
+            "source_rows": [
+              275,
+              630,
+              744,
+              6776,
+              7402,
+              8441,
+              9498,
+              9759
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000673",
+            "Product Name": "Post-it \u201cImportant Message\u201d Note Pad, Neon Colors, 50 Sheets/Pad",
+            "Sales": 62.608000000000004,
+            "Profit": 28.537599999999998,
+            "Quantity": 9,
+            "source_rows": [
+              277,
+              6891
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004470",
+            "Product Name": "Adams Write n' Stick Phone Message Book, 11\" X 5 1/4\", 200 Messages",
+            "Sales": 40.896,
+            "Profit": 16.3584,
+            "Quantity": 8,
+            "source_rows": [
+              278,
+              873,
+              4281
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000474",
+            "Product Name": "Easy-staple paper",
+            "Sales": 1105.7279999999998,
+            "Profit": 467.0992,
+            "Quantity": 34,
+            "source_rows": [
+              284,
+              667,
+              1029,
+              2305,
+              2668,
+              3447,
+              7091,
+              8009,
+              8416,
+              8597,
+              8998,
+              9881
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004100",
+            "Product Name": "Xerox 216",
+            "Sales": 238.464,
+            "Profit": 96.9408,
+            "Quantity": 42,
+            "source_rows": [
+              286,
+              1016,
+              1133,
+              3195,
+              5554,
+              5931,
+              6787,
+              8758
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002105",
+            "Product Name": "Xerox 223",
+            "Sales": 58.32,
+            "Profit": 27.9936,
+            "Quantity": 9,
+            "source_rows": [
+              299,
+              1144,
+              9212
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004243",
+            "Product Name": "Xerox 1939",
+            "Sales": 417.34,
+            "Profit": 200.32319999999999,
+            "Quantity": 22,
+            "source_rows": [
+              301,
+              2079,
+              4220,
+              8226,
+              9369
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001937",
+            "Product Name": "Xerox 21",
+            "Sales": 124.416,
+            "Profit": 43.5456,
+            "Quantity": 24,
+            "source_rows": [
+              316,
+              1194,
+              3901,
+              4358,
+              6496,
+              6732,
+              9434
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001970",
+            "Product Name": "Xerox 1881",
+            "Sales": 454.36,
+            "Profit": 207.04080000000002,
+            "Quantity": 38,
+            "source_rows": [
+              351,
+              353,
+              1072,
+              3664,
+              3851,
+              3950,
+              5283,
+              6335,
+              8061,
+              8135,
+              9184,
+              9388
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002713",
+            "Product Name": "Adams Phone Message Book, 200 Message Capacity, 8 1/16\u201d x 11\u201d",
+            "Sales": 227.04,
+            "Profit": 104.4384,
+            "Quantity": 33,
+            "source_rows": [
+              358,
+              1443,
+              2283,
+              4202,
+              5732,
+              6096,
+              7395,
+              8532
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002036",
+            "Product Name": "Xerox 1930",
+            "Sales": 138.672,
+            "Profit": 59.3568,
+            "Quantity": 24,
+            "source_rows": [
+              371,
+              4497,
+              5384,
+              7794,
+              7876
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003039",
+            "Product Name": "Xerox 1960",
+            "Sales": 879.832,
+            "Profit": 334.584,
+            "Quantity": 32,
+            "source_rows": [
+              377,
+              1524,
+              1925,
+              3468,
+              6753,
+              7602
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004734",
+            "Product Name": "Southworth Structures Collection",
+            "Sales": 72.8,
+            "Profit": 36.4,
+            "Quantity": 10,
+            "source_rows": [
+              382,
+              7162
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002552",
+            "Product Name": "Xerox 1958",
+            "Sales": 32.400000000000006,
+            "Profit": 15.552,
+            "Quantity": 5,
+            "source_rows": [
+              397,
+              8263
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001947",
+            "Product Name": "Xerox 1974",
+            "Sales": 57.408,
+            "Profit": 26.91,
+            "Quantity": 10,
+            "source_rows": [
+              403,
+              780,
+              2413,
+              4535
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003724",
+            "Product Name": "Wirebound Message Book, 4 per Page",
+            "Sales": 184.62,
+            "Profit": 87.69449999999999,
+            "Quantity": 35,
+            "source_rows": [
+              408,
+              795,
+              2351,
+              3328,
+              6979,
+              8450,
+              9051
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002893",
+            "Product Name": "Wirebound Service Call Books, 5 1/2\" x 4\"",
+            "Sales": 125.84,
+            "Profit": 60.4032,
+            "Quantity": 13,
+            "source_rows": [
+              410,
+              2037,
+              2761,
+              2987,
+              5737
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001970",
+            "Product Name": "Xerox 1908",
+            "Sales": 1712.988,
+            "Profit": 799.3944,
+            "Quantity": 32,
+            "source_rows": [
+              412,
+              438,
+              1118,
+              1192,
+              6509,
+              7897,
+              9506
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000157",
+            "Product Name": "Xerox 191",
+            "Sales": 767.232,
+            "Profit": 354.2454,
+            "Quantity": 39,
+            "source_rows": [
+              415,
+              779,
+              2108,
+              2811,
+              3676,
+              5535,
+              5903,
+              6681,
+              9387,
+              9540
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003845",
+            "Product Name": "Xerox 1987",
+            "Sales": 92.48,
+            "Profit": 45.3152,
+            "Quantity": 16,
+            "source_rows": [
+              419,
+              889,
+              3522,
+              9595
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002230",
+            "Product Name": "Xerox 1897",
+            "Sales": 67.72800000000001,
+            "Profit": 27.0912,
+            "Quantity": 16,
+            "source_rows": [
+              439,
+              4659,
+              4899,
+              5971
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002222",
+            "Product Name": "Xerox Color Copier Paper, 11\" x 17\", Ream",
+            "Sales": 593.84,
+            "Profit": 260.83279999999996,
+            "Quantity": 27,
+            "source_rows": [
+              444,
+              2118,
+              6001,
+              6451,
+              6884,
+              8847
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004071",
+            "Product Name": "Eaton Premium Continuous-Feed Paper, 25% Cotton, Letter Size, White, 1000 Shts/Box",
+            "Sales": 1098.504,
+            "Profit": 492.6624,
+            "Quantity": 21,
+            "source_rows": [
+              471,
+              711,
+              1928,
+              2048,
+              2333,
+              4974,
+              5225,
+              5922,
+              7153,
+              9470
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001509",
+            "Product Name": "Recycled Desk Saver Line \"While You Were Out\" Book, 5 1/2\" X 4\"",
+            "Sales": 268.5,
+            "Profit": 123.51,
+            "Quantity": 30,
+            "source_rows": [
+              476,
+              1009,
+              2179,
+              5692,
+              8324
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003465",
+            "Product Name": "Xerox 1912",
+            "Sales": 201.082,
+            "Profit": 92.5736,
+            "Quantity": 11,
+            "source_rows": [
+              477,
+              2696,
+              3780,
+              5528
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000357",
+            "Product Name": "White Dual Perf Computer Printout Paper, 2700 Sheets, 1 Part, Heavyweight, 20 lbs., 14 7/8 x 11",
+            "Sales": 909.9780000000001,
+            "Profit": 408.2604,
+            "Quantity": 24,
+            "source_rows": [
+              505,
+              1391,
+              1569,
+              6808,
+              7696,
+              8260
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001667",
+            "Product Name": "Great White Multi-Use Recycled Paper (20Lb. and 84 Bright)",
+            "Sales": 169.832,
+            "Profit": 64.584,
+            "Quantity": 32,
+            "source_rows": [
+              518,
+              3026,
+              3170,
+              5216,
+              6065,
+              7070,
+              7210,
+              8884
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002986",
+            "Product Name": "Xerox 1898",
+            "Sales": 280.56,
+            "Profit": 120.7744,
+            "Quantity": 46,
+            "source_rows": [
+              548,
+              1307,
+              1632,
+              4750,
+              6138,
+              6170,
+              6325,
+              6552,
+              8153,
+              8724,
+              8827
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003441",
+            "Product Name": "Xerox 226",
+            "Sales": 334.368,
+            "Profit": 155.7792,
+            "Quantity": 53,
+            "source_rows": [
+              559,
+              761,
+              3149,
+              3398,
+              4987,
+              5082,
+              6253,
+              6961,
+              8797,
+              8819,
+              9385
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004530",
+            "Product Name": "Personal Creations Ink Jet Cards and Labels",
+            "Sales": 321.44,
+            "Profit": 157.5056,
+            "Quantity": 28,
+            "source_rows": [
+              567,
+              576,
+              2339,
+              6169
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004451",
+            "Product Name": "Xerox 222",
+            "Sales": 134.784,
+            "Profit": 60.6528,
+            "Quantity": 22,
+            "source_rows": [
+              569,
+              1633,
+              2775,
+              3038,
+              3363,
+              3410,
+              9216
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001450",
+            "Product Name": "Rediform S.O.S. Phone Message Books",
+            "Sales": 19.92,
+            "Profit": 9.7608,
+            "Quantity": 4,
+            "source_rows": [
+              577
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002005",
+            "Product Name": "Xerox 225",
+            "Sales": 196.99200000000002,
+            "Profit": 85.7952,
+            "Quantity": 33,
+            "source_rows": [
+              590,
+              1807,
+              3015,
+              4118,
+              4354,
+              4502,
+              5328,
+              6233,
+              9254
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004101",
+            "Product Name": "Xerox 1894",
+            "Sales": 169.776,
+            "Profit": 78.79679999999999,
+            "Quantity": 27,
+            "source_rows": [
+              592,
+              944,
+              3503,
+              4719,
+              6234
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002120",
+            "Product Name": "Xerox 1889",
+            "Sales": 516.624,
+            "Profit": 236.32799999999997,
+            "Quantity": 10,
+            "source_rows": [
+              607,
+              5680,
+              9783
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001204",
+            "Product Name": "Xerox 1972",
+            "Sales": 46.464,
+            "Profit": 17.424,
+            "Quantity": 10,
+            "source_rows": [
+              613,
+              1891,
+              4011,
+              5674,
+              6388
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001934",
+            "Product Name": "Xerox 1993",
+            "Sales": 147.744,
+            "Profit": 68.4288,
+            "Quantity": 24,
+            "source_rows": [
+              645,
+              3111,
+              3930,
+              5570,
+              6718,
+              7235,
+              8695,
+              9100
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002377",
+            "Product Name": "Adams Telephone Message Book W/Dividers/Space For Phone Numbers, 5 1/4\"X8 1/2\", 200/Messages",
+            "Sales": 172.672,
+            "Profit": 72.70400000000001,
+            "Quantity": 32,
+            "source_rows": [
+              672,
+              760,
+              1609,
+              2022,
+              4183,
+              5770,
+              6320
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002137",
+            "Product Name": "Southworth 100% R\u00e9sum\u00e9 Paper, 24lb.",
+            "Sales": 262.964,
+            "Profit": 113.199,
+            "Quantity": 35,
+            "source_rows": [
+              675,
+              2011,
+              3206,
+              3442,
+              3602,
+              9123,
+              9767
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000743",
+            "Product Name": "Xerox 1977",
+            "Sales": 130.928,
+            "Profit": 61.455999999999996,
+            "Quantity": 20,
+            "source_rows": [
+              694,
+              5744,
+              7669,
+              7733,
+              9319,
+              9976
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001800",
+            "Product Name": "Xerox 220",
+            "Sales": 145.15200000000002,
+            "Profit": 60.912,
+            "Quantity": 25,
+            "source_rows": [
+              705,
+              1187,
+              2970,
+              3080,
+              5648,
+              6321,
+              7611,
+              8199
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004092",
+            "Product Name": "Tops Green Bar Computer Printout Paper",
+            "Sales": 342.58,
+            "Profit": 171.29,
+            "Quantity": 7,
+            "source_rows": [
+              721,
+              1791,
+              2139
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001954",
+            "Product Name": "Xerox 1964",
+            "Sales": 721.7439999999999,
+            "Profit": 314.73519999999996,
+            "Quantity": 33,
+            "source_rows": [
+              728,
+              3715,
+              8664,
+              9169,
+              9170
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004971",
+            "Product Name": "Xerox 196",
+            "Sales": 92.47999999999999,
+            "Profit": 39.4196,
+            "Quantity": 18,
+            "source_rows": [
+              745,
+              932,
+              1398,
+              2334,
+              3871,
+              3945,
+              7071,
+              8141
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003657",
+            "Product Name": "Xerox 1927",
+            "Sales": 65.056,
+            "Profit": 22.683999999999997,
+            "Quantity": 18,
+            "source_rows": [
+              781,
+              4369,
+              4554,
+              4702,
+              5984
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000176",
+            "Product Name": "Xerox 1887",
+            "Sales": 512.1899999999999,
+            "Profit": 216.25799999999998,
+            "Quantity": 30,
+            "source_rows": [
+              797,
+              1683,
+              4806,
+              5260,
+              6195,
+              6311,
+              9515,
+              9916
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003953",
+            "Product Name": "Xerox 218",
+            "Sales": 49.248000000000005,
+            "Profit": 22.2912,
+            "Quantity": 8,
+            "source_rows": [
+              804,
+              1903,
+              3573,
+              5675,
+              9665
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003651",
+            "Product Name": "Xerox 1968",
+            "Sales": 165.664,
+            "Profit": 75.35040000000001,
+            "Quantity": 26,
+            "source_rows": [
+              817,
+              3433,
+              4389,
+              5743,
+              7769
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003395",
+            "Product Name": "Xerox 1941",
+            "Sales": 1740.51,
+            "Profit": 704.592,
+            "Quantity": 19,
+            "source_rows": [
+              822,
+              3263,
+              3798,
+              6416,
+              8820
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001560",
+            "Product Name": "Adams Telephone Message Books, 5 1/4\u201d x 11\u201d",
+            "Sales": 80.936,
+            "Profit": 32.918,
+            "Quantity": 15,
+            "source_rows": [
+              838,
+              2423,
+              2737,
+              3576,
+              9794
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001870",
+            "Product Name": "Xerox 202",
+            "Sales": 171.072,
+            "Profit": 76.7232,
+            "Quantity": 28,
+            "source_rows": [
+              852,
+              936,
+              5382,
+              6089,
+              7736,
+              8189,
+              8306,
+              9469
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001019",
+            "Product Name": "Xerox 1884",
+            "Sales": 543.456,
+            "Profit": 204.5952,
+            "Quantity": 32,
+            "source_rows": [
+              856,
+              2799,
+              3470,
+              5351,
+              6267,
+              6931,
+              7670,
+              8033
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003591",
+            "Product Name": "Southworth 100% Cotton The Best Paper",
+            "Sales": 151.536,
+            "Profit": 65.43599999999999,
+            "Quantity": 15,
+            "source_rows": [
+              872,
+              7069,
+              9461
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001790",
+            "Product Name": "Xerox 1910",
+            "Sales": 586.088,
+            "Profit": 236.3568,
+            "Quantity": 14,
+            "source_rows": [
+              875,
+              1006,
+              5172,
+              5891,
+              6200
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001622",
+            "Product Name": "Ampad Poly Cover Wirebound Steno Book, 6\" x 9\" Assorted Colors, Gregg Ruled",
+            "Sales": 38.135999999999996,
+            "Profit": 15.663,
+            "Quantity": 9,
+            "source_rows": [
+              892,
+              4407,
+              4647,
+              8381
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002250",
+            "Product Name": "Things To Do Today Pad",
+            "Sales": 138.532,
+            "Profit": 59.1696,
+            "Quantity": 26,
+            "source_rows": [
+              899,
+              1354,
+              2033,
+              4290,
+              4614,
+              7384,
+              8852
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002947",
+            "Product Name": "Xerox 1923",
+            "Sales": 94.856,
+            "Profit": 39.2784,
+            "Quantity": 16,
+            "source_rows": [
+              904,
+              6305,
+              8824,
+              9269,
+              9629
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000019",
+            "Product Name": "Xerox 1931",
+            "Sales": 209.952,
+            "Profit": 88.6464,
+            "Quantity": 36,
+            "source_rows": [
+              906,
+              1829,
+              1870,
+              4911,
+              6000,
+              6193,
+              7024,
+              7889
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003543",
+            "Product Name": "Xerox 1985",
+            "Sales": 25.92,
+            "Profit": 9.072,
+            "Quantity": 5,
+            "source_rows": [
+              926,
+              1749
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002195",
+            "Product Name": "RSVP Cards & Envelopes, Blank White, 8-1/2\" X 11\", 24 Cards/25 Envelopes/Set",
+            "Sales": 89.408,
+            "Profit": 38.2524,
+            "Quantity": 19,
+            "source_rows": [
+              933,
+              4205,
+              5432,
+              5807,
+              9003,
+              9983
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001745",
+            "Product Name": "Wirebound Message Books, 2 7/8\" x 5\", 3 Forms per Page",
+            "Sales": 108.416,
+            "Profit": 44.985600000000005,
+            "Quantity": 17,
+            "source_rows": [
+              934,
+              2852,
+              5259
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000289",
+            "Product Name": "Xerox 213",
+            "Sales": 111.456,
+            "Profit": 50.803200000000004,
+            "Quantity": 18,
+            "source_rows": [
+              939,
+              2889,
+              7305,
+              7604,
+              8582,
+              9098
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000350",
+            "Product Name": "Message Book, Standard Line \"While You Were Out\", 5 1/2\" X 4\", 200 Sets/Book",
+            "Sales": 51.36,
+            "Profit": 24.139200000000002,
+            "Quantity": 6,
+            "source_rows": [
+              941,
+              1545
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10000788",
+            "Product Name": "Xerox 210",
+            "Sales": 95.904,
+            "Profit": 35.2512,
+            "Quantity": 18,
+            "source_rows": [
+              951,
+              1688,
+              2530,
+              3597,
+              4170,
+              4174
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10002333",
+            "Product Name": "Universal Ultra Bright White Copier/Laser Paper, 8 1/2\" x 11\", Ream",
+            "Sales": 15.552,
+            "Profit": 5.6376,
+            "Quantity": 3,
+            "source_rows": [
+              959
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004621",
+            "Product Name": "Xerox 212",
+            "Sales": 141.264,
+            "Profit": 57.024,
+            "Quantity": 25,
+            "source_rows": [
+              967,
+              1004,
+              1274,
+              5419,
+              6358,
+              8032,
+              8904
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001281",
+            "Product Name": "Computer Printout Paper with Letter-Trim Fine Perforations",
+            "Sales": 191.6,
+            "Profit": 91.968,
+            "Quantity": 4,
+            "source_rows": [
+              968
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10004156",
+            "Product Name": "Xerox 188",
+            "Sales": 213.192,
+            "Profit": 97.524,
+            "Quantity": 20,
+            "source_rows": [
+              980,
+              1328,
+              2307,
+              3938,
+              6486,
+              6511,
+              8403,
+              9864
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003625",
+            "Product Name": "Xerox 1979",
+            "Sales": 328.38800000000003,
+            "Profit": 140.959,
+            "Quantity": 11,
+            "source_rows": [
+              994,
+              5964,
+              9192
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10001166",
+            "Product Name": "Xerox 2",
+            "Sales": 137.376,
+            "Profit": 53.135999999999996,
+            "Quantity": 25,
+            "source_rows": [
+              1026,
+              1636,
+              2293,
+              3509,
+              3943,
+              5375,
+              7445,
+              7609,
+              9418
+            ]
+          },
+          {
+            "Product ID": "OFF-PA-10003656",
+            "Product Name": "Xerox 1935",
+            "Sales": 538.152,
+            "Profit": 239.0028,
+            "Quantity": 21,
+            "source_rows": [
+              1027,
+              2902,
+              5085,
+              9557
+            ]
+          }
+        ],
+        "records_truncated": true
+      },
+      "retrieved_source_rows": [
+        6308,
+        9158,
+        5604,
+        9197,
+        5109
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      }
+    },
+    {
+      "id": "C8-SEM-002",
+      "type": "semantic",
+      "question": "Which products mention computer keyboards?",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Which products mention computer keyboards?",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Which products mention computer keyboards?",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        9654,
+        3841,
+        2642,
+        1729,
+        8554
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "precision_at_5": 0.8,
+        "recall_at_3": 0.0125,
+        "recall_at_5": 0.025,
+        "reciprocal_rank_at_5": 0.5
+      }
+    },
+    {
+      "id": "C8-SEM-003",
+      "type": "semantic",
+      "question": "Find products whose names are about notebooks.",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Find products whose names are about notebooks.",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Find products whose names are about notebooks.",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        5513,
+        3822,
+        8493,
+        5109,
+        9754
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      }
+    },
+    {
+      "id": "C8-SEM-004",
+      "type": "semantic",
+      "question": "Find filing folders in the product catalog.",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Find filing folders in the product catalog.",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Find filing folders in the product catalog.",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        4983,
+        8644,
+        3586,
+        7028,
+        1730
+      ],
+      "metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.030612244897959183,
+        "recall_at_5": 0.05102040816326531,
+        "reciprocal_rank_at_5": 1.0
+      }
+    },
+    {
+      "id": "C8-SEM-005",
+      "type": "semantic",
+      "question": "Which products are computer mice?",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Which products are computer mice?",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Which products are computer mice?",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        9654,
+        6554,
+        5029,
+        5107,
+        1050
+      ],
+      "metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.020134228187919462,
+        "recall_at_5": 0.03355704697986577,
+        "reciprocal_rank_at_5": 1.0
+      }
+    }
+  ]
+}

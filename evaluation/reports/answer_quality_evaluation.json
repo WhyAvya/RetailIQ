@@ -1,0 +1,117 @@
+{
+  "evaluation_id": "retailiq-phase5-round3-answer-quality-v1",
+  "generated_at_utc": "2026-11-08T04:42:01.500087+00:00",
+  "live_llm_evaluation": {
+    "status": "pending",
+    "result_kind": "live_llm",
+    "reason": "OpenRouter currently returns HTTP 429; no live LLM answers were scored.",
+    "answers_evaluated": 0,
+    "faithfulness": null,
+    "answer_relevance": null,
+    "unsupported_claim_rate": null
+  },
+  "fixture_validation": {
+    "status": "verified_fixture",
+    "result_kind": "test_fixture_only",
+    "warning": "Fixture scores validate scoring logic and are not actual LLM performance.",
+    "answers_evaluated": 3,
+    "factual_claims": 5,
+    "supported_claims": 4,
+    "unsupported_claims": 1,
+    "faithfulness": 0.8,
+    "unsupported_claim_rate": 0.2,
+    "answer_relevance": 0.6666666666666666,
+    "per_question": [
+      {
+        "id": "FIX-001",
+        "question_id": "SEM-001",
+        "factual_claims": 2,
+        "supported_claims": 2,
+        "unsupported_claims": 0,
+        "faithfulness": 1.0,
+        "unsupported_claim_rate": 0.0,
+        "answer_relevance": 1.0,
+        "relevance_score": 3,
+        "relevance_max_score": 3
+      },
+      {
+        "id": "FIX-002",
+        "question_id": "SEM-002",
+        "factual_claims": 2,
+        "supported_claims": 1,
+        "unsupported_claims": 1,
+        "faithfulness": 0.5,
+        "unsupported_claim_rate": 0.5,
+        "answer_relevance": 0.6666666666666666,
+        "relevance_score": 2,
+        "relevance_max_score": 3
+      },
+      {
+        "id": "FIX-003",
+        "question_id": "SEM-012",
+        "factual_claims": 1,
+        "supported_claims": 1,
+        "unsupported_claims": 0,
+        "faithfulness": 1.0,
+        "unsupported_claim_rate": 0.0,
+        "answer_relevance": 0.3333333333333333,
+        "relevance_score": 1,
+        "relevance_max_score": 3
+      }
+    ]
+  },
+  "numerical_correctness": {
+    "status": "verified",
+    "result_kind": "actual_deterministic",
+    "questions_evaluated": 5,
+    "correct_answers": 5,
+    "numerical_correctness": 1.0,
+    "questions": [
+      {
+        "id": "NUM-001",
+        "question": "What is the total revenue across the dataset?",
+        "metric": "total_revenue",
+        "expected_value": 45150.0,
+        "actual_value": 45150,
+        "display_decimals": 0,
+        "correct": true
+      },
+      {
+        "id": "NUM-002",
+        "question": "What is the total profit across the dataset?",
+        "metric": "total_profit",
+        "expected_value": 5750.0,
+        "actual_value": 5750,
+        "display_decimals": 0,
+        "correct": true
+      },
+      {
+        "id": "NUM-003",
+        "question": "How many distinct orders are in the dataset?",
+        "metric": "number_of_orders",
+        "expected_value": 11.0,
+        "actual_value": 11,
+        "display_decimals": 0,
+        "correct": true
+      },
+      {
+        "id": "NUM-004",
+        "question": "What is the average order value?",
+        "metric": "average_order_value",
+        "expected_value": 4104.55,
+        "actual_value": 4104.545454545455,
+        "display_decimals": 2,
+        "correct": true
+      },
+      {
+        "id": "NUM-005",
+        "question": "What is the overall profit margin?",
+        "metric": "profit_margin",
+        "expected_value": 12.74,
+        "actual_value": 12.73532668881506,
+        "display_decimals": 2,
+        "correct": true
+      }
+    ]
+  }
+}

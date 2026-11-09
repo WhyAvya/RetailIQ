@@ -1,0 +1,876 @@
+{
+  "evaluation_id": "retailiq-phase5-round2-retrieval-v1",
+  "generated_at_utc": "2026-11-08T04:32:03.971114+00:00",
+  "status": "completed",
+  "benchmark": {
+    "id": "retailiq-phase5-round1-v1",
+    "sha256": "45b2411455ee1a682c2ba09f13ffbc164b3b27dbee49e4561b0a1bce9a59eead",
+    "total_questions": 20,
+    "semantic_questions_evaluated": 15,
+    "numerical_questions_excluded": 5
+  },
+  "retrieval": {
+    "upload_id": "6377aeff-8a64-47ac-9748-28e0b0523d56",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "vector_collection": "retailiq_chunks",
+    "k_values": [
+      3,
+      5
+    ],
+    "mrr_cutoff": 5,
+    "source_row_numbering": "1-based CSV data rows; header excluded",
+    "precision_denominator": "fixed K; fewer than K returned rows are penalized",
+    "duplicate_row_policy": "keep the first occurrence of each source row",
+    "failed_questions_counted_as_zero": true
+  },
+  "aggregate_metrics": {
+    "precision_at_3": 0.4444444444444444,
+    "recall_at_3": 0.5584126984126985,
+    "precision_at_5": 0.3466666666666667,
+    "recall_at_5": 0.6668253968253969,
+    "mrr": 0.5888888888888889
+  },
+  "failure_count": 0,
+  "questions": [
+    {
+      "id": "SEM-001",
+      "question": "Which Technology Accessories records had profit of at least 300 sales units?",
+      "relevant_source_rows": [
+        1,
+        7,
+        10
+      ],
+      "retrieved_source_rows": [
+        1,
+        7,
+        10,
+        11,
+        8
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 1,
+          "similarity_score": 0.3769512176513672,
+          "chunk_id": "39f226a84a410dd67c68d030feb46b0257785a19d8ec7e3562dc5d4fa8b214b5"
+        },
+        {
+          "rank": 2,
+          "source_row": 7,
+          "similarity_score": 0.367761492729187,
+          "chunk_id": "9b3c4a9f30d5d8c503887faeb6e78b41e5629f7a4a4087b40f5f626cf3182a9e"
+        },
+        {
+          "rank": 3,
+          "source_row": 10,
+          "similarity_score": 0.36317962408065796,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        },
+        {
+          "rank": 4,
+          "source_row": 11,
+          "similarity_score": 0.3627091646194458,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 5,
+          "source_row": 8,
+          "similarity_score": 0.35369884967803955,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-002",
+      "question": "Which furniture product made a loss, and what was its profit?",
+      "relevant_source_rows": [
+        6
+      ],
+      "retrieved_source_rows": [
+        3,
+        9,
+        6,
+        11,
+        8
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 3,
+          "similarity_score": 0.2806360721588135,
+          "chunk_id": "f668ff50a581f4803d70da727b77f33f05cdea4d2f76d9b623349d1bde3eef5e"
+        },
+        {
+          "rank": 2,
+          "source_row": 9,
+          "similarity_score": 0.2788415551185608,
+          "chunk_id": "1bd65b43d91d1d9a26c93a1f2847b72cba6597600657cdbbab17707ab2eca222"
+        },
+        {
+          "rank": 3,
+          "source_row": 6,
+          "similarity_score": 0.27487510442733765,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 4,
+          "source_row": 11,
+          "similarity_score": 0.21579623222351074,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 5,
+          "source_row": 8,
+          "similarity_score": 0.20703601837158203,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.3333333333333333
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-003",
+      "question": "Which products were sold in the West region, and what categories were they in?",
+      "relevant_source_rows": [
+        3,
+        7,
+        8
+      ],
+      "retrieved_source_rows": [
+        11,
+        10,
+        6,
+        5,
+        2
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 11,
+          "similarity_score": 0.1858411431312561,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 2,
+          "source_row": 10,
+          "similarity_score": 0.17576390504837036,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        },
+        {
+          "rank": 3,
+          "source_row": 6,
+          "similarity_score": 0.17499148845672607,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 4,
+          "source_row": 5,
+          "similarity_score": 0.17403221130371094,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 5,
+          "source_row": 2,
+          "similarity_score": 0.1634986400604248,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "recall_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank": 0.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-004",
+      "question": "Which products are associated with customer Aisha Sharma?",
+      "relevant_source_rows": [
+        1,
+        2,
+        5
+      ],
+      "retrieved_source_rows": [
+        6,
+        7,
+        1,
+        10,
+        2
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 6,
+          "similarity_score": 0.3297300338745117,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 2,
+          "source_row": 7,
+          "similarity_score": 0.32968688011169434,
+          "chunk_id": "9b3c4a9f30d5d8c503887faeb6e78b41e5629f7a4a4087b40f5f626cf3182a9e"
+        },
+        {
+          "rank": 3,
+          "source_row": 1,
+          "similarity_score": 0.32865190505981445,
+          "chunk_id": "39f226a84a410dd67c68d030feb46b0257785a19d8ec7e3562dc5d4fa8b214b5"
+        },
+        {
+          "rank": 4,
+          "source_row": 10,
+          "similarity_score": 0.30858564376831055,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        },
+        {
+          "rank": 5,
+          "source_row": 2,
+          "similarity_score": 0.30646246671676636,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.3333333333333333,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.6666666666666666,
+        "reciprocal_rank": 0.3333333333333333
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-005",
+      "question": "Which South-region Technology phone products appear in the dataset?",
+      "relevant_source_rows": [
+        4,
+        12
+      ],
+      "retrieved_source_rows": [
+        4,
+        12,
+        7,
+        1,
+        10
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 4,
+          "similarity_score": 0.31100374460220337,
+          "chunk_id": "d51339737e8cdf3671349431441cafc16666166263b640eb9a8c7f82b5b51a7c"
+        },
+        {
+          "rank": 2,
+          "source_row": 12,
+          "similarity_score": 0.3108103275299072,
+          "chunk_id": "24c944839451f2aa4e697b767ab4202ef6a79c7f57199a4596002df5a7a56e08"
+        },
+        {
+          "rank": 3,
+          "source_row": 7,
+          "similarity_score": 0.28374743461608887,
+          "chunk_id": "9b3c4a9f30d5d8c503887faeb6e78b41e5629f7a4a4087b40f5f626cf3182a9e"
+        },
+        {
+          "rank": 4,
+          "source_row": 1,
+          "similarity_score": 0.282755970954895,
+          "chunk_id": "39f226a84a410dd67c68d030feb46b0257785a19d8ec7e3562dc5d4fa8b214b5"
+        },
+        {
+          "rank": 5,
+          "source_row": 10,
+          "similarity_score": 0.26352977752685547,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-006",
+      "question": "Which Office Supplies records had low sales, defined as sales below 700?",
+      "relevant_source_rows": [
+        2,
+        5
+      ],
+      "retrieved_source_rows": [
+        11,
+        5,
+        8,
+        2,
+        6
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 11,
+          "similarity_score": 0.4318888783454895,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 2,
+          "source_row": 5,
+          "similarity_score": 0.42007899284362793,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 3,
+          "source_row": 8,
+          "similarity_score": 0.4166877269744873,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 4,
+          "source_row": 2,
+          "similarity_score": 0.4068481922149658,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        },
+        {
+          "rank": 5,
+          "source_row": 6,
+          "similarity_score": 0.3819769620895386,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.5,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-007",
+      "question": "Which records had high profit, defined as profit of at least 800?",
+      "relevant_source_rows": [
+        3,
+        4,
+        9
+      ],
+      "retrieved_source_rows": [
+        6,
+        11,
+        5,
+        8,
+        12
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 6,
+          "similarity_score": 0.3601229786872864,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 2,
+          "source_row": 11,
+          "similarity_score": 0.35733532905578613,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 3,
+          "source_row": 5,
+          "similarity_score": 0.34262871742248535,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 4,
+          "source_row": 8,
+          "similarity_score": 0.3378593921661377,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 5,
+          "source_row": 12,
+          "similarity_score": 0.32905375957489014,
+          "chunk_id": "24c944839451f2aa4e697b767ab4202ef6a79c7f57199a4596002df5a7a56e08"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "recall_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank": 0.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-008",
+      "question": "Which products were sold in the East region, and were they profitable?",
+      "relevant_source_rows": [
+        6,
+        10
+      ],
+      "retrieved_source_rows": [
+        11,
+        6,
+        10,
+        5,
+        2
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 11,
+          "similarity_score": 0.19362378120422363,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 2,
+          "source_row": 6,
+          "similarity_score": 0.1840798258781433,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 3,
+          "source_row": 10,
+          "similarity_score": 0.1789489984512329,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        },
+        {
+          "rank": 4,
+          "source_row": 5,
+          "similarity_score": 0.17333579063415527,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 5,
+          "source_row": 2,
+          "similarity_score": 0.17116433382034302,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-009",
+      "question": "Which records sold a quantity of at least 5 units?",
+      "relevant_source_rows": [
+        5,
+        11
+      ],
+      "retrieved_source_rows": [
+        11,
+        5,
+        8,
+        2,
+        10
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 11,
+          "similarity_score": 0.3871004581451416,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 2,
+          "source_row": 5,
+          "similarity_score": 0.3719230890274048,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 3,
+          "source_row": 8,
+          "similarity_score": 0.3630586266517639,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 4,
+          "source_row": 2,
+          "similarity_score": 0.35841482877731323,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        },
+        {
+          "rank": 5,
+          "source_row": 10,
+          "similarity_score": 0.35142791271209717,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-010",
+      "question": "Which products were ordered during May 2026?",
+      "relevant_source_rows": [
+        11,
+        12
+      ],
+      "retrieved_source_rows": [
+        1,
+        2,
+        11,
+        6,
+        9
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 1,
+          "similarity_score": 0.25947946310043335,
+          "chunk_id": "39f226a84a410dd67c68d030feb46b0257785a19d8ec7e3562dc5d4fa8b214b5"
+        },
+        {
+          "rank": 2,
+          "source_row": 2,
+          "similarity_score": 0.25432586669921875,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        },
+        {
+          "rank": 3,
+          "source_row": 11,
+          "similarity_score": 0.2515726685523987,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 4,
+          "source_row": 6,
+          "similarity_score": 0.24809294939041138,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 5,
+          "source_row": 9,
+          "similarity_score": 0.2472689151763916,
+          "chunk_id": "1bd65b43d91d1d9a26c93a1f2847b72cba6597600657cdbbab17707ab2eca222"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.5,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.5,
+        "reciprocal_rank": 0.3333333333333333
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-011",
+      "question": "Which customers appear in more than one CSV data row?",
+      "relevant_source_rows": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        12
+      ],
+      "retrieved_source_rows": [
+        3,
+        6,
+        9,
+        8,
+        10
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 3,
+          "similarity_score": 0.5982975959777832,
+          "chunk_id": "f668ff50a581f4803d70da727b77f33f05cdea4d2f76d9b623349d1bde3eef5e"
+        },
+        {
+          "rank": 2,
+          "source_row": 6,
+          "similarity_score": 0.5969595909118652,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 3,
+          "source_row": 9,
+          "similarity_score": 0.5935165882110596,
+          "chunk_id": "1bd65b43d91d1d9a26c93a1f2847b72cba6597600657cdbbab17707ab2eca222"
+        },
+        {
+          "rank": 4,
+          "source_row": 8,
+          "similarity_score": 0.5817309617996216,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 5,
+          "source_row": 10,
+          "similarity_score": 0.5711514949798584,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.14285714285714285,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.2857142857142857,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-012",
+      "question": "Which products belong to the Chairs sub-category, and what profit did each make?",
+      "relevant_source_rows": [
+        3,
+        9
+      ],
+      "retrieved_source_rows": [
+        9,
+        3,
+        6,
+        8,
+        11
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 9,
+          "similarity_score": 0.30901145935058594,
+          "chunk_id": "1bd65b43d91d1d9a26c93a1f2847b72cba6597600657cdbbab17707ab2eca222"
+        },
+        {
+          "rank": 2,
+          "source_row": 3,
+          "similarity_score": 0.30815577507019043,
+          "chunk_id": "f668ff50a581f4803d70da727b77f33f05cdea4d2f76d9b623349d1bde3eef5e"
+        },
+        {
+          "rank": 3,
+          "source_row": 6,
+          "similarity_score": 0.2899906635284424,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 4,
+          "source_row": 8,
+          "similarity_score": 0.20413225889205933,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 5,
+          "source_row": 11,
+          "similarity_score": 0.1958410143852234,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "recall_at_3": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-013",
+      "question": "Which records had sales between 800 and 1500 inclusive?",
+      "relevant_source_rows": [
+        1,
+        7,
+        8,
+        11
+      ],
+      "retrieved_source_rows": [
+        11,
+        6,
+        5,
+        8,
+        12
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 11,
+          "similarity_score": 0.42999720573425293,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 2,
+          "source_row": 6,
+          "similarity_score": 0.4222182631492615,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 3,
+          "source_row": 5,
+          "similarity_score": 0.4109436273574829,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        },
+        {
+          "rank": 4,
+          "source_row": 8,
+          "similarity_score": 0.40559738874435425,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 5,
+          "source_row": 12,
+          "similarity_score": 0.4005332589149475,
+          "chunk_id": "24c944839451f2aa4e697b767ab4202ef6a79c7f57199a4596002df5a7a56e08"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.25,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.5,
+        "reciprocal_rank": 1.0
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-014",
+      "question": "Which records had profit between 100 and 200 inclusive?",
+      "relevant_source_rows": [
+        2,
+        5,
+        8,
+        11,
+        12
+      ],
+      "retrieved_source_rows": [
+        6,
+        11,
+        8,
+        2,
+        5
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 6,
+          "similarity_score": 0.4376096725463867,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 2,
+          "source_row": 11,
+          "similarity_score": 0.4308589696884155,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 3,
+          "source_row": 8,
+          "similarity_score": 0.4115501642227173,
+          "chunk_id": "a8049c1ea47de5aea9f3eafc0b7a70479bd0610990e63216501e8abf2ab3c5ca"
+        },
+        {
+          "rank": 4,
+          "source_row": 2,
+          "similarity_score": 0.4095761775970459,
+          "chunk_id": "b5ab997b70351b8a643bbc6e86da0e9d64181538a00e830ff25ff6f3fb38e826"
+        },
+        {
+          "rank": 5,
+          "source_row": 5,
+          "similarity_score": 0.40883833169937134,
+          "chunk_id": "58fd3132cd09740f976312758eaa79c9e1b276fb42d0d8168d9cbdaae5bd4b73"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.6666666666666666,
+        "recall_at_3": 0.4,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.8,
+        "reciprocal_rank": 0.5
+      },
+      "failure": null
+    },
+    {
+      "id": "SEM-015",
+      "question": "Which products and categories occur in the North region?",
+      "relevant_source_rows": [
+        1,
+        2,
+        5,
+        11
+      ],
+      "retrieved_source_rows": [
+        6,
+        9,
+        11,
+        3,
+        10
+      ],
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 6,
+          "similarity_score": 0.14983689785003662,
+          "chunk_id": "0d8879c92a62aafe85aa11f7fe3f851668e4fbc624d071ac3a79d41b82043c1d"
+        },
+        {
+          "rank": 2,
+          "source_row": 9,
+          "similarity_score": 0.14069658517837524,
+          "chunk_id": "1bd65b43d91d1d9a26c93a1f2847b72cba6597600657cdbbab17707ab2eca222"
+        },
+        {
+          "rank": 3,
+          "source_row": 11,
+          "similarity_score": 0.13772225379943848,
+          "chunk_id": "433f3bcf6b7a6607cca91197888a06e04593f3d3ffe6da0ff2bb73598c93a563"
+        },
+        {
+          "rank": 4,
+          "source_row": 3,
+          "similarity_score": 0.13360536098480225,
+          "chunk_id": "f668ff50a581f4803d70da727b77f33f05cdea4d2f76d9b623349d1bde3eef5e"
+        },
+        {
+          "rank": 5,
+          "source_row": 10,
+          "similarity_score": 0.13285082578659058,
+          "chunk_id": "73952a3186a758af769cb66fe9e770a4bd3cc72ce84a9d66208d38d085eca150"
+        }
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "recall_at_3": 0.25,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.25,
+        "reciprocal_rank": 0.3333333333333333
+      },
+      "failure": null
+    }
+  ]
+}
