@@ -160,3 +160,37 @@ def test_compound_rankings_preserve_requested_average_and_count_operations():
 
     assert (average.operation, average.ranking_metric) == ("mean", "sales")
     assert (count.operation, count.ranking_metric) == ("count", "sales")
+
+
+def test_overlapping_location_names_prefer_the_complete_location_match():
+    dimensions = {
+        "state": ["New York", "Kansas"],
+        "city": ["York", "Kansas City"],
+    }
+
+    new_york = plan_query(
+        "How many Technology line items ordered in New York had sales above 750?",
+        dimensions,
+    )
+    city_and_state = plan_query(
+        "How many line items were ordered in Kansas City, Kansas?", dimensions
+    )
+
+    assert (new_york.filters.state, new_york.filters.city) == ("New York", None)
+    assert (city_and_state.filters.state, city_and_state.filters.city) == (
+        "Kansas", "Kansas City"
+    )
+
+
+def test_plural_category_rankings_use_grouped_dimensions_not_product_grain():
+    categories = plan_query("What are the top two product categories by total quantity?")
+    hyphenated = plan_query("What are the top four sub-categories by total sales?")
+    unhyphenated = plan_query("Show the top 3 subcategories by total profit")
+
+    assert (categories.status, categories.grain, categories.ranking_group_by) == (
+        "valid", None, "Category"
+    )
+    assert (hyphenated.status, hyphenated.grain, hyphenated.ranking_group_by) == (
+        "valid", None, "Sub-Category"
+    )
+    assert unhyphenated.ranking_group_by == "Sub-Category"

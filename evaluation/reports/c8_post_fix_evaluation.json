@@ -1,0 +1,2631 @@
+{
+  "evaluation_id": "retailiq-c8-post-fix-evaluation-v1",
+  "generated_at_utc": "2026-11-10T04:16:21.528055+00:00",
+  "benchmark_sha256": "6698749b3ea5ab04c5b9f60f1f53020dfafd4b1279c6d5002ab716e8e1ae5f6e",
+  "freeze_manifest_sha256": "c20dbdd5bf6c2a46b6070a2f7caa531e28869449388fe47c0b3ce73f03382deb",
+  "original_freeze_verified": false,
+  "question_count": 25,
+  "llm_calls": 0,
+  "metrics": {
+    "filtering_accuracy": 1.0,
+    "numerical_accuracy": 1.0,
+    "ranking_accuracy": 1.0,
+    "mixed_accuracy": 1.0,
+    "semantic_retrieval": {
+      "precision_at_3": 0.26666666666666666,
+      "precision_at_5": 0.24,
+      "recall_at_3": 0.006837961044343141,
+      "recall_at_5": 0.010346732974167702,
+      "reciprocal_rank_at_5": 0.26666666666666666
+    }
+  },
+  "results": [
+    {
+      "id": "C8I2-FIL-001",
+      "type": "filtering",
+      "question": "How many Consumer line items in the South had no discount?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Consumer line items in the South had no discount?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": "South",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Consumer",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "eq",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Consumer line items in the South had no discount?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": "South",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Consumer",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "eq",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 416,
+        "entity_count": 416,
+        "value": 416,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 416,
+      "expected_count": 416
+    },
+    {
+      "id": "C8I2-FIL-002",
+      "type": "filtering",
+      "question": "How many Home Office Office Supplies line items had discount at least 10%?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Home Office Office Supplies line items had discount at least 10%?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": "Office Supplies",
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Home Office",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "gte",
+              "value": 0.1,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Home Office Office Supplies line items had discount at least 10%?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": "Office Supplies",
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Home Office",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "gte",
+                "value": 0.1,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 484,
+        "entity_count": 484,
+        "value": 484,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 484,
+      "expected_count": 484
+    },
+    {
+      "id": "C8I2-FIL-003",
+      "type": "filtering",
+      "question": "How many loss-making Second Class line items were ordered during 2017?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many loss-making Second Class line items were ordered during 2017?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": "Second Class",
+          "customer_name": null,
+          "start_date": "2017-01-01",
+          "end_date": "2017-12-31",
+          "numeric": [
+            {
+              "metric": "profit",
+              "operator": "lt",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many loss-making Second Class line items were ordered during 2017?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": "Second Class",
+            "customer_name": null,
+            "start_date": "2017-01-01",
+            "end_date": "2017-12-31",
+            "numeric": [
+              {
+                "metric": "profit",
+                "operator": "lt",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 92,
+        "entity_count": 92,
+        "value": 92,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 92,
+      "expected_count": 92
+    },
+    {
+      "id": "C8I2-FIL-004",
+      "type": "filtering",
+      "question": "How many Technology line items ordered in New York had sales above 750?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many Technology line items ordered in New York had sales above 750?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": "Technology",
+          "sub_category": null,
+          "state": "New York",
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "sales",
+              "operator": "gt",
+              "value": 750.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many Technology line items ordered in New York had sales above 750?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": "Technology",
+            "sub_category": null,
+            "state": "New York",
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "sales",
+                "operator": "gt",
+                "value": 750.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 43,
+        "entity_count": 43,
+        "value": 43,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 43,
+      "expected_count": 43
+    },
+    {
+      "id": "C8I2-FIL-005",
+      "type": "filtering",
+      "question": "How many West region line items took more than four calendar days to ship?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "How many West region line items took more than four calendar days to ship?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "count",
+        "grain": "row",
+        "filters": {
+          "region": "West",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "shipping_days",
+              "operator": "gt",
+              "value": 4.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "How many West region line items took more than four calendar days to ship?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "count",
+          "grain": "row",
+          "filters": {
+            "region": "West",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "shipping_days",
+                "operator": "gt",
+                "value": 4.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": null,
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1288,
+        "entity_count": 1288,
+        "value": 1288,
+        "records": [],
+        "records_truncated": false
+      },
+      "correct": true,
+      "actual_count": 1288,
+      "expected_count": 1288
+    },
+    {
+      "id": "C8I2-NUM-001",
+      "type": "numerical",
+      "question": "What were total sales for each product category during 2014?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What were total sales for each product category during 2014?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": "2014-01-01",
+          "end_date": "2014-12-31",
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": "Category",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What were total sales for each product category during 2014?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": "2014-01-01",
+            "end_date": "2014-12-31",
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": "Category",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1993,
+        "entity_count": 1993,
+        "value": null,
+        "records": [
+          {
+            "Category": "Furniture",
+            "value": 157192.8531
+          },
+          {
+            "Category": "Office Supplies",
+            "value": 151776.412
+          },
+          {
+            "Category": "Technology",
+            "value": 175278.233
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "Furniture": 157192.8531,
+        "Office Supplies": 151776.412,
+        "Technology": 175278.233
+      },
+      "expected_value": {
+        "Furniture": 157192.8531,
+        "Office Supplies": 151776.412,
+        "Technology": 175278.233
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-NUM-002",
+      "type": "numerical",
+      "question": "Show total profit per sub-category in the East region.",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Show total profit per sub-category in the East region.",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": "East",
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": "Sub-Category",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Show total profit per sub-category in the East region.",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": "East",
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": "Sub-Category",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 2848,
+        "entity_count": 2848,
+        "value": null,
+        "records": [
+          {
+            "Sub-Category": "Accessories",
+            "value": 11195.8644
+          },
+          {
+            "Sub-Category": "Appliances",
+            "value": 8391.4134
+          },
+          {
+            "Sub-Category": "Art",
+            "value": 1899.9443
+          },
+          {
+            "Sub-Category": "Binders",
+            "value": 11267.9346
+          },
+          {
+            "Sub-Category": "Bookcases",
+            "value": -1167.6318
+          },
+          {
+            "Sub-Category": "Chairs",
+            "value": 9357.7706
+          },
+          {
+            "Sub-Category": "Copiers",
+            "value": 17022.841800000002
+          },
+          {
+            "Sub-Category": "Envelopes",
+            "value": 1812.4089999999999
+          },
+          {
+            "Sub-Category": "Fasteners",
+            "value": 263.9908
+          },
+          {
+            "Sub-Category": "Furnishings",
+            "value": 5881.4071
+          },
+          {
+            "Sub-Category": "Labels",
+            "value": 1129.28
+          },
+          {
+            "Sub-Category": "Machines",
+            "value": 6928.642900000001
+          },
+          {
+            "Sub-Category": "Paper",
+            "value": 9015.371
+          },
+          {
+            "Sub-Category": "Phones",
+            "value": 12314.686
+          },
+          {
+            "Sub-Category": "Storage",
+            "value": 8389.3712
+          },
+          {
+            "Sub-Category": "Supplies",
+            "value": -1155.1352000000002
+          },
+          {
+            "Sub-Category": "Tables",
+            "value": -11025.3801
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "Accessories": 11195.8644,
+        "Appliances": 8391.4134,
+        "Art": 1899.9443,
+        "Binders": 11267.9346,
+        "Bookcases": -1167.6318,
+        "Chairs": 9357.7706,
+        "Copiers": 17022.8418,
+        "Envelopes": 1812.409,
+        "Fasteners": 263.9908,
+        "Furnishings": 5881.4071,
+        "Labels": 1129.28,
+        "Machines": 6928.6429,
+        "Paper": 9015.371,
+        "Phones": 12314.686,
+        "Storage": 8389.3712,
+        "Supplies": -1155.1352,
+        "Tables": -11025.3801
+      },
+      "expected_value": {
+        "Accessories": 11195.8644,
+        "Appliances": 8391.4134,
+        "Art": 1899.9443,
+        "Binders": 11267.9346,
+        "Bookcases": -1167.6318,
+        "Chairs": 9357.7706,
+        "Copiers": 17022.8418,
+        "Envelopes": 1812.409,
+        "Fasteners": 263.9908,
+        "Furnishings": 5881.4071,
+        "Labels": 1129.28,
+        "Machines": 6928.6429,
+        "Paper": 9015.371,
+        "Phones": 12314.686,
+        "Storage": 8389.3712,
+        "Supplies": -1155.1352,
+        "Tables": -11025.3801
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-NUM-003",
+      "type": "numerical",
+      "question": "What was the average order value for the Home Office segment?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What was the average order value for the Home Office segment?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "mean",
+        "grain": "order",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Home Office",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "average_order_value",
+        "available": true,
+        "plan": {
+          "original_question": "What was the average order value for the Home Office segment?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "mean",
+          "grain": "order",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Home Office",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 1783,
+        "entity_count": 909,
+        "value": 472.6657299229923,
+        "records": [],
+        "records_truncated": false
+      },
+      "actual_value": 472.6657299229923,
+      "expected_value": 472.66573,
+      "correct": true
+    },
+    {
+      "id": "C8I2-NUM-004",
+      "type": "numerical",
+      "question": "What was total sales for customer Aaron Hawkins?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What was total sales for customer Aaron Hawkins?",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": "Aaron Hawkins",
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What was total sales for customer Aaron Hawkins?",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": "Aaron Hawkins",
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 11,
+        "entity_count": 11,
+        "value": 1744.6999999999998,
+        "records": [],
+        "records_truncated": false
+      },
+      "actual_value": 1744.6999999999998,
+      "expected_value": 1744.7,
+      "correct": true
+    },
+    {
+      "id": "C8I2-NUM-005",
+      "type": "numerical",
+      "question": "Show total Furniture sales for each order year.",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Show total Furniture sales for each order year.",
+        "status": "valid",
+        "query_type": "numerical",
+        "operation": "sum",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": "Furniture",
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": "order_year",
+        "limit": null,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Show total Furniture sales for each order year.",
+          "status": "valid",
+          "query_type": "numerical",
+          "operation": "sum",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": "Furniture",
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": "order_year",
+          "limit": null,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": null,
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 2121,
+        "entity_count": 2121,
+        "value": null,
+        "records": [
+          {
+            "order_year": 2014,
+            "value": 157192.8531
+          },
+          {
+            "order_year": 2015,
+            "value": 170518.237
+          },
+          {
+            "order_year": 2016,
+            "value": 198901.436
+          },
+          {
+            "order_year": 2017,
+            "value": 215387.2692
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_value": {
+        "2014": 157192.8531,
+        "2015": 170518.237,
+        "2016": 198901.436,
+        "2017": 215387.2692
+      },
+      "expected_value": {
+        "2014": 157192.8531,
+        "2015": 170518.237,
+        "2016": 198901.436,
+        "2017": 215387.2692
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-RANK-001",
+      "type": "ranking",
+      "question": "What are the top three states by total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top three states by total sales?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 3,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "State",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top three states by total sales?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 3,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "State",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 9994,
+        "value": null,
+        "records": [
+          {
+            "State": "California",
+            "Sales": 457687.6315
+          },
+          {
+            "State": "New York",
+            "Sales": 310876.271
+          },
+          {
+            "State": "Texas",
+            "Sales": 170188.0458
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "State": "California",
+          "Sales": 457687.6315
+        },
+        {
+          "State": "New York",
+          "Sales": 310876.271
+        },
+        {
+          "State": "Texas",
+          "Sales": 170188.0458
+        }
+      ],
+      "expected_records": [
+        {
+          "State": "California",
+          "Sales": 457687.6315
+        },
+        {
+          "State": "New York",
+          "Sales": 310876.271
+        },
+        {
+          "State": "Texas",
+          "Sales": 170188.0458
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8I2-RANK-002",
+      "type": "ranking",
+      "question": "What are the top two product categories by total quantity?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top two product categories by total quantity?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "quantity",
+        "group_by": null,
+        "limit": 2,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "quantity",
+        "ranking_group_by": "Category",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top two product categories by total quantity?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "quantity",
+          "group_by": null,
+          "limit": 2,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "quantity",
+          "ranking_group_by": "Category",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 9994,
+        "value": null,
+        "records": [
+          {
+            "Category": "Office Supplies",
+            "Quantity": 22906
+          },
+          {
+            "Category": "Furniture",
+            "Quantity": 8028
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Category": "Office Supplies",
+          "Quantity": 22906.0
+        },
+        {
+          "Category": "Furniture",
+          "Quantity": 8028.0
+        }
+      ],
+      "expected_records": [
+        {
+          "Category": "Office Supplies",
+          "Quantity": 22906.0
+        },
+        {
+          "Category": "Furniture",
+          "Quantity": 8028.0
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8I2-RANK-003",
+      "type": "ranking",
+      "question": "What are the top four sub-categories by total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top four sub-categories by total sales?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": null,
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 4,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "Sub-Category",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top four sub-categories by total sales?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": null,
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 4,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "Sub-Category",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 9994,
+        "value": null,
+        "records": [
+          {
+            "Sub-Category": "Phones",
+            "Sales": 330007.054
+          },
+          {
+            "Sub-Category": "Chairs",
+            "Sales": 328449.103
+          },
+          {
+            "Sub-Category": "Storage",
+            "Sales": 223843.608
+          },
+          {
+            "Sub-Category": "Tables",
+            "Sales": 206965.532
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Sub-Category": "Phones",
+          "Sales": 330007.054
+        },
+        {
+          "Sub-Category": "Chairs",
+          "Sales": 328449.103
+        },
+        {
+          "Sub-Category": "Storage",
+          "Sales": 223843.608
+        },
+        {
+          "Sub-Category": "Tables",
+          "Sales": 206965.532
+        }
+      ],
+      "expected_records": [
+        {
+          "Sub-Category": "Phones",
+          "Sales": 330007.054
+        },
+        {
+          "Sub-Category": "Chairs",
+          "Sales": 328449.103
+        },
+        {
+          "Sub-Category": "Storage",
+          "Sales": 223843.608
+        },
+        {
+          "Sub-Category": "Tables",
+          "Sales": 206965.532
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8I2-RANK-004",
+      "type": "ranking",
+      "question": "Who are the top four customers by total profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Who are the top four customers by total profit?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "customer",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 4,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": "Customer ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Who are the top four customers by total profit?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "customer",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 4,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": "Customer ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 793,
+        "value": null,
+        "records": [
+          {
+            "Customer ID": "TC-20980",
+            "Profit": 8981.323900000001
+          },
+          {
+            "Customer ID": "RB-19360",
+            "Profit": 6976.0959
+          },
+          {
+            "Customer ID": "SC-20095",
+            "Profit": 5757.411899999999
+          },
+          {
+            "Customer ID": "HL-15040",
+            "Profit": 5622.4292000000005
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Customer ID": "TC-20980",
+          "Profit": 8981.3239
+        },
+        {
+          "Customer ID": "RB-19360",
+          "Profit": 6976.0959
+        },
+        {
+          "Customer ID": "SC-20095",
+          "Profit": 5757.4119
+        },
+        {
+          "Customer ID": "HL-15040",
+          "Profit": 5622.4292
+        }
+      ],
+      "expected_records": [
+        {
+          "Customer ID": "TC-20980",
+          "Profit": 8981.3239
+        },
+        {
+          "Customer ID": "RB-19360",
+          "Profit": 6976.0959
+        },
+        {
+          "Customer ID": "SC-20095",
+          "Profit": 5757.4119
+        },
+        {
+          "Customer ID": "HL-15040",
+          "Profit": 5622.4292
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8I2-RANK-005",
+      "type": "ranking",
+      "question": "What are the top three orders by total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "What are the top three orders by total sales?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "order",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 3,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "Order ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "What are the top three orders by total sales?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "order",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 3,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "Order ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 9994,
+        "entity_count": 5009,
+        "value": null,
+        "records": [
+          {
+            "Order ID": "CA-2014-145317",
+            "Sales": 23661.228
+          },
+          {
+            "Order ID": "CA-2016-118689",
+            "Sales": 18336.74
+          },
+          {
+            "Order ID": "CA-2017-140151",
+            "Sales": 14052.48
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual_records": [
+        {
+          "Order ID": "CA-2014-145317",
+          "Sales": 23661.228
+        },
+        {
+          "Order ID": "CA-2016-118689",
+          "Sales": 18336.74
+        },
+        {
+          "Order ID": "CA-2017-140151",
+          "Sales": 14052.48
+        }
+      ],
+      "expected_records": [
+        {
+          "Order ID": "CA-2014-145317",
+          "Sales": 23661.228
+        },
+        {
+          "Order ID": "CA-2016-118689",
+          "Sales": 18336.74
+        },
+        {
+          "Order ID": "CA-2017-140151",
+          "Sales": 14052.48
+        }
+      ],
+      "correct": true
+    },
+    {
+      "id": "C8I2-MIX-001",
+      "type": "mixed",
+      "question": "For discounted table line items in the East, which two had the highest sales and what was total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For discounted table line items in the East, which two had the highest sales and what was total sales?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "sum",
+        "grain": "row",
+        "filters": {
+          "region": "East",
+          "category": null,
+          "sub_category": "Tables",
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "discount",
+              "operator": "gt",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 2,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For discounted table line items in the East, which two had the highest sales and what was total sales?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "sum",
+          "grain": "row",
+          "filters": {
+            "region": "East",
+            "category": null,
+            "sub_category": "Tables",
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "discount",
+                "operator": "gt",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 2,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 80,
+        "entity_count": 80,
+        "value": 39139.807,
+        "records": [
+          {
+            "Row ID": 950,
+            "Order ID": "US-2017-110576",
+            "Order Date": "11/28/2017",
+            "Ship Date": "12/2/2017",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "RB-19795",
+            "Customer Name": "Ross Baird",
+            "Segment": "Home Office",
+            "Country": "United States",
+            "City": "Philadelphia",
+            "State": "Pennsylvania",
+            "Postal Code": 19120,
+            "Region": "East",
+            "Product ID": "FUR-TA-10004154",
+            "Category": "Furniture",
+            "Sub-Category": "Tables",
+            "Product Name": "Riverside Furniture Oval Coffee Table, Oval End Table, End Table with Drawer",
+            "Sales": 2065.32,
+            "Quantity": 12,
+            "Discount": 0.4,
+            "Profit": -619.596,
+            "source_row": 950
+          },
+          {
+            "Row ID": 2358,
+            "Order ID": "US-2014-148838",
+            "Order Date": "3/17/2014",
+            "Ship Date": "3/21/2014",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "CP-12340",
+            "Customer Name": "Christine Phan",
+            "Segment": "Corporate",
+            "Country": "United States",
+            "City": "New York City",
+            "State": "New York",
+            "Postal Code": 10024,
+            "Region": "East",
+            "Product ID": "FUR-TA-10003473",
+            "Category": "Furniture",
+            "Sub-Category": "Tables",
+            "Product Name": "Bretford Rectangular Conference Table Tops",
+            "Sales": 1579.746,
+            "Quantity": 7,
+            "Discount": 0.4,
+            "Profit": -447.5947,
+            "source_row": 2358
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          950,
+          2358
+        ],
+        "value": 39139.807
+      },
+      "expected": {
+        "top_source_rows": [
+          950,
+          2358
+        ],
+        "value": 39139.807
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-MIX-002",
+      "type": "mixed",
+      "question": "For profitable binder line items in the South, which line item had the highest profit and what was median sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For profitable binder line items in the South, which line item had the highest profit and what was median sales?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "median",
+        "grain": "row",
+        "filters": {
+          "region": "South",
+          "category": null,
+          "sub_category": "Binders",
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [
+            {
+              "metric": "profit",
+              "operator": "gt",
+              "value": 0.0,
+              "upper_value": null
+            }
+          ],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "profit",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For profitable binder line items in the South, which line item had the highest profit and what was median sales?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "median",
+          "grain": "row",
+          "filters": {
+            "region": "South",
+            "category": null,
+            "sub_category": "Binders",
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [
+              {
+                "metric": "profit",
+                "operator": "gt",
+                "value": 0.0,
+                "upper_value": null
+              }
+            ],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "profit",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 114,
+        "entity_count": 114,
+        "value": 36.4,
+        "records": [
+          {
+            "Row ID": 510,
+            "Order ID": "CA-2015-145352",
+            "Order Date": "3/16/2015",
+            "Ship Date": "3/22/2015",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "CM-12385",
+            "Customer Name": "Christopher Martinez",
+            "Segment": "Consumer",
+            "Country": "United States",
+            "City": "Atlanta",
+            "State": "Georgia",
+            "Postal Code": 30318,
+            "Region": "South",
+            "Product ID": "OFF-BI-10003527",
+            "Category": "Office Supplies",
+            "Sub-Category": "Binders",
+            "Product Name": "Fellowes PB500 Electric Punch Plastic Comb Binding Machine with Manual Bind",
+            "Sales": 6354.95,
+            "Quantity": 5,
+            "Discount": 0.0,
+            "Profit": 3177.475,
+            "source_row": 510
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          510
+        ],
+        "value": 36.4
+      },
+      "expected": {
+        "top_source_rows": [
+          510
+        ],
+        "value": 36.4
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-MIX-003",
+      "type": "mixed",
+      "question": "Among Corporate customers, who had the highest total sales and how many distinct orders did that customer place?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "Among Corporate customers, who had the highest total sales and how many distinct orders did that customer place?",
+        "status": "valid",
+        "query_type": "ranking",
+        "operation": "ranking",
+        "grain": "customer",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Corporate",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": null,
+        "ranking_metric": "sales",
+        "ranking_group_by": "Customer ID",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": true,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "Among Corporate customers, who had the highest total sales and how many distinct orders did that customer place?",
+          "status": "valid",
+          "query_type": "ranking",
+          "operation": "ranking",
+          "grain": "customer",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Corporate",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": null
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": null,
+          "ranking_metric": "sales",
+          "ranking_group_by": "Customer ID",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": true,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 3020,
+        "entity_count": 236,
+        "value": null,
+        "records": [
+          {
+            "Customer ID": "TC-20980",
+            "Sales": 19052.218,
+            "distinct_order_count": 5,
+            "Customer Name": "Tamara Chand"
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "customer_id": "TC-20980",
+        "sales": 19052.218,
+        "distinct_orders": 5
+      },
+      "expected": {
+        "customer_id": "TC-20980",
+        "sales": 19052.218,
+        "distinct_orders": 5
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-MIX-004",
+      "type": "mixed",
+      "question": "For products containing 'mouse', which region generated the most profit and which matching line item had the highest profit?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For products containing 'mouse', which region generated the most profit and which matching line item had the highest profit?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "ranking",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": "mouse"
+        },
+        "metric": "profit",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": "mouse",
+        "ranking_metric": "profit",
+        "ranking_group_by": "Region",
+        "aggregate_ranked_group": false,
+        "include_row_ranking": true,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For products containing 'mouse', which region generated the most profit and which matching line item had the highest profit?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "ranking",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": null,
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": "mouse"
+          },
+          "metric": "profit",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": "mouse",
+          "ranking_metric": "profit",
+          "ranking_group_by": "Region",
+          "aggregate_ranked_group": false,
+          "include_row_ranking": true,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 149,
+        "entity_count": 149,
+        "value": null,
+        "records": [
+          {
+            "Region": "West",
+            "Profit": 2716.1616,
+            "result_kind": "group_ranking"
+          },
+          {
+            "Row ID": 461,
+            "Order ID": "CA-2015-109638",
+            "Order Date": "12/15/2015",
+            "Ship Date": "12/22/2015",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "JH-15985",
+            "Customer Name": "Joseph Holt",
+            "Segment": "Consumer",
+            "Country": "United States",
+            "City": "Seattle",
+            "State": "Washington",
+            "Postal Code": 98115,
+            "Region": "West",
+            "Product ID": "TEC-AC-10004571",
+            "Category": "Technology",
+            "Sub-Category": "Accessories",
+            "Product Name": "Logitech G700s Rechargeable Gaming Mouse",
+            "Sales": 899.91,
+            "Quantity": 9,
+            "Discount": 0.0,
+            "Profit": 377.9622,
+            "source_row": 461,
+            "result_kind": "row_ranking"
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "group": {
+          "Region": "West",
+          "Profit": 2716.1616
+        },
+        "top_source_rows": [
+          461
+        ]
+      },
+      "expected": {
+        "group": {
+          "Region": "West",
+          "Profit": 2716.1616
+        },
+        "top_source_rows": [
+          461
+        ]
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-MIX-005",
+      "type": "mixed",
+      "question": "For product line items containing 'notebook' bought by Consumer customers, which line item had the highest profit and what was total sales?",
+      "mode": "analytics",
+      "plan": {
+        "original_question": "For product line items containing 'notebook' bought by Consumer customers, which line item had the highest profit and what was total sales?",
+        "status": "valid",
+        "query_type": "mixed",
+        "operation": "sum",
+        "grain": "row",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": "Consumer",
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": "notebook"
+        },
+        "metric": "sales",
+        "group_by": null,
+        "limit": 1,
+        "descending": true,
+        "semantic_query": "notebook",
+        "ranking_metric": "profit",
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": {
+        "intent": "structured_query",
+        "available": true,
+        "plan": {
+          "original_question": "For product line items containing 'notebook' bought by Consumer customers, which line item had the highest profit and what was total sales?",
+          "status": "valid",
+          "query_type": "mixed",
+          "operation": "sum",
+          "grain": "row",
+          "filters": {
+            "region": null,
+            "category": null,
+            "sub_category": null,
+            "state": null,
+            "city": null,
+            "segment": "Consumer",
+            "ship_mode": null,
+            "customer_name": null,
+            "start_date": null,
+            "end_date": null,
+            "numeric": [],
+            "product_name_query": "notebook"
+          },
+          "metric": "sales",
+          "group_by": null,
+          "limit": 1,
+          "descending": true,
+          "semantic_query": "notebook",
+          "ranking_metric": "profit",
+          "ranking_group_by": null,
+          "aggregate_ranked_group": false,
+          "include_row_ranking": false,
+          "include_distinct_order_count": false,
+          "issues": []
+        },
+        "rows_before": 9994,
+        "rows_after_filtering": 7,
+        "entity_count": 7,
+        "value": 3501.726,
+        "records": [
+          {
+            "Row ID": 2392,
+            "Order ID": "US-2015-127040",
+            "Order Date": "12/6/2015",
+            "Ship Date": "12/10/2015",
+            "Ship Mode": "Standard Class",
+            "Customer ID": "SG-20605",
+            "Customer Name": "Speros Goranitis",
+            "Segment": "Consumer",
+            "Country": "United States",
+            "City": "New York City",
+            "State": "New York",
+            "Postal Code": 10009,
+            "Region": "East",
+            "Product ID": "TEC-AC-10002637",
+            "Category": "Technology",
+            "Sub-Category": "Accessories",
+            "Product Name": "Logitech\u00a0VX Revolution Cordless Laser Mouse for Notebooks (Black)",
+            "Sales": 1619.91,
+            "Quantity": 9,
+            "Discount": 0.0,
+            "Profit": 97.1946,
+            "source_row": 2392
+          }
+        ],
+        "records_truncated": false
+      },
+      "actual": {
+        "top_source_rows": [
+          2392
+        ],
+        "value": 3501.726
+      },
+      "expected": {
+        "top_source_rows": [
+          2392
+        ],
+        "value": 3501.726
+      },
+      "correct": true
+    },
+    {
+      "id": "C8I2-SEM-001",
+      "type": "semantic",
+      "question": "Find products whose names mention markers.",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Find products whose names mention markers.",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Find products whose names mention markers.",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        5310,
+        9658,
+        3583,
+        5165,
+        752
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      }
+    },
+    {
+      "id": "C8I2-SEM-002",
+      "type": "semantic",
+      "question": "Which catalog products are speakers?",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Which catalog products are speakers?",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Which catalog products are speakers?",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        302,
+        4076,
+        1107,
+        1814,
+        3990
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      }
+    },
+    {
+      "id": "C8I2-SEM-003",
+      "type": "semantic",
+      "question": "Find products related to printers.",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Find products related to printers.",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Find products related to printers.",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        437,
+        6676,
+        978,
+        8489,
+        7238
+      ],
+      "metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.02631578947368421,
+        "recall_at_5": 0.043859649122807015,
+        "reciprocal_rank_at_5": 1.0
+      }
+    },
+    {
+      "id": "C8I2-SEM-004",
+      "type": "semantic",
+      "question": "Which product names mention lamps?",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Which product names mention lamps?",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Which product names mention lamps?",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        1107,
+        1813,
+        8195,
+        9009,
+        9904
+      ],
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "precision_at_5": 0.2,
+        "recall_at_3": 0.007874015748031496,
+        "recall_at_5": 0.007874015748031496,
+        "reciprocal_rank_at_5": 0.3333333333333333
+      }
+    },
+    {
+      "id": "C8I2-SEM-005",
+      "type": "semantic",
+      "question": "Find products whose names include batteries.",
+      "mode": "semantic_rag",
+      "plan": {
+        "original_question": "Find products whose names include batteries.",
+        "status": "valid",
+        "query_type": "semantic",
+        "operation": "semantic",
+        "grain": "product",
+        "filters": {
+          "region": null,
+          "category": null,
+          "sub_category": null,
+          "state": null,
+          "city": null,
+          "segment": null,
+          "ship_mode": null,
+          "customer_name": null,
+          "start_date": null,
+          "end_date": null,
+          "numeric": [],
+          "product_name_query": null
+        },
+        "metric": null,
+        "group_by": null,
+        "limit": null,
+        "descending": true,
+        "semantic_query": "Find products whose names include batteries.",
+        "ranking_metric": null,
+        "ranking_group_by": null,
+        "aggregate_ranked_group": false,
+        "include_row_ranking": false,
+        "include_distinct_order_count": false,
+        "issues": []
+      },
+      "calculation": null,
+      "retrieved_source_rows": [
+        2784,
+        6868,
+        3818,
+        8858,
+        4473
+      ],
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      }
+    }
+  ],
+  "comparison": {
+    "original_report": "evaluation/reports/c8_independent_evaluation.json",
+    "original_report_sha256": "e4d64b20fcc711fcc7ff45e3443b301885d8eb360d120e4a0b0fa4bbbb4a28d6",
+    "before": {
+      "filtering_accuracy": 0.8,
+      "numerical_accuracy": 1.0,
+      "ranking_accuracy": 0.6,
+      "mixed_accuracy": 1.0,
+      "semantic_retrieval": {
+        "precision_at_3": 0.26666666666666666,
+        "precision_at_5": 0.24,
+        "recall_at_3": 0.006837961044343141,
+        "recall_at_5": 0.010346732974167702,
+        "reciprocal_rank_at_5": 0.26666666666666666
+      }
+    },
+    "after": {
+      "filtering_accuracy": 1.0,
+      "numerical_accuracy": 1.0,
+      "ranking_accuracy": 1.0,
+      "mixed_accuracy": 1.0,
+      "semantic_retrieval": {
+        "precision_at_3": 0.26666666666666666,
+        "precision_at_5": 0.24,
+        "recall_at_3": 0.006837961044343141,
+        "recall_at_5": 0.010346732974167702,
+        "reciprocal_rank_at_5": 0.26666666666666666
+      }
+    },
+    "note": "The original freeze is expected not to verify after the targeted planner fix; the manifest itself is unchanged."
+  }
+}

@@ -183,3 +183,21 @@ def test_customer_and_order_grouped_totals_do_not_double_count(superstore):
     expected_orders = superstore.groupby("Order ID")["Sales"].sum().to_dict()
     assert {row["Customer ID"]: row["value"] for row in by_customer.records} == pytest.approx(expected_customers)
     assert {row["Order ID"]: row["value"] for row in by_order.records} == pytest.approx(expected_orders)
+
+
+def test_plural_category_rankings_match_full_dataset_aggregates(superstore):
+    categories = execute_plan(
+        superstore,
+        plan_query("What are the top two product categories by total quantity?"),
+    )
+    sub_categories = execute_plan(
+        superstore,
+        plan_query("What are the top four sub-categories by total sales?"),
+    )
+
+    expected_categories = superstore.groupby("Category")["Quantity"].sum().nlargest(2)
+    expected_sub_categories = superstore.groupby("Sub-Category")["Sales"].sum().nlargest(4)
+    assert [record["Category"] for record in categories.records] == expected_categories.index.tolist()
+    assert [record["Quantity"] for record in categories.records] == expected_categories.tolist()
+    assert [record["Sub-Category"] for record in sub_categories.records] == expected_sub_categories.index.tolist()
+    assert [record["Sales"] for record in sub_categories.records] == pytest.approx(expected_sub_categories.tolist())

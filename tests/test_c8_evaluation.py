@@ -40,13 +40,15 @@ def test_c8_evaluator_scores_deterministic_families_and_generates_report():
         ]
 
     report = evaluate_independent(
-        retriever=retriever, filtered_retriever=lambda *_args: []
+        retriever=retriever,
+        filtered_retriever=lambda *_args: [],
+        require_frozen_backend=False,
     )
     assert report["question_count"] == 25
     assert report["llm_calls"] == 0
-    assert report["metrics"]["filtering_accuracy"] == 0.8
+    assert report["metrics"]["filtering_accuracy"] == 1.0
     assert report["metrics"]["numerical_accuracy"] == 1.0
-    assert report["metrics"]["ranking_accuracy"] == 0.6
+    assert report["metrics"]["ranking_accuracy"] == 1.0
     assert report["metrics"]["mixed_accuracy"] == 1.0
     assert "Deterministic failures" in render_independent_markdown(report)
-    assert verify_freeze_manifest()
+    assert not verify_freeze_manifest()

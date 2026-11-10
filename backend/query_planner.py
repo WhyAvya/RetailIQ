@@ -32,10 +32,15 @@ GROUP_FIELDS = {
     "region": "Region",
     "state": "State",
     "category": "Category",
+    "categories": "Category",
     "product category": "Category",
+    "product categories": "Category",
     "sub-category": "Sub-Category",
+    "sub-categories": "Sub-Category",
     "subcategory": "Sub-Category",
+    "subcategories": "Sub-Category",
     "product sub-category": "Sub-Category",
+    "product sub-categories": "Sub-Category",
     "year": "order_year",
     "order year": "order_year",
     "customer": "Customer ID",
@@ -133,6 +138,23 @@ def _find_dynamic_value(question: str, values: Sequence[str]) -> str | None:
         reverse=True,
     )
     return matches[0] if matches else None
+
+
+def _occurs_only_within(question: str, shorter: str, longer: str) -> bool:
+    """Return true when every shorter location match is part of the longer match."""
+    normalized = question.casefold()
+    shorter_spans = [
+        match.span()
+        for match in re.finditer(rf"\b{re.escape(shorter.casefold())}\b", normalized)
+    ]
+    longer_spans = [
+        match.span()
+        for match in re.finditer(rf"\b{re.escape(longer.casefold())}\b", normalized)
+    ]
+    return bool(shorter_spans and longer_spans) and all(
+        any(long_start <= start and end <= long_end for long_start, long_end in longer_spans)
+        for start, end in shorter_spans
+    )
 
 
 def _date_range(question: str) -> tuple[date | None, date | None, list[str]]:
@@ -299,7 +321,12 @@ def plan_query(
         re.search(r"\b(?:distinct |unique )?orders?\b|\border value\b|\bfor each order\b", lower)
     ) and not re.search(r"\border (?:date|year)\b", lower) and not secondary_customer_order_count
     explicit_row = bool(re.search(r"\b(rows?|records?|line items?)\b", lower)) and not explicit_order and not repeated_customer_semantic
-    explicit_product = bool(re.search(r"\bproducts?\b(?!\s+(?:category|sub-category|subcategory))", lower)) and not explicit_row
+    explicit_product = bool(
+        re.search(
+            r"\bproducts?\b(?!\s+(?:categor(?:y|ies)|sub-categor(?:y|ies)|subcategor(?:y|ies)))",
+            lower,
+        )
+    ) and not explicit_row
     explicit_customer = bool(
         re.search(
             r"\b(?:distinct|unique)\s+customers?\b|\b(?:how many|count of)\s+customers?\b"
@@ -332,8 +359,11 @@ def plan_query(
         sub_category = None
     state = _find_dynamic_value(text, dimension_values.get("state", ()))
     city = _find_dynamic_value(text, dimension_values.get("city", ()))
-    if state and city and state.casefold() in city.casefold() and len(city) > len(state):
-        state = None
+    if state and city:
+        if len(state) > len(city) and _occurs_only_within(text, city, state):
+            city = None
+        elif len(city) > len(state) and _occurs_only_within(text, state, city):
+            state = None
     segment = _find_value(text, SEGMENTS)
     ship_mode = _find_value(text, SHIP_MODES)
     customer_name = _find_dynamic_value(text, dimension_values.get("customer_name", ()))
@@ -426,9 +456,12 @@ def plan_query(
         else:
             ranking_metric = mentioned_metric
     ranking_group_by = None
+    ranking_group_terms = "|".join(
+        re.escape(phrase) for phrase in sorted(GROUP_FIELDS, key=len, reverse=True)
+    )
     ranking_group_match = re.search(
-        r"\bwhich\s+(state|region|category|product category|sub-category|subcategory|product sub-category|customer|order)s?\b.*\b(?:most|highest|largest|lowest|least)\b"
-        r"|\btop\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(state|region|category|product category|sub-category|subcategory|product sub-category|customer|order)s?\b",
+        rf"\bwhich\s+({ranking_group_terms})s?\b.*\b(?:most|highest|largest|lowest|least)\b"
+        rf"|\btop\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+({ranking_group_terms})s?\b",
         lower,
     )
     if ranking_group_match:

@@ -30,6 +30,8 @@ DEVELOPMENT_REPORT_PATH = REPORT_ROOT / "c8_development_regression.json"
 DEVELOPMENT_MARKDOWN_PATH = REPORT_ROOT / "c8_development_regression.md"
 INDEPENDENT_REPORT_PATH = REPORT_ROOT / "c8_independent_evaluation.json"
 INDEPENDENT_MARKDOWN_PATH = REPORT_ROOT / "c8_independent_evaluation.md"
+POST_FIX_REPORT_PATH = REPORT_ROOT / "c8_post_fix_evaluation.json"
+POST_FIX_MARKDOWN_PATH = REPORT_ROOT / "c8_post_fix_evaluation.md"
 FREEZE_MANIFEST_PATH = REPORT_ROOT / "c8_freeze_manifest.json"
 HISTORICAL_C6_PATHS = (
     ROOT / "evaluation" / "reports" / "hybrid_c6_held_out.json",
@@ -237,8 +239,10 @@ def evaluate_independent(
     benchmark_path: Path = BENCHMARK_PATH,
     retriever: Retriever = retrieve_semantic_matches,
     filtered_retriever: FilteredRetriever = retrieve_metadata_filtered_matches,
+    require_frozen_backend: bool = True,
 ) -> dict[str, Any]:
-    if not verify_freeze_manifest():
+    freeze_verified = verify_freeze_manifest()
+    if require_frozen_backend and not freeze_verified:
         raise RuntimeError("The frozen backend or historical C6 artifacts changed after freeze.")
     benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
     frame = load_metadata_source()
@@ -350,6 +354,7 @@ def evaluate_independent(
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "benchmark_sha256": _sha256(benchmark_path),
         "freeze_manifest_sha256": _sha256(FREEZE_MANIFEST_PATH),
+        "original_freeze_verified": freeze_verified,
         "question_count": len(results), "llm_calls": 0,
         "metrics": {
             "filtering_accuracy": accuracy("filtering"),
@@ -365,10 +370,15 @@ def evaluate_independent(
 def render_independent_markdown(report: dict[str, Any]) -> str:
     metrics, semantic = report["metrics"], report["metrics"]["semantic_retrieval"]
     failures = [item["id"] for item in report["results"] if item["type"] != "semantic" and not item.get("correct")]
+    freeze_note = (
+        "Original backend freeze verified before evaluation."
+        if report.get("original_freeze_verified", True)
+        else "Original freeze manifest was preserved; its backend hash differs because this is the authorized post-fix evaluation."
+    )
     return "\n".join(
         [
             "# RetailIQ C8 Independent Evaluation", "",
-            f"Questions: {report['question_count']}. LLM calls: {report['llm_calls']}. Backend freeze verified before evaluation.", "",
+            f"Questions: {report['question_count']}. LLM calls: {report['llm_calls']}. {freeze_note}", "",
             "| Metric | Result |", "|---|---:|",
             f"| Filtering accuracy | {metrics['filtering_accuracy']:.4f} |",
             f"| Numerical accuracy | {metrics['numerical_accuracy']:.4f} |",
@@ -393,7 +403,9 @@ def save_report(report: dict[str, Any], json_path: Path, markdown_path: Path, ma
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=("freeze", "generate", "development", "independent"))
+    parser.add_argument(
+        "stage", choices=("freeze", "generate", "development", "independent", "post_fix")
+    )
     args = parser.parse_args()
     if args.stage == "freeze":
         write_freeze_manifest()
@@ -408,8 +420,28 @@ def main() -> None:
         report["evaluation_id"] = "retailiq-c8-development-regression-v1"
         save_report(report, DEVELOPMENT_REPORT_PATH, DEVELOPMENT_MARKDOWN_PATH, render_development_markdown(report).replace("C5 Development", "C8 Development Regression"))
         return
-    report = evaluate_independent()
-    save_report(report, INDEPENDENT_REPORT_PATH, INDEPENDENT_MARKDOWN_PATH, render_independent_markdown(report))
+    if args.stage == "independent":
+        report = evaluate_independent()
+        save_report(report, INDEPENDENT_REPORT_PATH, INDEPENDENT_MARKDOWN_PATH, render_independent_markdown(report))
+        return
+    report = evaluate_independent(require_frozen_backend=False)
+    original = json.loads(INDEPENDENT_REPORT_PATH.read_text(encoding="utf-8"))
+    report["evaluation_id"] = "retailiq-c8-post-fix-evaluation-v1"
+    report["comparison"] = {
+        "original_report": "evaluation/reports/c8_independent_evaluation.json",
+        "original_report_sha256": _sha256(INDEPENDENT_REPORT_PATH),
+        "before": original["metrics"],
+        "after": report["metrics"],
+        "note": "The original freeze is expected not to verify after the targeted planner fix; the manifest itself is unchanged.",
+    }
+    save_report(
+        report,
+        POST_FIX_REPORT_PATH,
+        POST_FIX_MARKDOWN_PATH,
+        render_independent_markdown(report).replace(
+            "C8 Independent Evaluation", "C8 Post-Fix Evaluation"
+        ),
+    )
 
 
 if __name__ == "__main__":
