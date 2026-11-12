@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "test": "node --test src/api/retailiqApi.test.js src/components/chatState.test.js src/components/evaluationView.test.js",
+    "test": "node --test src/api/retailiqApi.test.js src/components/chatState.test.js src/components/evaluationView.test.js src/components/indexingStatus.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

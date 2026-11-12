@@ -3,7 +3,7 @@ from datetime import date
 from typing import Any, Literal
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from starlette.concurrency import run_in_threadpool
@@ -25,6 +25,7 @@ from backend.dataset_selection import (
     calculate_selected_sales_by_region,
 )
 from backend.file_storage import FileStorageError, store_original_csv
+from backend.indexing_jobs import is_indexing_active, run_indexing_job
 from backend.llm_service import (
     LLMAuthenticationError,
     LLMConfigurationError,
@@ -53,6 +54,7 @@ from backend.upload_metadata import (
     get_upload_metadata,
     list_upload_metadata,
     persist_upload_or_cleanup,
+    transition_upload_status,
 )
 from evaluation.report_service import (
     EvaluationReportUnavailableError,
@@ -188,7 +190,10 @@ def health_check():
 
 
 @app.post("/api/upload")
-async def upload_csv(file: UploadFile | None = File(default=None)):
+async def upload_csv(
+    background_tasks: BackgroundTasks,
+    file: UploadFile | None = File(default=None),
+):
     if file is None or not file.filename:
         raise HTTPException(status_code=400, detail="No CSV file was provided.")
 
@@ -206,6 +211,7 @@ async def upload_csv(file: UploadFile | None = File(default=None)):
             persist_upload_or_cleanup,
             stored_upload,
             file_size,
+            processing_status="pending",
         )
     except CSVValidationError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -219,6 +225,7 @@ async def upload_csv(file: UploadFile | None = File(default=None)):
     finally:
         await file.close()
 
+    background_tasks.add_task(run_indexing_job, stored_upload.upload_id)
     return {
         "filename": stored_upload.original_filename,
         "upload_id": str(stored_upload.upload_id),
@@ -229,6 +236,58 @@ async def upload_csv(file: UploadFile | None = File(default=None)):
         "column_names": [str(column) for column in dataframe.columns],
         "profile": profile,
         "preprocessing": preprocessing,
+    }
+
+
+def _index_status_payload(metadata: dict[str, Any], active: bool) -> dict[str, Any]:
+    state = str(metadata["status"])
+    return {
+        "upload_id": metadata["upload_id"],
+        "state": state,
+        "ready": state == "ready",
+        "active": active,
+        "retryable": (state == "failed" or state in {"pending", "indexing"}) and not active,
+    }
+
+
+@app.get("/api/uploads/{upload_id}/index-status")
+async def upload_index_status(upload_id: UUID):
+    try:
+        metadata = await run_in_threadpool(get_upload_metadata, upload_id)
+    except DatabaseOperationError as exc:
+        raise HTTPException(status_code=503, detail="Indexing status is temporarily unavailable.") from exc
+    if metadata is None:
+        raise HTTPException(status_code=404, detail="The requested upload was not found.")
+    return _index_status_payload(metadata, is_indexing_active(upload_id))
+
+
+@app.post("/api/uploads/{upload_id}/index", status_code=status.HTTP_202_ACCEPTED)
+async def retry_upload_indexing(upload_id: UUID, background_tasks: BackgroundTasks):
+    try:
+        metadata = await run_in_threadpool(get_upload_metadata, upload_id)
+        if metadata is None:
+            raise HTTPException(status_code=404, detail="The requested upload was not found.")
+        if metadata["status"] == "ready":
+            return _index_status_payload(metadata, False)
+        if is_indexing_active(upload_id):
+            return _index_status_payload(metadata, True)
+        queued = await run_in_threadpool(
+            transition_upload_status,
+            upload_id,
+            "pending",
+            ("pending", "indexing", "failed", "processed"),
+        )
+    except DatabaseOperationError as exc:
+        raise HTTPException(status_code=503, detail="Indexing could not be queued.") from exc
+    if not queued:
+        raise HTTPException(status_code=409, detail="The dataset indexing state changed; refresh and try again.")
+    background_tasks.add_task(run_indexing_job, upload_id)
+    return {
+        "upload_id": str(upload_id),
+        "state": "pending",
+        "ready": False,
+        "active": False,
+        "retryable": False,
     }
 
 

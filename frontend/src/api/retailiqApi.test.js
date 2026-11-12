@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { ApiError, askRetailIQ, fetchEvaluationReport, friendlyRagError } from './retailiqApi.js'
+import {
+  ApiError,
+  askRetailIQ,
+  fetchEvaluationReport,
+  fetchIndexStatus,
+  friendlyRagError,
+  retryIndexing,
+} from './retailiqApi.js'
 
 test('askRetailIQ sends the selected upload id and question', async () => {
   const originalFetch = globalThis.fetch
@@ -67,6 +74,28 @@ test('fetchEvaluationReport loads saved actual and pending evaluation states', a
     assert.equal(result.retrieval.result_kind, 'actual_chromadb')
     assert.equal(result.answer_quality.live_llm_evaluation.status, 'pending')
     assert.equal(result.answer_quality.live_llm_evaluation.faithfulness, null)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('index status and retry use the upload-scoped endpoints', async () => {
+  const originalFetch = globalThis.fetch
+  const requests = []
+  globalThis.fetch = async (url, options = {}) => {
+    requests.push({ url, method: options.method || 'GET' })
+    return new Response(JSON.stringify({ state: 'pending', ready: false }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+  try {
+    await fetchIndexStatus('upload-123')
+    await retryIndexing('upload-123')
+    assert.match(requests[0].url, /\/api\/uploads\/upload-123\/index-status$/)
+    assert.equal(requests[0].method, 'GET')
+    assert.match(requests[1].url, /\/api\/uploads\/upload-123\/index$/)
+    assert.equal(requests[1].method, 'POST')
   } finally {
     globalThis.fetch = originalFetch
   }

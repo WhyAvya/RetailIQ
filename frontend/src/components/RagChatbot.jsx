@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import { askRetailIQ, fetchUploads, friendlyRagError } from '../api/retailiqApi.js'
+import { askRetailIQ, fetchUploads, friendlyRagError, retryIndexing } from '../api/retailiqApi.js'
 import { chatReducer, initialChatState } from './chatState.js'
+import { indexingStatusText, isRagReady } from './indexingStatus.js'
 
 const EXAMPLE_QUESTIONS = [
   'Which technology accessory orders had strong profits?',
@@ -76,20 +77,32 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
   const [uploads, setUploads] = useState([])
   const [uploadsError, setUploadsError] = useState('')
   const [question, setQuestion] = useState('')
+  const [uploadsRefresh, setUploadsRefresh] = useState(0)
   const [state, dispatch] = useReducer(chatReducer, initialChatState)
   const requestController = useRef(null)
   const endRef = useRef(null)
   const selectedId = selectedDataset?.uploadId || ''
+  const selectedUpload = uploads.find((item) => item.upload_id === selectedId)
+  const ragReady = isRagReady(selectedUpload)
 
   useEffect(() => {
     const controller = new AbortController()
+    let refreshTimer
     fetchUploads({ signal: controller.signal })
-      .then(setUploads)
+      .then((items) => {
+        setUploads(items)
+        if (items.some((item) => item.status === 'pending' || item.status === 'indexing')) {
+          refreshTimer = setTimeout(() => setUploadsRefresh((value) => value + 1), 2000)
+        }
+      })
       .catch((error) => {
         if (error.name !== 'AbortError') setUploadsError(error.message)
       })
-    return () => controller.abort()
-  }, [])
+    return () => {
+      controller.abort()
+      clearTimeout(refreshTimer)
+    }
+  }, [uploadsRefresh])
 
   useEffect(() => {
     requestController.current?.abort()
@@ -110,7 +123,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
 
   const submitQuestion = async () => {
     const trimmed = question.trim()
-    if (!trimmed || !selectedId || state.pending || requestController.current) return
+    if (!trimmed || !selectedId || !ragReady || state.pending || requestController.current) return
 
     const controller = new AbortController()
     requestController.current = controller
@@ -143,6 +156,19 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
     }
   }
 
+  const retrySelectedIndexing = async () => {
+    if (!selectedId) return
+    try {
+      await retryIndexing(selectedId)
+      setUploads((items) => items.map((item) => (
+        item.upload_id === selectedId ? { ...item, status: 'pending' } : item
+      )))
+      setUploadsRefresh((value) => value + 1)
+    } catch (error) {
+      setUploadsError(error.message)
+    }
+  }
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
@@ -171,10 +197,22 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
         <label className="mt-5 block text-sm font-medium text-slate-700" htmlFor="chat-dataset">Dataset</label>
         <select id="chat-dataset" value={selectedId} onChange={chooseDataset} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
           <option value="">Select an uploaded dataset</option>
-          {uploads.map((upload) => <option key={upload.upload_id} value={upload.upload_id}>{upload.filename}</option>)}
+          {uploads.map((upload) => (
+            <option key={upload.upload_id} value={upload.upload_id} disabled={!isRagReady(upload)}>
+              {upload.filename} ({upload.status})
+            </option>
+          ))}
         </select>
         {uploadsError && <p role="alert" className="mt-2 text-sm text-red-700">{uploadsError}</p>}
         {selectedDataset && <p className="mt-2 text-xs text-slate-500">Selected: {selectedDataset.filename}</p>}
+        {selectedId && selectedUpload && !ragReady && (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <span>{indexingStatusText(selectedUpload.status)}</span>
+            {selectedUpload.status === 'failed' && (
+              <button type="button" onClick={retrySelectedIndexing} className="font-semibold underline">Retry</button>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex min-h-[34rem] flex-col">
@@ -186,7 +224,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
               <p className="mt-2 text-sm leading-6 text-slate-500">Each question is processed independently. Select a dataset, then try one of these examples.</p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 {EXAMPLE_QUESTIONS.map((example) => (
-                  <button key={example} type="button" disabled={!selectedId} onClick={() => setQuestion(example)} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-50">
+                  <button key={example} type="button" disabled={!selectedId || !ragReady} onClick={() => setQuestion(example)} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 hover:border-emerald-300 disabled:cursor-not-allowed disabled:opacity-50">
                     {example}
                   </button>
                 ))}
@@ -204,10 +242,10 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
         </div>
 
         <div className="border-t border-slate-200 p-4 sm:p-5">
-          {!selectedId && <p className="mb-2 text-xs text-amber-700">Select a dataset before asking a question.</p>}
+          {!selectedId && <p className="mb-2 text-xs text-amber-700">Select a ready dataset before asking a question.</p>}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={handleKeyDown} disabled={!selectedId || state.pending} rows={2} placeholder="Ask about products, profits, revenue, orders, regions..." className="min-h-14 flex-1 resize-y rounded-xl border border-slate-300 px-3.5 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100" />
-            <button type="button" onClick={submitQuestion} disabled={!selectedId || !question.trim() || state.pending} className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300">
+            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={handleKeyDown} disabled={!selectedId || !ragReady || state.pending} rows={2} placeholder="Ask about products, profits, revenue, orders, regions..." className="min-h-14 flex-1 resize-y rounded-xl border border-slate-300 px-3.5 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100" />
+            <button type="button" onClick={submitQuestion} disabled={!selectedId || !ragReady || !question.trim() || state.pending} className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300">
               {state.pending ? 'Sending...' : 'Send'}
             </button>
           </div>

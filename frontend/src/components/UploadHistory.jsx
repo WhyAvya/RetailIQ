@@ -35,6 +35,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
 
   useEffect(() => {
     const controller = new AbortController()
+    let refreshTimer
 
     async function loadHistory() {
       setIsLoadingHistory(true)
@@ -43,7 +44,11 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
       try {
         const response = await fetch(UPLOADS_URL, { signal: controller.signal })
         const data = await responseData(response, 'Upload history could not be loaded.')
-        setUploads(Array.isArray(data.uploads) ? data.uploads : [])
+        const items = Array.isArray(data.uploads) ? data.uploads : []
+        setUploads(items)
+        if (items.some((item) => item.status === 'pending' || item.status === 'indexing')) {
+          refreshTimer = setTimeout(loadHistory, 2000)
+        }
       } catch (error) {
         if (error.name !== 'AbortError') {
           setHistoryError(error.message || 'Upload history could not be loaded.')
@@ -54,7 +59,10 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
     }
 
     loadHistory()
-    return () => controller.abort()
+    return () => {
+      controller.abort()
+      clearTimeout(refreshTimer)
+    }
   }, [refreshToken])
 
   useEffect(
@@ -156,7 +164,13 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
                         Selected
                       </span>
                     )}
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium capitalize text-emerald-700">
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
+                      upload.status === 'failed'
+                        ? 'bg-red-100 text-red-700'
+                        : upload.status === 'ready' || upload.status === 'processed'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-amber-100 text-amber-700'
+                    }`}>
                       {upload.status}
                     </span>
                   </span>

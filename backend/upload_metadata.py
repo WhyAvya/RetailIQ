@@ -5,7 +5,7 @@ from typing import Any
 from uuid import UUID
 
 import pandas as pd
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -20,6 +20,7 @@ from backend.file_storage import (
 )
 
 SessionFactory = Callable[[], Session]
+INDEXING_STATES = frozenset({"pending", "indexing", "ready", "failed"})
 
 
 class DatabaseOperationError(RuntimeError):
@@ -79,6 +80,7 @@ def persist_upload_or_cleanup(
     stored_upload: StoredUpload,
     file_size: int,
     user_email: str | None = None,
+    processing_status: str = "processed",
     session_factory: SessionFactory | None = None,
 ) -> dict[str, Any]:
     try:
@@ -86,6 +88,7 @@ def persist_upload_or_cleanup(
             stored_upload,
             file_size,
             user_email=user_email,
+            processing_status=processing_status,
             session_factory=session_factory,
         )
     except DatabaseOperationError:
@@ -94,6 +97,36 @@ def persist_upload_or_cleanup(
         except FileStorageError:
             pass
         raise
+
+
+def transition_upload_status(
+    upload_id: UUID,
+    new_status: str,
+    expected_statuses: tuple[str, ...],
+    session_factory: SessionFactory | None = None,
+) -> bool:
+    """Atomically change an upload status only from an explicitly allowed state."""
+    if new_status not in INDEXING_STATES:
+        raise ValueError("The upload indexing status is invalid.")
+    if not expected_statuses:
+        raise ValueError("At least one expected upload status is required.")
+    session = _session(session_factory)
+    try:
+        result = session.execute(
+            update(UploadMetadata)
+            .where(
+                UploadMetadata.upload_id == upload_id,
+                UploadMetadata.processing_status.in_(expected_statuses),
+            )
+            .values(processing_status=new_status)
+        )
+        session.commit()
+        return result.rowcount == 1
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raise DatabaseOperationError("Upload indexing status could not be updated.") from exc
+    finally:
+        session.close()
 
 
 def list_upload_metadata(

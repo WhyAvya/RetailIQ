@@ -134,7 +134,8 @@ function CsvUpload({ onUploadComplete }) {
 
       setMessage(
         `${data.filename} was received successfully (${formatFileSize(data.size)}). ` +
-          `${data.rows.toLocaleString()} rows and ${data.columns.toLocaleString()} columns were found.`,
+          `${data.rows.toLocaleString()} rows and ${data.columns.toLocaleString()} columns were found. ` +
+          'AI indexing will continue in the background.',
       )
       setUploadResult(data)
       onUploadComplete?.(data)

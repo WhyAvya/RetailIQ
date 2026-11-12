@@ -20,6 +20,7 @@ from backend.upload_metadata import (
     list_upload_metadata,
     persist_upload_metadata,
     persist_upload_or_cleanup,
+    transition_upload_status,
 )
 
 
@@ -82,6 +83,39 @@ def test_upload_history_is_ordered_newest_first(session_factory):
 
     assert [item["upload_id"] for item in history] == [str(newer_id), str(older_id)]
     assert all("stored_file_path" not in item for item in history)
+
+
+def test_indexing_status_transition_is_atomic_and_conditional(session_factory, tmp_path):
+    contents = b"product,units\nTea,4\n"
+    stored_upload = store_original_csv(BytesIO(contents), "sales.csv", tmp_path)
+    persist_upload_metadata(
+        stored_upload,
+        len(contents),
+        processing_status="pending",
+        session_factory=session_factory,
+    )
+
+    assert transition_upload_status(
+        stored_upload.upload_id,
+        "indexing",
+        ("pending",),
+        session_factory=session_factory,
+    )
+    assert not transition_upload_status(
+        stored_upload.upload_id,
+        "indexing",
+        ("pending",),
+        session_factory=session_factory,
+    )
+    assert transition_upload_status(
+        stored_upload.upload_id,
+        "ready",
+        ("indexing",),
+        session_factory=session_factory,
+    )
+    assert get_upload_metadata(
+        stored_upload.upload_id, session_factory=session_factory
+    )["status"] == "ready"
 
 
 def test_preview_returns_only_requested_rows(session_factory, tmp_path):

@@ -43,6 +43,17 @@ export function fetchEvaluationReport(options = {}) {
   return requestJson('/api/evaluation/report', options)
 }
 
+export function fetchIndexStatus(uploadId, options = {}) {
+  return requestJson(`/api/uploads/${uploadId}/index-status`, options)
+}
+
+export function retryIndexing(uploadId, options = {}) {
+  return requestJson(`/api/uploads/${uploadId}/index`, {
+    ...options,
+    method: 'POST',
+  })
+}
+
 export function askRetailIQ(uploadId, question, topK = 3, options = {}) {
   return requestJson('/api/rag/ask', {
     ...options,

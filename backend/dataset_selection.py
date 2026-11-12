@@ -83,6 +83,7 @@ def load_selected_dataset(
     except CSVValidationError as exc:
         raise DatasetInvalidError("The selected dataset is not a readable CSV.") from exc
 
+    dataframe.index = pd.RangeIndex(1, len(dataframe) + 1, name="source_row")
     return SelectedDataset(
         upload_id=upload_id,
         original_filename=metadata["filename"],
