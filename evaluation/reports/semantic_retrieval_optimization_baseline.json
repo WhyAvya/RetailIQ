@@ -1,0 +1,378 @@
+{
+  "evaluation_id": "retailiq-c8-semantic-retrieval-optimization-v1",
+  "generated_at_utc": "2026-11-12T17:48:52.028282+00:00",
+  "benchmark_path": "evaluation/retailiq_c8_independent.json",
+  "benchmark_sha256": "6698749b3ea5ab04c5b9f60f1f53020dfafd4b1279c6d5002ab716e8e1ae5f6e",
+  "query_count": 5,
+  "metrics": {
+    "precision_at_3": 0.26666666666666666,
+    "precision_at_5": 0.24,
+    "recall_at_3": 0.006837961044343141,
+    "recall_at_5": 0.010346732974167702,
+    "reciprocal_rank_at_5": 0.26666666666666666
+  },
+  "latency_ms": {
+    "one_time_model_load": 27987.734800000908,
+    "average": 950.3718400002981,
+    "maximum": 2964.5161000007647,
+    "total": 4751.8592000014905
+  },
+  "all_source_rows_valid": true,
+  "questions": [
+    {
+      "id": "C8I2-SEM-001",
+      "question": "Find products whose names mention markers.",
+      "relevant_row_count": 9,
+      "max_recall_at_3": 0.3333333333333333,
+      "max_recall_at_5": 0.5555555555555556,
+      "retrieved_source_rows": [
+        5310,
+        9658,
+        3583,
+        5165,
+        752
+      ],
+      "vector_candidate_relevant_at_30": 3,
+      "source_rows_valid": true,
+      "latency_ms": 2964.5161000007647,
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 5310,
+          "chunk_id": "85bd632a7de731431cc9cc49b89d92087e403894ad7e927099d1d30b9097e764",
+          "similarity_score": 0.3524019122123718,
+          "product_name": "Avery Hi-Liter GlideStik Fluorescent Highlighter, Yellow Ink",
+          "category": "Office Supplies",
+          "sub_category": "Art"
+        },
+        {
+          "rank": 2,
+          "source_row": 9658,
+          "chunk_id": "1d1a0477c3f219e0cc4e1298152fd1e12baaae46eb8e372ba76e5f2dcbdacf00",
+          "similarity_score": 0.3515045642852783,
+          "product_name": "Avery Hi-Liter GlideStik Fluorescent Highlighter, Yellow Ink",
+          "category": "Office Supplies",
+          "sub_category": "Art"
+        },
+        {
+          "rank": 3,
+          "source_row": 3583,
+          "chunk_id": "3553b98ace819c07a32f4b6a6a8f372d1928a5a10091bb066a9cee7626101e47",
+          "similarity_score": 0.35050272941589355,
+          "product_name": "Avery Hi-Liter Comfort Grip Fluorescent Highlighter, Yellow Ink",
+          "category": "Office Supplies",
+          "sub_category": "Art"
+        },
+        {
+          "rank": 4,
+          "source_row": 5165,
+          "chunk_id": "08e4426d84d7f34a07e1e6b032a6e490b6aa7a8523808228b6b59f02d30ec447",
+          "similarity_score": 0.34514230489730835,
+          "product_name": "Avery Hi-Liter Comfort Grip Fluorescent Highlighter, Yellow Ink",
+          "category": "Office Supplies",
+          "sub_category": "Art"
+        },
+        {
+          "rank": 5,
+          "source_row": 752,
+          "chunk_id": "0e51be8ce3800ce6ee971353d323e6409085b44ccd80bb1c6e72b03b3899815d",
+          "similarity_score": 0.33301615715026855,
+          "product_name": "Avery Hi-Liter EverBold Pen Style Fluorescent Highlighters, 4/Pack",
+          "category": "Office Supplies",
+          "sub_category": "Art"
+        }
+      ]
+    },
+    {
+      "id": "C8I2-SEM-002",
+      "question": "Which catalog products are speakers?",
+      "relevant_row_count": 65,
+      "max_recall_at_3": 0.046153846153846156,
+      "max_recall_at_5": 0.07692307692307693,
+      "retrieved_source_rows": [
+        7277,
+        8421,
+        9988,
+        9831,
+        3526
+      ],
+      "vector_candidate_relevant_at_30": 3,
+      "source_rows_valid": true,
+      "latency_ms": 497.444100001303,
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 7277,
+          "chunk_id": "476f05fb9c2ca6533aae1b0d10870b31396d5fbd1e3769e513f02cbe5ee07e9b",
+          "similarity_score": 0.32694631814956665,
+          "product_name": "Razer Kraken 7.1 Surround Sound Over Ear USB Gaming Headset",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        },
+        {
+          "rank": 2,
+          "source_row": 8421,
+          "chunk_id": "aa1d0879cc2a64aa2acc829be96d879c3f5b82d04d2df89847aceb3ca11ad807",
+          "similarity_score": 0.32295721769332886,
+          "product_name": "Razer Kraken 7.1 Surround Sound Over Ear USB Gaming Headset",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        },
+        {
+          "rank": 3,
+          "source_row": 9988,
+          "chunk_id": "0cc4cf54310a11b8ec2b84b8df7f0a7ef5a09fbfa53cdd932ecb5395869cd325",
+          "similarity_score": 0.3163045644760132,
+          "product_name": "Logitech G430 Surround Sound Gaming Headset with Dolby 7.1 Technology",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        },
+        {
+          "rank": 4,
+          "source_row": 9831,
+          "chunk_id": "d9d81d3b509d9093ecdc10feec36262e52c2d4a86bcab48ba803d41a2a79e98f",
+          "similarity_score": 0.31502628326416016,
+          "product_name": "Razer Kraken 7.1 Surround Sound Over Ear USB Gaming Headset",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        },
+        {
+          "rank": 5,
+          "source_row": 3526,
+          "chunk_id": "39901ac8b78c329c903d15662d591f1b5ff872274e67b57d07835e9c7fe23b14",
+          "similarity_score": 0.31475067138671875,
+          "product_name": "Razer Tiamat Over Ear 7.1 Surround Sound PC Gaming Headset",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        }
+      ]
+    },
+    {
+      "id": "C8I2-SEM-003",
+      "question": "Find products related to printers.",
+      "relevant_row_count": 114,
+      "max_recall_at_3": 0.02631578947368421,
+      "max_recall_at_5": 0.043859649122807015,
+      "retrieved_source_rows": [
+        437,
+        6676,
+        978,
+        8489,
+        7238
+      ],
+      "vector_candidate_relevant_at_30": 30,
+      "source_rows_valid": true,
+      "latency_ms": 353.31890000088606,
+      "metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.02631578947368421,
+        "recall_at_5": 0.043859649122807015,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 437,
+          "chunk_id": "9a4a7bcf5a7a064613de488a6f3e7a7f76886ccad57ab0159d7462ae01406b1f",
+          "similarity_score": 0.3956228494644165,
+          "product_name": "Canon Color ImageCLASS MF8580Cdw Wireless Laser All-In-One Printer, Copier, Scanner",
+          "category": "Technology",
+          "sub_category": "Machines"
+        },
+        {
+          "rank": 2,
+          "source_row": 6676,
+          "chunk_id": "9ce38d99cff00af65c2e640a760a34e63b04dd719a7aaaac46c1a501d67876f6",
+          "similarity_score": 0.3922995328903198,
+          "product_name": "Ricoh - Ink Collector Unit for GX3000 Series Printers",
+          "category": "Technology",
+          "sub_category": "Machines"
+        },
+        {
+          "rank": 3,
+          "source_row": 978,
+          "chunk_id": "3c627dbb58efe5de62dd2dbe83ef7477a8497fdda949a009ed86c175dcbda6c1",
+          "similarity_score": 0.37281477451324463,
+          "product_name": "Lexmark MX611dhe Monochrome Laser Printer",
+          "category": "Technology",
+          "sub_category": "Machines"
+        },
+        {
+          "rank": 4,
+          "source_row": 8489,
+          "chunk_id": "510061869db6ff825de90ed31107fcb15b7f30ba0e63c947168c7fe9a1e5b1de",
+          "similarity_score": 0.37027907371520996,
+          "product_name": "HP Designjet T520 Inkjet Large Format Printer - 24\" Color",
+          "category": "Technology",
+          "sub_category": "Machines"
+        },
+        {
+          "rank": 5,
+          "source_row": 7238,
+          "chunk_id": "9cb08f82926c1adb3f6cf5dd41f9f3b32886af5459351fd9725e652271fc2520",
+          "similarity_score": 0.3689482808113098,
+          "product_name": "Brother MFC-9340CDW LED All-In-One Printer, Copier Scanner",
+          "category": "Technology",
+          "sub_category": "Machines"
+        }
+      ]
+    },
+    {
+      "id": "C8I2-SEM-004",
+      "question": "Which product names mention lamps?",
+      "relevant_row_count": 127,
+      "max_recall_at_3": 0.023622047244094488,
+      "max_recall_at_5": 0.03937007874015748,
+      "retrieved_source_rows": [
+        1107,
+        1813,
+        8195,
+        9009,
+        9904
+      ],
+      "vector_candidate_relevant_at_30": 9,
+      "source_rows_valid": true,
+      "latency_ms": 393.1053000014799,
+      "metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "precision_at_5": 0.2,
+        "recall_at_3": 0.007874015748031496,
+        "recall_at_5": 0.007874015748031496,
+        "reciprocal_rank_at_5": 0.3333333333333333
+      },
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 1107,
+          "chunk_id": "ea56fdc21e86075f6c6d68e3e859b370f1936f21738d589287d8dfe426b9bd3e",
+          "similarity_score": 0.37477147579193115,
+          "product_name": "GE General Purpose, Extra Long Life, Showcase & Floodlight Incandescent Bulbs",
+          "category": "Furniture",
+          "sub_category": "Furnishings"
+        },
+        {
+          "rank": 2,
+          "source_row": 1813,
+          "chunk_id": "0c9d7f462cde0a56a3c3ecf25b508e9e2f78af5f14182cd3711847f561c486c8",
+          "similarity_score": 0.3740769624710083,
+          "product_name": "Floodlight Indoor Halogen Bulbs, 1 Bulb per Pack, 60 Watts",
+          "category": "Furniture",
+          "sub_category": "Furnishings"
+        },
+        {
+          "rank": 3,
+          "source_row": 8195,
+          "chunk_id": "53df6fdd9fc5beeb3441da73193b86d1b76f86bb20c826c96af8e453be59bf8b",
+          "similarity_score": 0.37396419048309326,
+          "product_name": "Luxo Professional Fluorescent Magnifier Lamp with Clamp-Mount Base",
+          "category": "Furniture",
+          "sub_category": "Furnishings"
+        },
+        {
+          "rank": 4,
+          "source_row": 9009,
+          "chunk_id": "bcf35b94b06945c9884b9bfe68a267c3698a9f4e949eae65b53aa014ea7d2c93",
+          "similarity_score": 0.37359631061553955,
+          "product_name": "GE General Purpose, Extra Long Life, Showcase & Floodlight Incandescent Bulbs",
+          "category": "Furniture",
+          "sub_category": "Furnishings"
+        },
+        {
+          "rank": 5,
+          "source_row": 9904,
+          "chunk_id": "ba9a3b0512cc0c114467d892d57a69f123e62a137ca189290807f9f9a584c055",
+          "similarity_score": 0.3735675811767578,
+          "product_name": "GE General Use Halogen Bulbs, 100 Watts, 1 Bulb per Pack",
+          "category": "Furniture",
+          "sub_category": "Furnishings"
+        }
+      ]
+    },
+    {
+      "id": "C8I2-SEM-005",
+      "question": "Find products whose names include batteries.",
+      "relevant_row_count": 26,
+      "max_recall_at_3": 0.11538461538461539,
+      "max_recall_at_5": 0.19230769230769232,
+      "retrieved_source_rows": [
+        2784,
+        6868,
+        3818,
+        8858,
+        4473
+      ],
+      "vector_candidate_relevant_at_30": 0,
+      "source_rows_valid": true,
+      "latency_ms": 543.4747999970568,
+      "metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "matches": [
+        {
+          "rank": 1,
+          "source_row": 2784,
+          "chunk_id": "cbf98fd6d49f534479b60d365ee6547982ede9cf68a0e884aa91d326098dc228",
+          "similarity_score": 0.32606303691864014,
+          "product_name": "Anker Astro Mini 3000mAh Ultra-Compact Portable Charger",
+          "category": "Technology",
+          "sub_category": "Phones"
+        },
+        {
+          "rank": 2,
+          "source_row": 6868,
+          "chunk_id": "b5c09d80825ca8d8e2ee72601e6faea23f6d3c5d220e56b30ffaf04d654ecb0b",
+          "similarity_score": 0.32128405570983887,
+          "product_name": "Anker Astro Mini 3000mAh Ultra-Compact Portable Charger",
+          "category": "Technology",
+          "sub_category": "Phones"
+        },
+        {
+          "rank": 3,
+          "source_row": 3818,
+          "chunk_id": "e78e64c5ad64c9c6b47cd08889e1be0609ea08ff2ce9302b53849c05eba24ac1",
+          "similarity_score": 0.31660890579223633,
+          "product_name": "Anker Astro Mini 3000mAh Ultra-Compact Portable Charger",
+          "category": "Technology",
+          "sub_category": "Phones"
+        },
+        {
+          "rank": 4,
+          "source_row": 8858,
+          "chunk_id": "7c6dfc385646e4754847c46203741a90d7c2c938c7d4f26caf57ce81c66c6cf4",
+          "similarity_score": 0.31449955701828003,
+          "product_name": "Anker Astro Mini 3000mAh Ultra-Compact Portable Charger",
+          "category": "Technology",
+          "sub_category": "Phones"
+        },
+        {
+          "rank": 5,
+          "source_row": 4473,
+          "chunk_id": "7f0775f229a65f366df701cc18f0c62da1d4989545ee5f4bbc862ac7a0e128a1",
+          "similarity_score": 0.3022652268409729,
+          "product_name": "Logitech G700s Rechargeable Gaming Mouse",
+          "category": "Technology",
+          "sub_category": "Accessories"
+        }
+      ]
+    }
+  ]
+}

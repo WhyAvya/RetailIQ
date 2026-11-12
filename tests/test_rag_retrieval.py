@@ -160,3 +160,80 @@ def test_mixed_dataset_result_is_rejected():
             vector_store=MixedStore(),
             embedding_function=lambda _query: vector(1.0),
         )
+
+
+def test_hybrid_retrieval_promotes_exact_product_name_outside_vector_candidates():
+    class HybridStore:
+        def count(self, upload_id):
+            return 2
+
+        def query(self, upload_id, query_embedding, top_k):
+            return {
+                "ids": [["vector-only"]],
+                "documents": [["- Product Name: General Office Supply"]],
+                "metadatas": [[{"upload_id": str(FIRST_UPLOAD), "row_number": 1}]],
+                "distances": [[0.05]],
+            }
+
+        def get_documents(self, upload_id):
+            return {
+                "ids": ["vector-only", "lexical-match"],
+                "documents": [
+                    "- Product Name: General Office Supply",
+                    "- Product Name: Wireless Speakers",
+                ],
+                "metadatas": [
+                    {"upload_id": str(FIRST_UPLOAD), "row_number": 1},
+                    {"upload_id": str(FIRST_UPLOAD), "row_number": 2},
+                ],
+            }
+
+        def get_embeddings(self, chunk_ids):
+            assert chunk_ids == ["lexical-match"]
+            return {"ids": ["lexical-match"], "embeddings": [vector(0.8, 0.6)]}
+
+    matches = retrieve_semantic_matches(
+        FIRST_UPLOAD,
+        "Which catalog products are speakers?",
+        top_k=2,
+        vector_store=HybridStore(),
+        embedding_function=lambda _query: vector(1.0),
+    )
+
+    assert [match.source_row for match in matches] == [2, 1]
+    assert [match.rank for match in matches] == [1, 2]
+    assert matches[0].similarity_score == pytest.approx(0.8, abs=1e-6)
+
+
+def test_hybrid_lookup_failure_falls_back_to_vector_ranking():
+    class FallbackStore:
+        def count(self, upload_id):
+            return 2
+
+        def query(self, upload_id, query_embedding, top_k):
+            return {
+                "ids": [["first", "second"]],
+                "documents": [["first", "second"]],
+                "metadatas": [[
+                    {"upload_id": str(FIRST_UPLOAD), "row_number": 1},
+                    {"upload_id": str(FIRST_UPLOAD), "row_number": 2},
+                ]],
+                "distances": [[0.1, 0.3]],
+            }
+
+        def get_documents(self, upload_id):
+            raise VectorStoreUnavailableError("simulated lexical failure")
+
+        def get_embeddings(self, chunk_ids):
+            raise AssertionError("embeddings should not be requested")
+
+    matches = retrieve_semantic_matches(
+        FIRST_UPLOAD,
+        "speakers",
+        top_k=2,
+        vector_store=FallbackStore(),
+        embedding_function=lambda _query: vector(1.0),
+    )
+
+    assert [match.source_row for match in matches] == [1, 2]
+    assert [match.similarity_score for match in matches] == pytest.approx([0.9, 0.7])

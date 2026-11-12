@@ -92,6 +92,25 @@ def test_reindex_removes_only_stale_chunks_for_same_dataset(chroma_directory):
     assert store.count(SECOND_UPLOAD) == 1
 
 
+def test_searchable_document_cache_is_invalidated_by_reindex(chroma_directory):
+    store = ChromaVectorStore(chroma_directory)
+    store.index(FIRST_UPLOAD, [embedded_chunk(FIRST_UPLOAD, 1)])
+    initial = store.get_documents(FIRST_UPLOAD)
+    assert initial["documents"] == ["Document 1"]
+
+    replacement = EmbeddedChunk(
+        chunk_id=f"{FIRST_UPLOAD}-replacement",
+        text="Replacement document",
+        metadata={"upload_id": str(FIRST_UPLOAD), "row_number": 2},
+        embedding=[1.0] * EMBEDDING_DIMENSION,
+    )
+    store.index(FIRST_UPLOAD, [replacement])
+
+    refreshed = store.get_documents(FIRST_UPLOAD)
+    assert refreshed["documents"] == ["Replacement document"]
+    assert store.get_embeddings([replacement.chunk_id])["ids"] == [replacement.chunk_id]
+
+
 def test_failed_batched_indexing_restores_previous_dataset(chroma_directory, monkeypatch):
     store = ChromaVectorStore(chroma_directory)
     original = [embedded_chunk(FIRST_UPLOAD, index) for index in range(1, 3)]
