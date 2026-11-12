@@ -1,6 +1,8 @@
 from collections.abc import Callable, Sequence
+from collections import OrderedDict
 from dataclasses import dataclass
 from pathlib import Path
+from threading import Lock
 from typing import Any
 from uuid import UUID
 
@@ -17,6 +19,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CHROMA_DIRECTORY = PROJECT_ROOT / "backend" / "storage" / "chroma"
 COLLECTION_NAME = "retailiq_chunks"
 DEFAULT_INDEX_BATCH_SIZE = 500
+SEARCHABLE_DOCUMENT_CACHE_SIZE = 8
 
 
 class VectorStoreError(RuntimeError):
@@ -104,10 +107,21 @@ def _restore_snapshot(collection: Any, upload_id: str, snapshot: dict[str, Any])
 class ChromaVectorStore:
     """Persistent Chroma collection with dataset-safe, idempotent indexing."""
 
+    _searchable_document_cache: OrderedDict[tuple[str, str], dict[str, Any]] = OrderedDict()
+    _searchable_document_cache_lock = Lock()
+
     def __init__(self, storage_directory: Path | None = None):
         self.storage_directory = storage_directory or DEFAULT_CHROMA_DIRECTORY
         self._client = _persistent_client(self.storage_directory)
         self._collection = _collection(self._client)
+
+    def _searchable_cache_key(self, upload_id: UUID | str) -> tuple[str, str]:
+        return (str(self.storage_directory.resolve()), str(upload_id))
+
+    def _invalidate_searchable_cache(self, upload_id: UUID | str) -> None:
+        key = self._searchable_cache_key(upload_id)
+        with self._searchable_document_cache_lock:
+            self._searchable_document_cache.pop(key, None)
 
     def count(self, upload_id: UUID | str) -> int:
         upload_id_value = str(upload_id)
@@ -129,6 +143,44 @@ class ChromaVectorStore:
             )
         except Exception as exc:
             raise VectorStoreUnavailableError("Stored chunks could not be loaded.") from exc
+
+    def get_documents(self, upload_id: UUID | str) -> dict[str, Any]:
+        """Load searchable text and metadata without materializing all embeddings."""
+        key = self._searchable_cache_key(upload_id)
+        with self._searchable_document_cache_lock:
+            cached = self._searchable_document_cache.get(key)
+            if cached is not None:
+                self._searchable_document_cache.move_to_end(key)
+                return cached
+        try:
+            result = self._collection.get(
+                where={"upload_id": str(upload_id)},
+                include=["documents", "metadatas"],
+            )
+        except Exception as exc:
+            raise VectorStoreUnavailableError(
+                "Stored searchable documents could not be loaded."
+            ) from exc
+        with self._searchable_document_cache_lock:
+            self._searchable_document_cache[key] = result
+            self._searchable_document_cache.move_to_end(key)
+            while len(self._searchable_document_cache) > SEARCHABLE_DOCUMENT_CACHE_SIZE:
+                self._searchable_document_cache.popitem(last=False)
+        return result
+
+    def get_embeddings(self, chunk_ids: Sequence[str]) -> dict[str, Any]:
+        """Load embeddings for a bounded set of already indexed chunks."""
+        if not chunk_ids:
+            return {"ids": [], "embeddings": []}
+        try:
+            return self._collection.get(
+                ids=list(chunk_ids),
+                include=["embeddings"],
+            )
+        except Exception as exc:
+            raise VectorStoreUnavailableError(
+                "Stored candidate embeddings could not be loaded."
+            ) from exc
 
     def query(
         self,
@@ -203,6 +255,8 @@ class ChromaVectorStore:
             raise VectorStoreUnavailableError(
                 "Indexing failed; the previous vector data was restored."
             ) from exc
+
+        self._invalidate_searchable_cache(upload_id_value)
 
         return IndexingResult(
             upload_id=upload_id_value,

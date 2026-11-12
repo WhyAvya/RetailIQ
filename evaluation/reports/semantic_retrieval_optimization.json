@@ -1,0 +1,319 @@
+{
+  "evaluation_id": "retailiq-c8-semantic-retrieval-optimization-comparison-v1",
+  "generated_at_utc": "2026-11-12T17:57:28.591872+00:00",
+  "assessment": "MEANINGFULLY_BETTER",
+  "benchmark": {
+    "path": "evaluation/retailiq_c8_independent.json",
+    "sha256": "6698749b3ea5ab04c5b9f60f1f53020dfafd4b1279c6d5002ab716e8e1ae5f6e",
+    "unchanged": true,
+    "query_count": 5
+  },
+  "diagnosis": {
+    "root_causes": [
+      "Embedding each full row alongside many unrelated attributes likely dilutes the short product-name terms used by C8.",
+      "Vector-only top-5 retrieval misses exact markers, speakers, and batteries terms; widening to 30 still found zero relevant battery rows.",
+      "Frozen relevance is row-level exact substring matching, so repeated products create sets of 9 to 127 rows while top-K remains 3 or 5.",
+      "The labels are narrower than some query wording (for example, 'related to printers') and include substring artifacts such as 'Ideal Clamps' for 'lamp'."
+    ],
+    "label_analysis": [
+      {
+        "id": "C8I2-SEM-001",
+        "relevant_rows": 9,
+        "unique_product_names": 2,
+        "max_recall_at_5": 0.5555555555555556
+      },
+      {
+        "id": "C8I2-SEM-002",
+        "relevant_rows": 65,
+        "unique_product_names": 15,
+        "max_recall_at_5": 0.07692307692307693
+      },
+      {
+        "id": "C8I2-SEM-003",
+        "relevant_rows": 114,
+        "unique_product_names": 43,
+        "max_recall_at_5": 0.043859649122807015
+      },
+      {
+        "id": "C8I2-SEM-004",
+        "relevant_rows": 127,
+        "unique_product_names": 26,
+        "max_recall_at_5": 0.03937007874015748
+      },
+      {
+        "id": "C8I2-SEM-005",
+        "relevant_rows": 26,
+        "unique_product_names": 7,
+        "max_recall_at_5": 0.19230769230769232
+      }
+    ]
+  },
+  "implemented_changes": [
+    "Retrieve up to 30 MiniLM candidates instead of only the requested K.",
+    "Union those candidates with up to 30 lightweight lexical matches over product name, sub-category, and category.",
+    "Rerank the union with 70% lexical field coverage and 30% cosine similarity, then return the existing top-K schema.",
+    "Cache searchable text for up to eight uploads and invalidate it after reindexing."
+  ],
+  "not_implemented": [
+    "Embedding text was not changed: the hybrid reranker delivered the gain without reindexing or index-version migration.",
+    "No heavy cross-encoder, new model, or dependency was added."
+  ],
+  "metrics": {
+    "precision_at_3": {
+      "baseline": 0.26666666666666666,
+      "optimized": 1.0,
+      "delta": 0.7333333333333334
+    },
+    "precision_at_5": {
+      "baseline": 0.24,
+      "optimized": 1.0,
+      "delta": 0.76
+    },
+    "recall_at_3": {
+      "baseline": 0.006837961044343141,
+      "optimized": 0.10896192631791471,
+      "delta": 0.10212396527357157
+    },
+    "recall_at_5": {
+      "baseline": 0.010346732974167702,
+      "optimized": 0.18160321052985787,
+      "delta": 0.17125647755569018
+    },
+    "reciprocal_rank_at_5": {
+      "baseline": 0.26666666666666666,
+      "optimized": 1.0,
+      "delta": 0.7333333333333334
+    }
+  },
+  "latency_ms": {
+    "baseline_average_including_first_query": 950.3718400002981,
+    "optimized_average_including_cache_fill": 920.6957399997918,
+    "baseline_warm_average_excluding_first_query": 446.83577500018146,
+    "optimized_warm_average_excluding_first_query": 325.0946500002101,
+    "baseline_maximum": 2964.5161000007647,
+    "optimized_maximum": 3303.100099998119,
+    "note": "One-time MiniLM model loading is reported separately in raw runs and excluded from query latency. The optimized first query also fills the bounded searchable-document cache."
+  },
+  "indexing": {
+    "reindex_required": false,
+    "measured_additional_indexing_overhead_ms": 0.0,
+    "index_version_change": null
+  },
+  "citation_source_rows": {
+    "all_valid": true,
+    "validation": "Every returned row was unique, belonged to the canonical upload, and matched metadata.row_number."
+  },
+  "per_query": [
+    {
+      "id": "C8I2-SEM-001",
+      "question": "Find products whose names mention markers.",
+      "baseline_rows": [
+        5310,
+        9658,
+        3583,
+        5165,
+        752
+      ],
+      "optimized_rows": [
+        1892,
+        5325,
+        2897,
+        3616,
+        6120
+      ],
+      "baseline_metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "optimized_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.3333333333333333,
+        "recall_at_5": 0.5555555555555556,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "deltas": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.3333333333333333,
+        "recall_at_5": 0.5555555555555556,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "regressed": false,
+      "source_rows_valid": true
+    },
+    {
+      "id": "C8I2-SEM-002",
+      "question": "Which catalog products are speakers?",
+      "baseline_rows": [
+        7277,
+        8421,
+        9988,
+        9831,
+        3526
+      ],
+      "optimized_rows": [
+        5517,
+        5426,
+        4332,
+        87,
+        2047
+      ],
+      "baseline_metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "optimized_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.046153846153846156,
+        "recall_at_5": 0.07692307692307693,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "deltas": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.046153846153846156,
+        "recall_at_5": 0.07692307692307693,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "regressed": false,
+      "source_rows_valid": true
+    },
+    {
+      "id": "C8I2-SEM-003",
+      "question": "Find products related to printers.",
+      "baseline_rows": [
+        437,
+        6676,
+        978,
+        8489,
+        7238
+      ],
+      "optimized_rows": [
+        437,
+        978,
+        166,
+        1455,
+        2603
+      ],
+      "baseline_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.02631578947368421,
+        "recall_at_5": 0.043859649122807015,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "optimized_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.02631578947368421,
+        "recall_at_5": 0.043859649122807015,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "deltas": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "regressed": false,
+      "source_rows_valid": true
+    },
+    {
+      "id": "C8I2-SEM-004",
+      "question": "Which product names mention lamps?",
+      "baseline_rows": [
+        1107,
+        1813,
+        8195,
+        9009,
+        9904
+      ],
+      "optimized_rows": [
+        639,
+        239,
+        949,
+        305,
+        989
+      ],
+      "baseline_metrics": {
+        "precision_at_3": 0.3333333333333333,
+        "precision_at_5": 0.2,
+        "recall_at_3": 0.007874015748031496,
+        "recall_at_5": 0.007874015748031496,
+        "reciprocal_rank_at_5": 0.3333333333333333
+      },
+      "optimized_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.023622047244094488,
+        "recall_at_5": 0.03937007874015748,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "deltas": {
+        "precision_at_3": 0.6666666666666667,
+        "precision_at_5": 0.8,
+        "recall_at_3": 0.015748031496062992,
+        "recall_at_5": 0.031496062992125984,
+        "reciprocal_rank_at_5": 0.6666666666666667
+      },
+      "regressed": false,
+      "source_rows_valid": true
+    },
+    {
+      "id": "C8I2-SEM-005",
+      "question": "Find products whose names include batteries.",
+      "baseline_rows": [
+        2784,
+        6868,
+        3818,
+        8858,
+        4473
+      ],
+      "optimized_rows": [
+        9717,
+        4434,
+        6186,
+        7599,
+        9507
+      ],
+      "baseline_metrics": {
+        "precision_at_3": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_3": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank_at_5": 0.0
+      },
+      "optimized_metrics": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.11538461538461539,
+        "recall_at_5": 0.19230769230769232,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "deltas": {
+        "precision_at_3": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_3": 0.11538461538461539,
+        "recall_at_5": 0.19230769230769232,
+        "reciprocal_rank_at_5": 1.0
+      },
+      "regressed": false,
+      "source_rows_valid": true
+    }
+  ],
+  "remaining_limitations": [
+    "Recall@5 remains bounded by five returned rows and large row-level relevance sets; it cannot reach 1.0 for these labels.",
+    "Lexical matching favors explicit catalog terms and does not replace semantic understanding for paraphrases.",
+    "The first query for an upload pays a cache-fill cost; subsequent measured queries are near baseline latency.",
+    "The frozen five-query semantic set is small and lexically oriented, so broader production relevance still needs monitoring."
+  ]
+}
