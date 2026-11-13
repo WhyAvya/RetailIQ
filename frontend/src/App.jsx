@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchCurrencyMetadata } from './api/retailiqApi.js'
+import { clearSessionData, fetchCurrencyMetadata } from './api/retailiqApi.js'
 import AnalyticsDashboard from './components/AnalyticsDashboard.jsx'
 import CsvUpload from './components/CsvUpload.jsx'
 import EvaluationDashboard from './components/EvaluationDashboard.jsx'
@@ -60,12 +60,20 @@ function App() {
     }))
   }
 
+  const clearData = async () => {
+    if (!window.confirm('Clear this session\'s uploaded CSV and search index?')) return
+    await clearSessionData()
+    setSelectedDataset(null)
+    setCurrencyByDataset({})
+    setHistoryRefresh((value) => value + 1)
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F8F3] text-[#1F2937]">
       <header className="motion-header-enter sticky top-0 z-30 border-b border-emerald-950/10 bg-white/95 shadow-[0_1px_12px_rgba(6,78,59,0.06)] backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <BrandLogo />
-          <nav aria-label="Primary navigation" className="flex w-full rounded-xl border border-emerald-950/10 bg-[#F5F8F3] p-1 text-xs font-semibold sm:w-auto sm:text-sm">
+          <div className="flex w-full items-center gap-2 sm:w-auto"><nav aria-label="Primary navigation" className="flex flex-1 rounded-xl border border-emerald-950/10 bg-[#F5F8F3] p-1 text-xs font-semibold sm:flex-none sm:text-sm">
             {[
               ['workspace', 'Workspace'],
               ['chatbot', 'Ask AI'],
@@ -75,7 +83,7 @@ function App() {
                 {label}
               </button>
             ))}
-          </nav>
+          </nav><button type="button" onClick={clearData} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-50">Clear my data</button></div>
         </div>
       </header>
 
@@ -106,29 +114,29 @@ function App() {
             <section className="motion-copy-enter max-w-xl">
               <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Retail analytics + grounded AI
+                CSV analytics + grounded AI
               </p>
               <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
-                Turn retail data into clearer decisions.
+                Understand any tabular dataset faster.
               </h1>
               <p className="mt-5 max-w-lg text-base leading-7 text-slate-600 sm:text-lg">
-                Upload a retail CSV to explore exact KPIs, interactive charts, and grounded
+                Upload a CSV to explore exact summaries, relevant charts, and grounded
                 natural-language answers with source-row citations.
               </p>
               <div className="mt-8 grid max-w-md grid-cols-2 gap-3 text-sm text-slate-600">
                 <div className="rounded-xl border border-slate-200 bg-white/70 p-3.5">
                   <p className="font-semibold text-slate-800">CSV format</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">Simple tabular retail data</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">Tabular data with a header row</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 bg-white/70 p-3.5">
-                  <p className="font-semibold text-slate-800">Original retained</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">Source CSV stays unchanged</p>
+                  <p className="font-semibold text-slate-800">Temporary session</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">Inactive data expires after 30 minutes</p>
                 </div>
               </div>
             </section>
 
             <Reveal revealKey="workspace-upload" delay={70} className="min-w-0">
-              <CsvUpload onUploadComplete={() => setHistoryRefresh((value) => value + 1)} />
+              <CsvUpload onUploadComplete={(data) => { setSelectedDataset({ uploadId: data.upload_id, filename: data.filename, status: data.status }); setHistoryRefresh((value) => value + 1) }} />
             </Reveal>
           </div>
 

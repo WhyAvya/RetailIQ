@@ -30,3 +30,12 @@ class UploadMetadata(Base):
         default="uploaded",
         server_default="uploaded",
     )
+
+
+class AnonymousSession(Base):
+    __tablename__ = "anonymous_sessions"
+
+    session_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    csrf_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)

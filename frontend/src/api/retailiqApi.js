@@ -1,4 +1,5 @@
 const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8000'
+let csrfToken = ''
 
 export class ApiError extends Error {
   constructor(message, status = 0) {
@@ -15,7 +16,27 @@ async function requestJson(path, options = {}) {
     : timeoutSignal
 
   try {
-    const response = await fetch(`${API_BASE_URL}${path}`, { ...options, signal })
+    const cookieCsrfToken = (typeof document === 'undefined' ? '' : document.cookie)
+      .split('; ')
+      .find((item) => item.startsWith('retailiq_csrf='))
+      ?.split('=')[1]
+    const headers = new Headers(options.headers || {})
+    const unsafe = !['GET', 'HEAD'].includes((options.method || 'GET').toUpperCase())
+    if (unsafe && !csrfToken && !cookieCsrfToken && typeof document !== 'undefined') {
+      const bootstrap = await fetch(`${API_BASE_URL}/api/session`, { credentials: 'include' })
+      const session = await bootstrap.json().catch(() => ({}))
+      if (!bootstrap.ok || !session.csrf_token) throw new ApiError('A secure session could not be started.', bootstrap.status)
+      csrfToken = session.csrf_token
+    }
+    if (unsafe && (csrfToken || cookieCsrfToken)) {
+      headers.set('X-CSRF-Token', csrfToken || decodeURIComponent(cookieCsrfToken))
+    }
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+      credentials: 'include',
+      signal,
+    })
     const data = await response.json().catch(() => ({}))
     if (!response.ok) {
       throw new ApiError(
@@ -45,6 +66,28 @@ export function fetchEvaluationReport(options = {}) {
 
 export function fetchCurrencyMetadata(uploadId, options = {}) {
   return requestJson(`/api/analytics/${uploadId}/currency`, options)
+}
+
+export function uploadCsv(file, options = {}) {
+  const body = new FormData()
+  body.append('file', file)
+  return requestJson('/api/upload', { ...options, method: 'POST', body })
+}
+
+export function fetchDatasetPreview(uploadId, options = {}) {
+  return requestJson(`/api/uploads/${uploadId}/preview`, options)
+}
+
+export function fetchDashboard(uploadId, query = '', options = {}) {
+  return requestJson(`/api/analytics/${uploadId}/dashboard${query ? `?${query}` : ''}`, options)
+}
+
+export function fetchFilterOptions(uploadId, options = {}) {
+  return requestJson(`/api/analytics/${uploadId}/filter-options`, options)
+}
+
+export function clearSessionData(options = {}) {
+  return requestJson('/api/session', { ...options, method: 'DELETE' }).finally(() => { csrfToken = '' })
 }
 
 export function fetchIndexStatus(uploadId, options = {}) {

@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react'
 import DatasetReport from './DatasetReport.jsx'
 import BrandLogo from './BrandLogo.jsx'
-
-const UPLOAD_URL = 'http://localhost:8000/api/upload'
+import { uploadCsv } from '../api/retailiqApi.js'
 
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 bytes'
@@ -110,28 +109,13 @@ function CsvUpload({ onUploadComplete }) {
   const handleUpload = async () => {
     if (!selectedFile || isUploading) return
 
-    const formData = new FormData()
-    formData.append('file', selectedFile)
-
     setIsUploading(true)
     setError('')
     setMessage('')
     setUploadResult(null)
 
     try {
-      const response = await fetch(UPLOAD_URL, {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await response.json().catch(() => ({}))
-
-      if (!response.ok) {
-        const detail =
-          typeof data.detail === 'string'
-            ? data.detail
-            : 'The server could not process this file.'
-        throw new Error(detail)
-      }
+      const data = await uploadCsv(selectedFile)
 
       setMessage(
         `${data.filename} was received successfully (${formatFileSize(data.size)}). ` +
@@ -164,10 +148,10 @@ function CsvUpload({ onUploadComplete }) {
           Dataset upload
         </p>
         <h2 id="upload-heading" className="text-xl font-semibold text-slate-900">
-          Add your retail data
+          Add your CSV data
         </h2>
         <p className="mt-1.5 text-sm leading-6 text-slate-500">
-          Select one CSV file to prepare it for analysis.
+          Your file is private to this temporary 30-minute session.
         </p>
       </div>
 

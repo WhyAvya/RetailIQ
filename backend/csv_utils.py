@@ -3,8 +3,9 @@ from typing import BinaryIO
 import pandas as pd
 from fastapi import UploadFile
 from pandas.errors import EmptyDataError, ParserError
+from backend.runtime_config import MAX_UPLOAD_BYTES
 
-MAX_UPLOAD_SIZE = 10 * 1024 * 1024
+MAX_UPLOAD_SIZE = MAX_UPLOAD_BYTES
 READ_CHUNK_SIZE = 1024 * 1024
 CSV_ENCODINGS = ("utf-8-sig", "cp1252", "latin-1")
 
@@ -23,7 +24,7 @@ async def validate_csv_upload(file: UploadFile) -> int:
         file_size += len(chunk)
 
         if file_size > MAX_UPLOAD_SIZE:
-            raise CSVValidationError("The CSV file exceeds the 10 MB upload limit.")
+            raise CSVValidationError(f"The CSV file exceeds the {MAX_UPLOAD_SIZE // (1024 * 1024)} MB upload limit.")
 
         if b"\x00" in chunk:
             raise CSVValidationError("The uploaded file contains binary data and is not a valid CSV.")

@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: retailiq-api
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    disk:
+      name: retailiq-temporary-data
+      mountPath: /var/data/retailiq
+      sizeGB: 10
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.14
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: nvidia/nemotron-3-ultra-550b-a55b:free
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: SESSION_COOKIE_SAMESITE
+        value: none
+      - key: UPLOAD_STORAGE_PATH
+        value: /var/data/retailiq/uploads
+      - key: CHROMA_STORAGE_PATH
+        value: /var/data/retailiq/chroma
+      - key: SESSION_TTL_SECONDS
+        value: "1800"
+      - key: MAX_CSV_ROWS
+        value: "50000"
+      - key: MAX_CSV_COLUMNS
+        value: "200"

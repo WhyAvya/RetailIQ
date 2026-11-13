@@ -23,6 +23,7 @@ from backend.chart_analytics import (
 from backend.csv_utils import CSVValidationError, read_csv_dataframe
 from backend.currency import detect_currency_metadata
 from backend.file_storage import resolve_stored_upload_path
+from backend.generic_analytics import generic_dashboard, is_retail_dataset
 from backend.upload_metadata import DatabaseOperationError, get_upload_metadata
 
 SessionFactory = Callable[[], Session]
@@ -258,6 +259,17 @@ def calculate_selected_dashboard(
     filters: DashboardFilters | None = None,
 ) -> dict[str, Any]:
     """Calculate every dashboard view from one filtered DataFrame."""
+    unfiltered = load_selected_dataset(
+        upload_id,
+        session_factory=session_factory,
+        storage_directory=storage_directory,
+    )
+    if not is_retail_dataset(unfiltered.dataframe):
+        return {
+            "upload_id": str(unfiltered.upload_id),
+            "filename": unfiltered.original_filename,
+            **generic_dashboard(unfiltered.dataframe),
+        }
     selected = load_filtered_selected_dataset(
         upload_id,
         session_factory=session_factory,
@@ -269,6 +281,7 @@ def calculate_selected_dashboard(
     return {
         "upload_id": str(selected.upload_id),
         "filename": selected.original_filename,
+        "kind": "retail",
         "filter_context": selected.filtered.context(),
         "summary": {
             "kpis": kpis,

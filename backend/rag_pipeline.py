@@ -10,6 +10,8 @@ from backend.chart_analytics import (
     calculate_sales_by_region,
 )
 from backend.dataset_selection import SelectedDataset, load_selected_dataset
+from backend.generic_analytics import is_retail_dataset
+from backend.generic_query import execute_generic_query, plan_generic_query
 from backend.llm_service import OpenRouterLLMService
 from backend.metadata_filtered_retrieval import retrieve_metadata_filtered_matches
 from backend.query_planner import QueryPlan, plan_query
@@ -307,13 +309,23 @@ def answer_question(
     metadata = metadata_lookup(upload_id)
     if metadata is None:
         raise PipelineDatasetNotFoundError("The selected dataset was not found.")
+    dataset = dataset_loader(upload_id)
+    if not is_retail_dataset(dataset.dataframe):
+        generic_plan, issue = plan_generic_query(dataset.dataframe, question)
+        if issue:
+            return RAGAnswer(str(upload_id), question, issue, "unsupported", [], {"issues": [issue]})
+        if generic_plan is not None:
+            try:
+                generic_answer, calculation = execute_generic_query(dataset.dataframe, generic_plan)
+            except (KeyError, TypeError, ValueError) as exc:
+                raise RAGPipelineError("Structured analytics could not be completed.") from exc
+            return RAGAnswer(str(upload_id), question, generic_answer, "analytics", [], calculation)
     initial_plan = plan_query(question)
     if initial_plan.status == "unsupported":
         return RAGAnswer(
             str(upload_id), question, "This question is not yet supported: " + "; ".join(initial_plan.issues), "unsupported", [], {"issues": list(initial_plan.issues)}
         )
     if initial_plan.operation != "semantic" or initial_plan.status != "valid":
-        dataset = dataset_loader(upload_id)
         plan = plan_query(question, _planner_dimensions(dataset))
         if plan.status != "valid":
             return RAGAnswer(

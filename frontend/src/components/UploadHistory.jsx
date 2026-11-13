@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-
-const UPLOADS_URL = 'http://localhost:8000/api/uploads'
+import { fetchDatasetPreview, fetchUploads } from '../api/retailiqApi.js'
 
 function formatFileSize(bytes) {
   if (bytes < 1024) return `${bytes} bytes`
@@ -15,14 +14,6 @@ function formatUploadDate(value) {
   }).format(new Date(value))
 }
 
-async function responseData(response, fallbackMessage) {
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) {
-    throw new Error(typeof data.detail === 'string' ? data.detail : fallbackMessage)
-  }
-  return data
-}
-
 function UploadHistory({ refreshToken, onDatasetSelected }) {
   const [uploads, setUploads] = useState([])
   const [historyError, setHistoryError] = useState('')
@@ -32,22 +23,19 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
   const [previewError, setPreviewError] = useState('')
   const [isLoadingPreview, setIsLoadingPreview] = useState(false)
   const previewControllerRef = useRef(null)
+  const refreshTimerRef = useRef(null)
 
   useEffect(() => {
     const controller = new AbortController()
-    let refreshTimer
-
     async function loadHistory() {
       setIsLoadingHistory(true)
       setHistoryError('')
 
       try {
-        const response = await fetch(UPLOADS_URL, { signal: controller.signal })
-        const data = await responseData(response, 'Upload history could not be loaded.')
-        const items = Array.isArray(data.uploads) ? data.uploads : []
+        const items = await fetchUploads({ signal: controller.signal })
         setUploads(items)
         if (items.some((item) => item.status === 'pending' || item.status === 'indexing')) {
-          refreshTimer = setTimeout(loadHistory, 2000)
+          refreshTimerRef.current = setTimeout(loadHistory, 2000)
         }
       } catch (error) {
         if (error.name !== 'AbortError') {
@@ -61,7 +49,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
     loadHistory()
     return () => {
       controller.abort()
-      clearTimeout(refreshTimer)
+      clearTimeout(refreshTimerRef.current)
     }
   }, [refreshToken])
 
@@ -84,10 +72,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
     setIsLoadingPreview(true)
 
     try {
-      const response = await fetch(`${UPLOADS_URL}/${uploadId}/preview`, {
-        signal: controller.signal,
-      })
-      const data = await responseData(response, 'The dataset preview could not be loaded.')
+      const data = await fetchDatasetPreview(uploadId, { signal: controller.signal })
       if (previewControllerRef.current !== controller) return
       setSelectedId(uploadId)
       onDatasetSelected?.(uploadId, data.filename, upload.status)
@@ -111,17 +96,17 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-            Saved datasets
+            Current dataset
           </p>
           <h2 id="history-heading" className="mt-1 text-xl font-semibold text-slate-900">
-            Select a dataset
+            Inspect your upload
           </h2>
           <p className="mt-1.5 text-sm leading-6 text-slate-500">
-            Choose an uploaded dataset for the next analytics steps and verify its preview.
+            Your session keeps one CSV at a time. A new upload replaces the previous one.
           </p>
         </div>
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-800 sm:max-w-xs">
-          Development only: authentication and per-user data isolation are not implemented.
+          Temporary and session-isolated. Inactive data expires after 30 minutes.
         </p>
       </div>
 

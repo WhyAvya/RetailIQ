@@ -3,21 +3,13 @@ import AnalyticsCharts from './AnalyticsCharts.jsx'
 import DashboardFilters from './DashboardFilters.jsx'
 import KpiDashboard from './KpiDashboard.jsx'
 import CurrencySelector from './CurrencySelector.jsx'
-
-const ANALYTICS_URL = 'http://localhost:8000/api/analytics'
+import GenericDashboard from './GenericDashboard.jsx'
+import { fetchDashboard, fetchFilterOptions } from '../api/retailiqApi.js'
 const EMPTY_FILTERS = {
   region: '',
   category: '',
   startDate: '',
   endDate: '',
-}
-
-async function responseData(response, fallbackMessage) {
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) {
-    throw new Error(typeof data.detail === 'string' ? data.detail : fallbackMessage)
-  }
-  return data
 }
 
 function buildFilterQuery(filters) {
@@ -49,10 +41,7 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
       setIsLoadingOptions(true)
       setOptionsError('')
       try {
-        const response = await fetch(`${ANALYTICS_URL}/${uploadId}/filter-options`, {
-          signal: controller.signal,
-        })
-        const data = await responseData(response, 'Filter options could not be loaded.')
+        const data = await fetchFilterOptions(uploadId, { signal: controller.signal })
         if (!controller.signal.aborted && data.upload_id === uploadId) setOptions(data.options)
       } catch (error) {
         if (error.name !== 'AbortError') {
@@ -77,11 +66,7 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
       setAnalyticsError('')
       setResult(null)
       try {
-        const suffix = filterQuery ? `?${filterQuery}` : ''
-        const response = await fetch(`${ANALYTICS_URL}/${uploadId}/dashboard${suffix}`, {
-          signal: controller.signal,
-        })
-        const data = await responseData(response, 'Dashboard analytics could not be loaded.')
+        const data = await fetchDashboard(uploadId, filterQuery, { signal: controller.signal })
         if (isCurrentRequest && data.upload_id === uploadId) setResult(data)
       } catch (error) {
         if (isCurrentRequest && error.name !== 'AbortError') {
@@ -127,7 +112,7 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
           <CurrencySelector currency={currency} onChange={onCurrencyChange} />
         </div>
       )}
-      <DashboardFilters
+      {result?.kind !== 'generic' && <DashboardFilters
         uploadId={uploadId}
         options={options}
         optionsError={optionsError}
@@ -139,7 +124,9 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
         onChange={changeFilter}
         onApply={applyFilters}
         onReset={resetFilters}
-      />
+      />}
+
+      {result?.kind === 'generic' ? <div className="mt-10"><GenericDashboard result={result} /></div> : <>
 
       <div className="mt-10">
         <KpiDashboard
@@ -160,6 +147,7 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
           currency={currency}
         />
       </div>
+      </>}
     </>
   )
 }

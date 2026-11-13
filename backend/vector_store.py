@@ -14,9 +14,10 @@ from backend.rag_preparation import (
     MetadataValue,
     prepare_selected_dataset_chunks,
 )
+from backend.runtime_config import CHROMA_STORAGE_PATH
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CHROMA_DIRECTORY = PROJECT_ROOT / "backend" / "storage" / "chroma"
+DEFAULT_CHROMA_DIRECTORY = CHROMA_STORAGE_PATH
 COLLECTION_NAME = "retailiq_chunks"
 DEFAULT_INDEX_BATCH_SIZE = 500
 SEARCHABLE_DOCUMENT_CACHE_SIZE = 8
@@ -134,6 +135,13 @@ class ChromaVectorStore:
             )
         except Exception as exc:
             raise VectorStoreUnavailableError("Stored chunks could not be counted.") from exc
+
+    def delete(self, upload_id: UUID | str) -> None:
+        try:
+            self._collection.delete(where={"upload_id": str(upload_id)})
+            self._invalidate_searchable_cache(upload_id)
+        except Exception as exc:
+            raise VectorStoreUnavailableError("Stored chunks could not be deleted.") from exc
 
     def get(self, upload_id: UUID | str) -> dict[str, Any]:
         try:

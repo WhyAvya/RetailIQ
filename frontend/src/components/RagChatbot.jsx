@@ -7,10 +7,10 @@ import MarkdownAnswer from './MarkdownAnswer.js'
 import { formatAnalyticsAnswer, isMonetaryCalculation } from './currency.js'
 
 const EXAMPLE_QUESTIONS = [
-  'Which technology accessory orders had strong profits?',
-  'Show me examples of furniture products that generated losses.',
-  'What is the total revenue?',
-  'Which region generated the highest revenue?',
+  'How many rows are in this dataset?',
+  'What is the average value of a numeric column?',
+  'Which row has the highest value?',
+  'Summarize the feedback in these records.',
 ]
 
 function SourceList({ sources }) {
@@ -271,7 +271,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected, currency, onCurrencyCh
         <div className="border-t border-slate-200 bg-white p-4 sm:p-5">
           {!selectedId && <p className="mb-2 text-xs text-amber-700">Select a ready dataset before asking a question.</p>}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={handleKeyDown} disabled={!selectedId || !ragReady || state.pending} rows={2} placeholder="Ask about products, profits, revenue, orders, regions..." className="min-h-14 flex-1 resize-y rounded-xl border border-slate-300 px-3.5 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100" />
+            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={handleKeyDown} disabled={!selectedId || !ragReady || state.pending} rows={2} placeholder="Ask about counts, averages, filters, rankings, or text in your CSV..." className="min-h-14 flex-1 resize-y rounded-xl border border-slate-300 px-3.5 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100" />
             <button type="button" onClick={submitQuestion} disabled={!selectedId || !ragReady || !question.trim() || state.pending} className="rounded-xl bg-[#064E3B] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300">
               {state.pending ? 'Sending...' : 'Send'}
             </button>

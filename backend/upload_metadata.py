@@ -129,14 +129,36 @@ def transition_upload_status(
         session.close()
 
 
+def recover_interrupted_uploads(session_factory: SessionFactory | None = None) -> int:
+    """Make jobs left in `indexing` by a restart explicitly retryable."""
+    session = _session(session_factory)
+    try:
+        result = session.execute(
+            update(UploadMetadata)
+            .where(UploadMetadata.processing_status == "indexing")
+            .values(processing_status="failed")
+        )
+        session.commit()
+        return int(result.rowcount or 0)
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raise DatabaseOperationError("Interrupted indexing jobs could not be recovered.") from exc
+    finally:
+        session.close()
+
+
 def list_upload_metadata(
     session_factory: SessionFactory | None = None,
     limit: int = 50,
+    owner_hash: str | None = None,
 ) -> list[dict[str, Any]]:
     session = _session(session_factory)
     try:
+        statement = select(UploadMetadata)
+        if owner_hash is not None:
+            statement = statement.where(UploadMetadata.user_email == owner_hash)
         statement = (
-            select(UploadMetadata)
+            statement
             .order_by(UploadMetadata.uploaded_at.desc(), UploadMetadata.upload_id.desc())
             .limit(limit)
         )
@@ -161,6 +183,7 @@ def get_upload_metadata(
         return {
             **_public_metadata(record),
             "stored_file_path": record.stored_file_path,
+            "owner_hash": record.user_email,
         }
     except SQLAlchemyError as exc:
         raise DatabaseOperationError("Upload metadata could not be loaded.") from exc

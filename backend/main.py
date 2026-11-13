@@ -1,9 +1,13 @@
 from collections.abc import Callable
+import asyncio
+from contextlib import asynccontextmanager, suppress
 from datetime import date
+from time import monotonic
+from collections import defaultdict, deque
 from typing import Any, Literal
 from uuid import UUID
 
-from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, Response, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from starlette.concurrency import run_in_threadpool
@@ -55,24 +59,164 @@ from backend.upload_metadata import (
     get_upload_metadata,
     list_upload_metadata,
     persist_upload_or_cleanup,
+    recover_interrupted_uploads,
     transition_upload_status,
 )
+from backend.anonymous_sessions import (
+    AnonymousIdentity,
+    SessionStoreError,
+    new_identity,
+    expired_session_hashes,
+    remove_session_records,
+    session_uploads,
+    token_hash,
+    touch_session,
+)
+from backend.runtime_config import (
+    ALLOWED_ORIGINS,
+    CSRF_COOKIE_NAME,
+    MAX_CSV_COLUMNS,
+    MAX_CSV_ROWS,
+    MAX_QUESTIONS_PER_MINUTE,
+    SESSION_COOKIE_NAME,
+    SESSION_COOKIE_SAMESITE,
+    SESSION_COOKIE_SECURE,
+    SESSION_TTL_SECONDS,
+)
+from backend.file_storage import UPLOAD_DIRECTORY
+from backend.vector_store import ChromaVectorStore
 from evaluation.report_service import (
     EvaluationReportUnavailableError,
     load_evaluation_dashboard_report,
 )
 
-app = FastAPI(title="RetailIQ API")
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    try:
+        await run_in_threadpool(recover_interrupted_uploads)
+        await run_in_threadpool(_cleanup_expired_sessions)
+    except (SessionStoreError, DatabaseOperationError):
+        pass
+    cleanup_task = asyncio.create_task(_cleanup_loop())
+    try:
+        yield
+    finally:
+        cleanup_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await cleanup_task
+
+
+app = FastAPI(title="RetailIQ API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=list(ALLOWED_ORIGINS),
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+_question_windows: dict[str, deque[float]] = defaultdict(deque)
+
+
+@app.middleware("http")
+async def anonymous_session_middleware(request: Request, call_next):
+    if request.url.path in {"/", "/health"}:
+        return await call_next(request)
+    origin = request.headers.get("origin")
+    if origin and origin.rstrip("/") not in ALLOWED_ORIGINS:
+        return Response("Origin is not allowed.", status_code=403)
+    existing_token = request.cookies.get(SESSION_COOKIE_NAME)
+    csrf_cookie = request.cookies.get(CSRF_COOKIE_NAME)
+    identity = AnonymousIdentity(
+        existing_token or new_identity().token,
+        token_hash(existing_token) if existing_token else "",
+        csrf_cookie or new_identity().csrf_token,
+    )
+    if not identity.token_hash:
+        identity = AnonymousIdentity(identity.token, token_hash(identity.token), identity.csrf_token)
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and existing_token and origin:
+        if not csrf_cookie or request.headers.get("x-csrf-token") != csrf_cookie:
+            return Response("CSRF validation failed.", status_code=403)
+    request.state.identity = identity
+    try:
+        await run_in_threadpool(touch_session, identity)
+    except SessionStoreError:
+        # Dataset operations still fail closed through their normal metadata access.
+        # Keeping request validation available also makes health/debug endpoints useful
+        # during a transient database outage.
+        pass
+    response = await call_next(request)
+    if getattr(request.state, "clear_session", False):
+        return response
+    response.set_cookie(
+        SESSION_COOKIE_NAME,
+        identity.token,
+        max_age=SESSION_TTL_SECONDS,
+        httponly=True,
+        secure=SESSION_COOKIE_SECURE,
+        samesite=SESSION_COOKIE_SAMESITE,
+        path="/",
+    )
+    response.set_cookie(
+        CSRF_COOKIE_NAME,
+        identity.csrf_token,
+        max_age=SESSION_TTL_SECONDS,
+        httponly=False,
+        secure=SESSION_COOKIE_SECURE,
+        samesite=SESSION_COOKIE_SAMESITE,
+        path="/",
+    )
+    return response
+
+
+async def _assert_upload_owner(request: Request | None, upload_id: UUID) -> None:
+    if request is None:
+        return
+    try:
+        metadata = await run_in_threadpool(get_upload_metadata, upload_id)
+    except DatabaseOperationError:
+        return
+    if metadata is not None and "owner_hash" in metadata and metadata.get("owner_hash") != request.state.identity.token_hash:
+        raise HTTPException(status_code=404, detail="The requested upload was not found.")
+
+
+def _delete_session_data(owner_hash: str, delete_session: bool = True) -> int:
+    targets = [(record.upload_id, record.stored_file_path) for record in session_uploads(owner_hash)]
+    store = None
+    try:
+        for upload_id, _stored_name in targets:
+            store = store or ChromaVectorStore()
+            store.delete(upload_id)
+        for _upload_id, stored_name in targets:
+            path = (UPLOAD_DIRECTORY.resolve() / stored_name).resolve()
+            if path.parent != UPLOAD_DIRECTORY.resolve():
+                raise SessionStoreError("Stored upload path is unsafe.")
+            path.unlink(missing_ok=True)
+    except Exception as exc:
+        if isinstance(exc, SessionStoreError):
+            raise
+        raise SessionStoreError("Temporary dataset files could not be removed.") from exc
+    removed = remove_session_records(owner_hash, delete_session=delete_session)
+    if delete_session:
+        _question_windows.pop(owner_hash, None)
+    return len(removed)
+
+
+def _cleanup_expired_sessions() -> int:
+    deleted = 0
+    for owner_hash in expired_session_hashes():
+        deleted += _delete_session_data(owner_hash)
+    return deleted
+
+
+async def _cleanup_loop() -> None:
+    while True:
+        await asyncio.sleep(60)
+        try:
+            await run_in_threadpool(_cleanup_expired_sessions)
+        except (SessionStoreError, DatabaseOperationError):
+            pass
 
 
 class RetrievalRequest(BaseModel):
@@ -190,10 +334,16 @@ def health_check():
     return {"status": "healthy"}
 
 
+@app.get("/api/session")
+async def session_bootstrap(request: Request) -> dict[str, Any]:
+    return {"csrf_token": request.state.identity.csrf_token, "expires_in": SESSION_TTL_SECONDS}
+
+
 @app.post("/api/upload")
 async def upload_csv(
     background_tasks: BackgroundTasks,
     file: UploadFile | None = File(default=None),
+    request: Request = None,
 ):
     if file is None or not file.filename:
         raise HTTPException(status_code=400, detail="No CSV file was provided.")
@@ -201,19 +351,34 @@ async def upload_csv(
     try:
         file_size = await validate_csv_upload(file)
         dataframe = await run_in_threadpool(read_csv_dataframe, file.file)
+        if len(dataframe) > MAX_CSV_ROWS or len(dataframe.columns) > MAX_CSV_COLUMNS:
+            raise CSVValidationError(
+                f"CSV exceeds the limit of {MAX_CSV_ROWS:,} rows or {MAX_CSV_COLUMNS:,} columns."
+            )
         profile = await run_in_threadpool(profile_dataframe, dataframe)
         _, preprocessing = await run_in_threadpool(preprocess_dataframe, dataframe)
+        if request is not None:
+            await run_in_threadpool(_delete_session_data, request.state.identity.token_hash, False)
         stored_upload = await run_in_threadpool(
             store_original_csv,
             file.file,
             file.filename,
         )
-        metadata = await run_in_threadpool(
-            persist_upload_or_cleanup,
-            stored_upload,
-            file_size,
-            processing_status="pending",
-        )
+        if request is not None:
+            metadata = await run_in_threadpool(
+                persist_upload_or_cleanup,
+                stored_upload,
+                file_size,
+                request.state.identity.token_hash,
+                "pending",
+            )
+        else:
+            metadata = await run_in_threadpool(
+                persist_upload_or_cleanup,
+                stored_upload,
+                file_size,
+                processing_status="pending",
+            )
     except CSVValidationError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except FileStorageError as exc:
@@ -223,6 +388,8 @@ async def upload_csv(
             status_code=503,
             detail="The upload could not be completed because metadata storage is unavailable.",
         ) from exc
+    except SessionStoreError as exc:
+        raise HTTPException(status_code=503, detail="Existing session data could not be replaced safely.") from exc
     finally:
         await file.close()
 
@@ -252,7 +419,8 @@ def _index_status_payload(metadata: dict[str, Any], active: bool) -> dict[str, A
 
 
 @app.get("/api/uploads/{upload_id}/index-status")
-async def upload_index_status(upload_id: UUID):
+async def upload_index_status(upload_id: UUID, request: Request = None):
+    await _assert_upload_owner(request, upload_id)
     try:
         metadata = await run_in_threadpool(get_upload_metadata, upload_id)
     except DatabaseOperationError as exc:
@@ -263,7 +431,8 @@ async def upload_index_status(upload_id: UUID):
 
 
 @app.post("/api/uploads/{upload_id}/index", status_code=status.HTTP_202_ACCEPTED)
-async def retry_upload_indexing(upload_id: UUID, background_tasks: BackgroundTasks):
+async def retry_upload_indexing(upload_id: UUID, background_tasks: BackgroundTasks, request: Request = None):
+    await _assert_upload_owner(request, upload_id)
     try:
         metadata = await run_in_threadpool(get_upload_metadata, upload_id)
         if metadata is None:
@@ -293,9 +462,12 @@ async def retry_upload_indexing(upload_id: UUID, background_tasks: BackgroundTas
 
 
 @app.get("/api/uploads")
-async def upload_history():
+async def upload_history(request: Request = None):
     try:
-        uploads = await run_in_threadpool(list_upload_metadata)
+        if request is None:
+            uploads = await run_in_threadpool(list_upload_metadata)
+        else:
+            uploads = await run_in_threadpool(list_upload_metadata, None, 1, request.state.identity.token_hash)
     except DatabaseOperationError as exc:
         raise HTTPException(
             status_code=503,
@@ -303,13 +475,14 @@ async def upload_history():
         ) from exc
 
     return {
-        "development_only": True,
+        "temporary_session": True,
         "uploads": uploads,
     }
 
 
 @app.get("/api/uploads/{upload_id}/preview")
-async def dataset_preview(upload_id: UUID):
+async def dataset_preview(upload_id: UUID, request: Request = None):
+    await _assert_upload_owner(request, upload_id)
     try:
         metadata = await run_in_threadpool(get_upload_metadata, upload_id)
         if metadata is None:
@@ -334,7 +507,9 @@ async def analytics_summary(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_dataset_kpis,
         upload_id,
@@ -349,7 +524,9 @@ async def monthly_revenue_trend(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_monthly_revenue,
         upload_id,
@@ -364,7 +541,9 @@ async def regional_sales(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_sales_by_region,
         upload_id,
@@ -379,7 +558,9 @@ async def category_performance(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_category_performance,
         upload_id,
@@ -394,7 +575,9 @@ async def profit_analysis(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_profit_analysis,
         upload_id,
@@ -403,12 +586,14 @@ async def profit_analysis(
 
 
 @app.get("/api/analytics/{upload_id}/filter-options")
-async def analytics_filter_options(upload_id: UUID):
+async def analytics_filter_options(upload_id: UUID, request: Request = None):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(calculate_selected_filter_options, upload_id)
 
 
 @app.get("/api/analytics/{upload_id}/currency")
-async def analytics_currency(upload_id: UUID):
+async def analytics_currency(upload_id: UUID, request: Request = None):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(calculate_selected_currency_metadata, upload_id)
 
 
@@ -419,7 +604,9 @@ async def analytics_dashboard(
     category: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    request: Request = None,
 ):
+    await _assert_upload_owner(request, upload_id)
     return await _analytics_response(
         calculate_selected_dashboard,
         upload_id,
@@ -428,7 +615,8 @@ async def analytics_dashboard(
 
 
 @app.post("/api/rag/retrieve", response_model=RetrievalResponse)
-async def rag_retrieve(request: RetrievalRequest) -> RetrievalResponse:
+async def rag_retrieve(request: RetrievalRequest, http_request: Request) -> RetrievalResponse:
+    await _assert_upload_owner(http_request, request.upload_id)
     try:
         metadata = await run_in_threadpool(get_upload_metadata, request.upload_id)
     except DatabaseOperationError as exc:
@@ -477,7 +665,15 @@ async def rag_retrieve(request: RetrievalRequest) -> RetrievalResponse:
 
 
 @app.post("/api/rag/ask", response_model=RAGAskResponse)
-async def rag_ask(request: RAGAskRequest) -> RAGAskResponse:
+async def rag_ask(request: RAGAskRequest, http_request: Request) -> RAGAskResponse:
+    await _assert_upload_owner(http_request, request.upload_id)
+    window = _question_windows[http_request.state.identity.token_hash]
+    now = monotonic()
+    while window and now - window[0] >= 60:
+        window.popleft()
+    if len(window) >= MAX_QUESTIONS_PER_MINUTE:
+        raise HTTPException(status_code=429, detail="Question limit reached. Please wait before trying again.")
+    window.append(now)
     try:
         result = await run_in_threadpool(
             answer_question,
@@ -551,6 +747,18 @@ async def rag_ask(request: RAGAskRequest) -> RAGAskResponse:
         ],
         calculation=result.calculation,
     )
+
+
+@app.delete("/api/session", status_code=status.HTTP_200_OK)
+async def clear_session_data(request: Request, response: Response) -> dict[str, Any]:
+    try:
+        deleted = await run_in_threadpool(_delete_session_data, request.state.identity.token_hash)
+    except SessionStoreError as exc:
+        raise HTTPException(status_code=503, detail="Session data could not be cleared.") from exc
+    response.delete_cookie(SESSION_COOKIE_NAME, path="/")
+    response.delete_cookie(CSRF_COOKIE_NAME, path="/")
+    request.state.clear_session = True
+    return {"cleared": True, "deleted_datasets": deleted}
 
 
 @app.get("/api/evaluation/report")

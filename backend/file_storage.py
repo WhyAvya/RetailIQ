@@ -3,8 +3,10 @@ from pathlib import Path
 from typing import BinaryIO
 from uuid import UUID, uuid4
 
+from backend.runtime_config import UPLOAD_STORAGE_PATH
+
 STORAGE_CHUNK_SIZE = 1024 * 1024
-UPLOAD_DIRECTORY = Path(__file__).resolve().parent / "storage" / "uploads"
+UPLOAD_DIRECTORY = UPLOAD_STORAGE_PATH
 
 
 class FileStorageError(OSError):
