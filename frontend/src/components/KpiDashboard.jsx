@@ -1,9 +1,12 @@
+import { formatMonetaryValue } from './currency.js'
+import Reveal from './Reveal.jsx'
+
 const KPI_CARDS = [
-  { key: 'total_revenue', label: 'Total revenue', decimals: 2 },
-  { key: 'total_profit', label: 'Total profit', decimals: 2 },
+  { key: 'total_revenue', label: 'Total revenue', decimals: 2, monetary: true },
+  { key: 'total_profit', label: 'Total profit', decimals: 2, monetary: true },
   { key: 'number_of_orders', label: 'Orders', decimals: 0 },
   { key: 'unique_customers', label: 'Unique customers', decimals: 0 },
-  { key: 'average_order_value', label: 'Average order value', decimals: 2 },
+  { key: 'average_order_value', label: 'Average order value', decimals: 2, monetary: true },
   { key: 'profit_margin', label: 'Profit margin', decimals: 2, suffix: '%' },
 ]
 
@@ -15,7 +18,7 @@ function formatMetric(value, decimals, suffix = '') {
   })}${suffix}`
 }
 
-function KpiDashboard({ uploadId, result, error, isLoading }) {
+function KpiDashboard({ uploadId, result, error, isLoading, currency }) {
   const currentAnalytics = result?.upload_id === uploadId
     ? { filename: result.filename, ...result.summary }
     : null
@@ -46,7 +49,7 @@ function KpiDashboard({ uploadId, result, error, isLoading }) {
       )}
 
       {isLoading && (
-        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3" aria-label="Loading analytics">
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading analytics">
           {KPI_CARDS.map((card) => (
             <div key={card.key} className="h-28 animate-pulse rounded-xl bg-slate-100" />
           ))}
@@ -61,33 +64,39 @@ function KpiDashboard({ uploadId, result, error, isLoading }) {
 
       {currentAnalytics && (
         <>
-          <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3">
-            {KPI_CARDS.map((card) => {
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {KPI_CARDS.map((card, index) => {
               const metric = currentAnalytics.kpis[card.key]
-              const isAvailable = Boolean(metric?.available)
+              const mixedCurrencyBlocked = card.monetary && currency?.metadata?.status === 'multiple'
+              const isAvailable = Boolean(metric?.available) && !mixedCurrencyBlocked
               return (
-                <article
-                  key={card.key}
-                  className={`rounded-xl border p-4 sm:p-5 ${
-                    isAvailable
-                      ? 'border-slate-200 bg-white'
-                      : 'border-amber-200 bg-amber-50/60'
-                  }`}
-                >
+                <Reveal key={card.key} revealKey={`kpi-${card.key}`} delay={index * 45} className="h-full">
+                  <article
+                    className={`motion-surface h-full rounded-xl border p-4 sm:p-5 ${
+                      isAvailable
+                        ? 'border-slate-200 bg-gradient-to-br from-white to-[#F5F8F3] shadow-sm'
+                        : 'border-amber-200 bg-amber-50/60'
+                    }`}
+                  >
                   <p className="text-xs font-medium text-slate-500">{card.label}</p>
                   <p className={`mt-2 break-words text-xl font-semibold sm:text-2xl ${
                     isAvailable ? 'text-slate-900' : 'text-amber-800'
                   }`}>
                     {isAvailable
-                      ? formatMetric(metric.value, card.decimals, card.suffix)
+                      ? card.monetary
+                        ? formatMonetaryValue(metric.value, currency?.selection?.code || '', true)
+                        : formatMetric(metric.value, card.decimals, card.suffix)
                       : 'Unavailable'}
                   </p>
                   {!isAvailable && (
                     <p className="mt-2 text-xs leading-5 text-amber-700">
-                      {metric?.reason || 'This metric cannot be calculated.'}
+                      {mixedCurrencyBlocked
+                        ? 'Multiple currencies cannot be aggregated without filtering to one currency.'
+                        : metric?.reason || 'This metric cannot be calculated.'}
                     </p>
                   )}
-                </article>
+                  </article>
+                </Reveal>
               )
             })}
           </div>

@@ -21,6 +21,7 @@ from backend.chart_analytics import (
     calculate_sales_by_region,
 )
 from backend.csv_utils import CSVValidationError, read_csv_dataframe
+from backend.currency import detect_currency_metadata
 from backend.file_storage import resolve_stored_upload_path
 from backend.upload_metadata import DatabaseOperationError, get_upload_metadata
 
@@ -230,6 +231,23 @@ def calculate_selected_filter_options(
         "upload_id": str(selected.upload_id),
         "filename": selected.original_filename,
         "options": build_filter_options(selected.dataframe),
+    }
+
+
+def calculate_selected_currency_metadata(
+    upload_id: UUID,
+    session_factory: SessionFactory | None = None,
+    storage_directory: Path | None = None,
+) -> dict[str, Any]:
+    selected = load_selected_dataset(
+        upload_id,
+        session_factory=session_factory,
+        storage_directory=storage_directory,
+    )
+    return {
+        "upload_id": str(selected.upload_id),
+        "filename": selected.original_filename,
+        "currency": detect_currency_metadata(selected.dataframe),
     }
 
 

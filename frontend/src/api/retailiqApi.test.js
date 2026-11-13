@@ -4,6 +4,7 @@ import {
   ApiError,
   askRetailIQ,
   fetchEvaluationReport,
+  fetchCurrencyMetadata,
   fetchIndexStatus,
   friendlyRagError,
   retryIndexing,
@@ -65,13 +66,23 @@ test('fetchEvaluationReport loads saved actual and pending evaluation states', a
     requestUrl = url
     return new Response(JSON.stringify({
       retrieval: { result_kind: 'actual_chromadb', aggregate_metrics: { precision_at_3: 0.444444 } },
-      answer_quality: { live_llm_evaluation: { status: 'pending', faithfulness: null } },
+      optimized_c8_retrieval: { semantic_questions_evaluated: 5 },
+      structured_evaluation: { questions_evaluated: 20 },
+      phase5_live: { queries_completed: 5, llm_invocation_count: 1 },
+      answer_quality: {
+        verified_live_measurement: { answers_evaluated: 3, faithfulness: 0.75 },
+        live_llm_evaluation: { status: 'pending', faithfulness: null },
+      },
     }), { status: 200, headers: { 'Content-Type': 'application/json' } })
   }
   try {
     const result = await fetchEvaluationReport()
     assert.match(requestUrl, /\/api\/evaluation\/report$/)
     assert.equal(result.retrieval.result_kind, 'actual_chromadb')
+    assert.equal(result.optimized_c8_retrieval.semantic_questions_evaluated, 5)
+    assert.equal(result.structured_evaluation.questions_evaluated, 20)
+    assert.equal(result.phase5_live.llm_invocation_count, 1)
+    assert.equal(result.answer_quality.verified_live_measurement.faithfulness, 0.75)
     assert.equal(result.answer_quality.live_llm_evaluation.status, 'pending')
     assert.equal(result.answer_quality.live_llm_evaluation.faithfulness, null)
   } finally {
@@ -96,6 +107,25 @@ test('index status and retry use the upload-scoped endpoints', async () => {
     assert.equal(requests[0].method, 'GET')
     assert.match(requests[1].url, /\/api\/uploads\/upload-123\/index$/)
     assert.equal(requests[1].method, 'POST')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('currency metadata uses the selected upload-scoped endpoint', async () => {
+  const originalFetch = globalThis.fetch
+  let requestUrl
+  globalThis.fetch = async (url) => {
+    requestUrl = url
+    return new Response(JSON.stringify({
+      upload_id: 'upload-123',
+      currency: { status: 'detected', detected_code: 'USD', detected_codes: ['USD'] },
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+  }
+  try {
+    const result = await fetchCurrencyMetadata('upload-123')
+    assert.match(requestUrl, /\/api\/analytics\/upload-123\/currency$/)
+    assert.equal(result.currency.detected_code, 'USD')
   } finally {
     globalThis.fetch = originalFetch
   }

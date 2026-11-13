@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import DatasetReport from './DatasetReport.jsx'
+import BrandLogo from './BrandLogo.jsx'
 
 const UPLOAD_URL = 'http://localhost:8000/api/upload'
 
@@ -153,9 +154,12 @@ function CsvUpload({ onUploadComplete }) {
   return (
     <section
       aria-labelledby="upload-heading"
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.35)] sm:p-7"
+      className="motion-surface rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.35)] sm:p-7"
     >
       <div className="mb-5">
+        <div className="mb-4">
+          <BrandLogo compact />
+        </div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
           Dataset upload
         </p>

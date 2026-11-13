@@ -182,6 +182,24 @@ def test_chart_endpoints_return_selected_dataset_results(monkeypatch):
     assert asyncio.run(main_module.profit_analysis(upload_id)) == profit_result
 
 
+def test_currency_endpoint_returns_backward_compatible_dataset_metadata(monkeypatch):
+    upload_id = uuid4()
+    expected = {
+        "upload_id": str(upload_id),
+        "filename": "usd-sales.csv",
+        "currency": {
+            "status": "detected",
+            "column": "Currency Code",
+            "detected_code": "USD",
+            "detected_codes": ["USD"],
+            "unsupported_values": [],
+        },
+    }
+    monkeypatch.setattr(main_module, "calculate_selected_currency_metadata", lambda _id: expected)
+
+    assert asyncio.run(main_module.analytics_currency(upload_id)) == expected
+
+
 @pytest.mark.parametrize(
     ("endpoint", "function_name"),
     [

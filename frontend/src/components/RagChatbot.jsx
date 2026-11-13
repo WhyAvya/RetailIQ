@@ -2,6 +2,9 @@ import { useEffect, useReducer, useRef, useState } from 'react'
 import { askRetailIQ, fetchUploads, friendlyRagError, retryIndexing } from '../api/retailiqApi.js'
 import { chatReducer, initialChatState } from './chatState.js'
 import { indexingStatusText, isRagReady } from './indexingStatus.js'
+import CurrencySelector from './CurrencySelector.jsx'
+import MarkdownAnswer from './MarkdownAnswer.js'
+import { formatAnalyticsAnswer, isMonetaryCalculation } from './currency.js'
 
 const EXAMPLE_QUESTIONS = [
   'Which technology accessory orders had strong profits?',
@@ -13,15 +16,15 @@ const EXAMPLE_QUESTIONS = [
 function SourceList({ sources }) {
   if (!sources?.length) return null
   return (
-    <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50/80">
-      <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-700">
+    <details className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/60">
+      <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-emerald-900">
         Sources ({sources.length})
       </summary>
       <div className="space-y-3 border-t border-slate-200 p-3 sm:p-4">
         {sources.map((source) => (
-          <article key={source.chunk_id} className="rounded-lg border border-slate-200 bg-white p-3.5">
+          <article key={source.chunk_id} className="motion-surface rounded-lg border border-emerald-100 bg-white p-3.5 shadow-sm">
             <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-              <span className="font-semibold text-slate-700">Source row {source.source_row ?? 'unknown'}</span>
+              <span className="rounded-md bg-emerald-100 px-2 py-1 font-semibold text-emerald-800">Source row {source.source_row ?? 'unknown'}</span>
               {source.metadata?.category && <span>{source.metadata.category}</span>}
               {source.metadata?.sub_category && <span>• {source.metadata.sub_category}</span>}
               {source.metadata?.region && <span>• {source.metadata.region}</span>}
@@ -41,9 +44,17 @@ function SourceList({ sources }) {
   )
 }
 
-function ChatMessage({ message }) {
+function ChatMessage({ message, currency }) {
+  const blockedMonetaryAnswer = (
+    message.mode === 'analytics'
+    && currency?.metadata?.status === 'multiple'
+    && isMonetaryCalculation(message.calculation)
+  )
+  const answer = message.mode === 'analytics'
+    ? formatAnalyticsAnswer(message.answer, message.calculation, currency?.selection?.code || '')
+    : message.answer
   return (
-    <article className="space-y-3">
+    <article className="motion-content-enter space-y-3">
       <div className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-emerald-700 px-4 py-3 text-sm leading-6 text-white sm:max-w-[75%]">
         {message.question}
       </div>
@@ -52,16 +63,22 @@ function ChatMessage({ message }) {
           ? 'border-red-200 bg-red-50 text-red-800'
           : message.mode === 'unsupported'
             ? 'border-amber-200 bg-amber-50 text-amber-900'
-            : 'border-slate-200 bg-white text-slate-700'
+            : 'border-slate-200 bg-white text-slate-700 shadow-sm'
       }`}>
         {!message.error && (
           <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
             {message.mode === 'analytics' ? 'Calculated from dataset analytics' : message.mode === 'semantic_rag' ? 'AI answer' : 'Limited support'}
           </p>
         )}
-        <p className="whitespace-pre-wrap break-words text-sm leading-6">
-          {message.error || message.answer}
-        </p>
+        {blockedMonetaryAnswer ? (
+          <p role="alert" className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-800">
+            This aggregate monetary answer is hidden because the dataset contains multiple currencies. Filter to one currency before aggregating sales or profit.
+          </p>
+        ) : message.error ? (
+          <p className="break-words text-sm leading-6">{message.error}</p>
+        ) : (
+          <MarkdownAnswer content={answer} />
+        )}
         {message.mode === 'analytics' && message.calculation && (
           <p className="mt-3 text-xs text-slate-500">
             Calculation: {message.calculation.intent?.replaceAll('_', ' ')}
@@ -73,7 +90,7 @@ function ChatMessage({ message }) {
   )
 }
 
-function RagChatbot({ selectedDataset, onDatasetSelected }) {
+function RagChatbot({ selectedDataset, onDatasetSelected, currency, onCurrencyChange }) {
   const [uploads, setUploads] = useState([])
   const [uploadsError, setUploadsError] = useState('')
   const [question, setQuestion] = useState('')
@@ -118,7 +135,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
   const chooseDataset = (event) => {
     const upload = uploads.find((item) => item.upload_id === event.target.value)
     setQuestion('')
-    onDatasetSelected?.(upload ? { uploadId: upload.upload_id, filename: upload.filename } : null)
+    onDatasetSelected?.(upload ? { uploadId: upload.upload_id, filename: upload.filename, status: upload.status } : null)
   }
 
   const submitQuestion = async () => {
@@ -177,7 +194,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
   }
 
   return (
-    <section aria-labelledby="chatbot-heading" className="rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)]">
+    <section aria-labelledby="chatbot-heading" className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_-30px_rgba(6,78,59,0.28)]">
       <div className="border-b border-slate-200 p-5 sm:p-7">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">RetailIQ assistant</p>
         <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -204,7 +221,17 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
           ))}
         </select>
         {uploadsError && <p role="alert" className="mt-2 text-sm text-red-700">{uploadsError}</p>}
-        {selectedDataset && <p className="mt-2 text-xs text-slate-500">Selected: {selectedDataset.filename}</p>}
+        {selectedDataset && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs">
+            <span className="font-semibold text-emerald-900">Selected: {selectedDataset.filename}</span>
+            {selectedUpload?.status && <span className="capitalize text-emerald-700">Index {selectedUpload.status}</span>}
+          </div>
+        )}
+        {selectedId && currency && (
+          <div className="mt-4">
+            <CurrencySelector currency={currency} onChange={onCurrencyChange} />
+          </div>
+        )}
         {selectedId && selectedUpload && !ragReady && (
           <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
             <span>{indexingStatusText(selectedUpload.status)}</span>
@@ -219,7 +246,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
         <div className="max-h-[38rem] flex-1 space-y-6 overflow-y-auto bg-slate-50/60 p-4 sm:p-6">
           {state.messages.length === 0 && !state.pending && (
             <div className="mx-auto flex max-w-xl flex-col items-center py-12 text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-lg font-bold text-emerald-700">AI</span>
+              <img src="/favicon-48x48.png" alt="" className="h-12 w-12 object-contain" />
               <h2 className="mt-4 font-semibold text-slate-800">Start with a question</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">Each question is processed independently. Select a dataset, then try one of these examples.</p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
@@ -231,21 +258,21 @@ function RagChatbot({ selectedDataset, onDatasetSelected }) {
               </div>
             </div>
           )}
-          {state.messages.map((message) => <ChatMessage key={message.id} message={message} />)}
+          {state.messages.map((message) => <ChatMessage key={message.id} message={message} currency={currency} />)}
           {state.pending && (
-            <div role="status" className="flex items-center gap-2 text-sm text-slate-500">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+            <div role="status" className="w-fit rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+              <span className="mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
               RetailIQ is working on your question...
             </div>
           )}
           <div ref={endRef} />
         </div>
 
-        <div className="border-t border-slate-200 p-4 sm:p-5">
+        <div className="border-t border-slate-200 bg-white p-4 sm:p-5">
           {!selectedId && <p className="mb-2 text-xs text-amber-700">Select a ready dataset before asking a question.</p>}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <textarea value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={handleKeyDown} disabled={!selectedId || !ragReady || state.pending} rows={2} placeholder="Ask about products, profits, revenue, orders, regions..." className="min-h-14 flex-1 resize-y rounded-xl border border-slate-300 px-3.5 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100" />
-            <button type="button" onClick={submitQuestion} disabled={!selectedId || !ragReady || !question.trim() || state.pending} className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300">
+            <button type="button" onClick={submitQuestion} disabled={!selectedId || !ragReady || !question.trim() || state.pending} className="rounded-xl bg-[#064E3B] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300">
               {state.pending ? 'Sending...' : 'Send'}
             </button>
           </div>

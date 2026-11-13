@@ -72,7 +72,8 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
     [],
   )
 
-  const loadPreview = async (uploadId) => {
+  const loadPreview = async (upload) => {
+    const uploadId = upload.upload_id
     previewControllerRef.current?.abort()
     const controller = new AbortController()
     previewControllerRef.current = controller
@@ -89,7 +90,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
       const data = await responseData(response, 'The dataset preview could not be loaded.')
       if (previewControllerRef.current !== controller) return
       setSelectedId(uploadId)
-      onDatasetSelected?.(uploadId, data.filename)
+      onDatasetSelected?.(uploadId, data.filename, upload.status)
       setPreview(data)
     } catch (error) {
       if (error.name !== 'AbortError' && previewControllerRef.current === controller) {
@@ -147,11 +148,11 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
                 key={upload.upload_id}
                 type="button"
                 aria-pressed={selectedId === upload.upload_id}
-                onClick={() => loadPreview(upload.upload_id)}
+                onClick={() => loadPreview(upload)}
                 className={`w-full rounded-xl border p-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${
                   selectedId === upload.upload_id
-                    ? 'border-emerald-400 bg-emerald-50'
-                    : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-slate-50'
+                    ? 'border-emerald-500 bg-emerald-50 shadow-sm ring-1 ring-emerald-200'
+                    : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-[#F5F8F3]'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -182,7 +183,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
             ))}
           </div>
 
-          <div className="min-w-0 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <div className="min-w-0 rounded-xl border border-slate-200 bg-[#F5F8F3] p-4">
             {!selectedId && (
               <div className="flex min-h-40 items-center justify-center text-center text-sm text-slate-500">
                 Choose a saved upload to select it and view its dataset preview.

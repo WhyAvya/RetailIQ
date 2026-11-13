@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import AnalyticsCharts from './AnalyticsCharts.jsx'
 import DashboardFilters from './DashboardFilters.jsx'
 import KpiDashboard from './KpiDashboard.jsx'
+import CurrencySelector from './CurrencySelector.jsx'
 
 const ANALYTICS_URL = 'http://localhost:8000/api/analytics'
 const EMPTY_FILTERS = {
@@ -28,7 +29,7 @@ function buildFilterQuery(filters) {
   return parameters.toString()
 }
 
-function AnalyticsDashboard({ uploadId }) {
+function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
   const [options, setOptions] = useState(null)
   const [optionsError, setOptionsError] = useState('')
   const [isLoadingOptions, setIsLoadingOptions] = useState(false)
@@ -121,6 +122,11 @@ function AnalyticsDashboard({ uploadId }) {
 
   return (
     <>
+      {uploadId && currency && (
+        <div className="mb-6">
+          <CurrencySelector currency={currency} onChange={onCurrencyChange} />
+        </div>
+      )}
       <DashboardFilters
         uploadId={uploadId}
         options={options}
@@ -141,6 +147,7 @@ function AnalyticsDashboard({ uploadId }) {
           result={result}
           error={analyticsError}
           isLoading={isLoadingAnalytics}
+          currency={currency}
         />
       </div>
 
@@ -150,6 +157,7 @@ function AnalyticsDashboard({ uploadId }) {
           result={result}
           error={analyticsError}
           isLoading={isLoadingAnalytics}
+          currency={currency}
         />
       </div>
     </>

@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import PlotlyChart from './PlotlyChart.jsx'
+import { formatMonetaryValue, plotlyCurrencyFormat } from './currency.js'
+import Reveal from './Reveal.jsx'
 
 function ChartState({ uploadId, state, children }) {
   if (!uploadId) {
@@ -42,7 +44,10 @@ function ChartNotes({ warnings }) {
   )
 }
 
-function AnalyticsCharts({ uploadId, result, error, isLoading }) {
+function AnalyticsCharts({ uploadId, result, error, isLoading, currency }) {
+  const currencyCode = currency?.selection?.code || ''
+  const axisCurrency = plotlyCurrencyFormat(currencyCode)
+  const mixedCurrencyBlocked = currency?.metadata?.status === 'multiple'
   const charts = result?.upload_id === uploadId ? result.charts : null
   const monthly = { result: charts?.monthly_revenue, error, isLoading }
   const regional = { result: charts?.sales_by_region, error, isLoading }
@@ -58,20 +63,23 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
           mode: 'lines+markers',
           x: monthly.result.data.map((item) => `${item.month}-01`),
           y: monthly.result.data.map((item) => item.revenue),
-          customdata: monthly.result.data.map((item) => item.label),
+          customdata: monthly.result.data.map((item) => [
+            item.label,
+            formatMonetaryValue(item.revenue, currencyCode, true),
+          ]),
           line: { color: '#047857', width: 3 },
           marker: { color: '#10b981', size: 7 },
-          hovertemplate: '%{customdata}<br>Revenue: %{y:,.2f}<extra></extra>',
+          hovertemplate: '%{customdata[0]}<br>Revenue: %{customdata[1]}<extra></extra>',
         },
       ],
       layout: {
         margin: { l: 62, r: 18, t: 18, b: 55 },
         hovermode: 'x unified',
         xaxis: { title: 'Month', type: 'date', tickformat: '%b %Y', gridcolor: '#e2e8f0' },
-        yaxis: { title: 'Revenue', tickformat: ',.2f', gridcolor: '#e2e8f0' },
+        yaxis: { title: 'Revenue', ...axisCurrency, gridcolor: '#e2e8f0' },
       },
     }
-  }, [monthly.result])
+  }, [axisCurrency, currencyCode, monthly.result])
 
   const regionalPlot = useMemo(() => {
     if (!regional.result?.available) return null
@@ -81,17 +89,18 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
           type: 'bar',
           x: regional.result.data.map((item) => item.region),
           y: regional.result.data.map((item) => item.revenue),
+          customdata: regional.result.data.map((item) => formatMonetaryValue(item.revenue, currencyCode, true)),
           marker: { color: '#0f766e' },
-          hovertemplate: '%{x}<br>Revenue: %{y:,.2f}<extra></extra>',
+          hovertemplate: '%{x}<br>Revenue: %{customdata}<extra></extra>',
         },
       ],
       layout: {
         margin: { l: 62, r: 18, t: 18, b: 55 },
         xaxis: { title: 'Region', gridcolor: '#e2e8f0' },
-        yaxis: { title: 'Revenue', tickformat: ',.2f', gridcolor: '#e2e8f0' },
+        yaxis: { title: 'Revenue', ...axisCurrency, gridcolor: '#e2e8f0' },
       },
     }
-  }, [regional.result])
+  }, [axisCurrency, currencyCode, regional.result])
 
   const categoryPlot = useMemo(() => {
     if (!category.result?.available) return null
@@ -103,16 +112,18 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
           name: 'Revenue',
           x: categories,
           y: category.result.data.map((item) => item.revenue),
+          customdata: category.result.data.map((item) => formatMonetaryValue(item.revenue, currencyCode, true)),
           marker: { color: '#0f766e' },
-          hovertemplate: '%{x}<br>Revenue: %{y:,.2f}<extra></extra>',
+          hovertemplate: '%{x}<br>Revenue: %{customdata}<extra></extra>',
         },
         {
           type: 'bar',
           name: 'Profit',
           x: categories,
           y: category.result.data.map((item) => item.profit),
+          customdata: category.result.data.map((item) => formatMonetaryValue(item.profit, currencyCode, true)),
           marker: { color: '#6366f1' },
-          hovertemplate: '%{x}<br>Profit: %{y:,.2f}<extra></extra>',
+          hovertemplate: '%{x}<br>Profit: %{customdata}<extra></extra>',
         },
       ],
       layout: {
@@ -120,10 +131,10 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
         margin: { l: 62, r: 18, t: 18, b: 70 },
         legend: { orientation: 'h', y: 1.12 },
         xaxis: { title: 'Category', automargin: true, gridcolor: '#e2e8f0' },
-        yaxis: { title: 'Value', tickformat: ',.2f', gridcolor: '#e2e8f0' },
+        yaxis: { title: 'Value', ...axisCurrency, gridcolor: '#e2e8f0' },
       },
     }
-  }, [category.result])
+  }, [axisCurrency, category.result, currencyCode])
 
   const profitPlot = useMemo(() => {
     if (!profit.result?.available) return null
@@ -135,7 +146,10 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
           name: 'Profit',
           x: segments,
           y: profit.result.data.map((item) => item.profit),
-          customdata: profit.result.data.map((item) => item.status),
+          customdata: profit.result.data.map((item) => [
+            item.status,
+            formatMonetaryValue(item.profit, currencyCode, true),
+          ]),
           marker: {
             color: profit.result.data.map((item) => {
               if (item.status === 'profitable') return '#059669'
@@ -144,7 +158,7 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
               return '#cbd5e1'
             }),
           },
-          hovertemplate: '%{x}<br>Profit: %{y:,.2f}<br>Status: %{customdata}<extra></extra>',
+          hovertemplate: '%{x}<br>Profit: %{customdata[1]}<br>Status: %{customdata[0]}<extra></extra>',
         },
         {
           type: 'scatter',
@@ -168,7 +182,7 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
           tickangle: -35,
           gridcolor: '#e2e8f0',
         },
-        yaxis: { title: 'Profit', tickformat: ',.2f', gridcolor: '#e2e8f0' },
+        yaxis: { title: 'Profit', ...axisCurrency, gridcolor: '#e2e8f0' },
         yaxis2: {
           title: 'Profit margin (%)',
           overlaying: 'y',
@@ -178,7 +192,16 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
         },
       },
     }
-  }, [profit.result])
+  }, [axisCurrency, currencyCode, profit.result])
+
+  if (mixedCurrencyBlocked) {
+    return (
+      <section aria-labelledby="charts-heading" className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-800">
+        <h2 id="charts-heading" className="font-semibold text-amber-900">Monetary charts unavailable</h2>
+        <p className="mt-1">This dataset contains multiple currencies. Filter to a single currency before comparing or aggregating revenue and profit.</p>
+      </section>
+    )
+  }
 
   return (
     <section aria-labelledby="charts-heading">
@@ -195,7 +218,8 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-2">
-        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)] sm:p-6">
+        <Reveal revealKey="chart-monthly-revenue" className="min-w-0">
+          <article className="motion-surface motion-surface-stable min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_16px_45px_-32px_rgba(6,78,59,0.35)] sm:p-6">
           <h3 className="text-base font-semibold text-slate-900">Monthly revenue</h3>
           <p className="mt-1 text-xs leading-5 text-slate-500">Revenue grouped by calendar month.</p>
           <div className="mt-3">
@@ -210,9 +234,11 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
             </ChartState>
           </div>
           <ChartNotes warnings={monthly.result?.warnings} />
-        </article>
+          </article>
+        </Reveal>
 
-        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)] sm:p-6">
+        <Reveal revealKey="chart-sales-region" delay={55} className="min-w-0">
+          <article className="motion-surface motion-surface-stable min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_16px_45px_-32px_rgba(6,78,59,0.35)] sm:p-6">
           <h3 className="text-base font-semibold text-slate-900">Sales by region</h3>
           <p className="mt-1 text-xs leading-5 text-slate-500">Regions sorted from highest to lowest revenue.</p>
           <div className="mt-3">
@@ -227,7 +253,8 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
             </ChartState>
           </div>
           <ChartNotes warnings={regional.result?.warnings} />
-        </article>
+          </article>
+        </Reveal>
       </div>
 
       <div className="mt-8 mb-5">
@@ -243,7 +270,8 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-2">
-        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)] sm:p-6">
+        <Reveal revealKey="chart-category-performance" className="min-w-0">
+          <article className="motion-surface motion-surface-stable min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_16px_45px_-32px_rgba(6,78,59,0.35)] sm:p-6">
           <h3 className="text-base font-semibold text-slate-900">Category performance</h3>
           <p className="mt-1 text-xs leading-5 text-slate-500">
             Revenue and profit grouped by product category.
@@ -260,9 +288,11 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
             </ChartState>
           </div>
           <ChartNotes warnings={category.result?.warnings} />
-        </article>
+          </article>
+        </Reveal>
 
-        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)] sm:p-6">
+        <Reveal revealKey="chart-profit-analysis" delay={55} className="min-w-0">
+          <article className="motion-surface motion-surface-stable min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_16px_45px_-32px_rgba(6,78,59,0.35)] sm:p-6">
           <h3 className="text-base font-semibold text-slate-900">Profit analysis</h3>
           <p className="mt-1 text-xs leading-5 text-slate-500">
             Green and red bars highlight profitable and loss-making segments.
@@ -279,7 +309,8 @@ function AnalyticsCharts({ uploadId, result, error, isLoading }) {
             </ChartState>
           </div>
           <ChartNotes warnings={profit.result?.warnings} />
-        </article>
+          </article>
+        </Reveal>
       </div>
     </section>
   )

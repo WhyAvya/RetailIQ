@@ -24,6 +24,7 @@ from backend.chart_analytics import (
 )
 from backend.database.db import Base
 from backend.dataset_selection import (
+    calculate_selected_currency_metadata,
     calculate_selected_dashboard,
     calculate_selected_filter_options,
 )
@@ -284,12 +285,12 @@ def test_filtered_dashboard_and_options_switch_with_upload_id(
     tmp_path,
 ):
     first_contents = (
-        b"Region,Category,Order Date,Sales,Profit,Order ID,Customer ID,Sub-Category\n"
-        b"West,Technology,2024-01-01,100,20,A,C1,Phones\n"
+        b"Region,Category,Order Date,Sales,Profit,Order ID,Customer ID,Sub-Category,Currency\n"
+        b"West,Technology,2024-01-01,100,20,A,C1,Phones,USD\n"
     )
     second_contents = (
-        b"Region,Category,Order Date,Sales,Profit,Order ID,Customer ID,Sub-Category\n"
-        b"East,Furniture,2024-02-01,50,-5,B,C2,Chairs\n"
+        b"Region,Category,Order Date,Sales,Profit,Order ID,Customer ID,Sub-Category,Currency Code\n"
+        b"East,Furniture,2024-02-01,50,-5,B,C2,Chairs,INR\n"
     )
     first = _store_with_metadata(
         first_contents, "first.csv", tmp_path, session_factory
@@ -322,6 +323,16 @@ def test_filtered_dashboard_and_options_switch_with_upload_id(
         session_factory=session_factory,
         storage_directory=tmp_path,
     )
+    first_currency = calculate_selected_currency_metadata(
+        first.upload_id,
+        session_factory=session_factory,
+        storage_directory=tmp_path,
+    )
+    second_currency = calculate_selected_currency_metadata(
+        second.upload_id,
+        session_factory=session_factory,
+        storage_directory=tmp_path,
+    )
 
     assert first_dashboard["upload_id"] == str(first.upload_id)
     assert first_dashboard["summary"]["kpis"]["total_revenue"]["value"] == 100
@@ -329,5 +340,7 @@ def test_filtered_dashboard_and_options_switch_with_upload_id(
     assert second_dashboard["summary"]["kpis"]["total_revenue"]["value"] == 50
     assert first_options["options"]["regions"]["values"] == ["West"]
     assert second_options["options"]["regions"]["values"] == ["East"]
+    assert first_currency["currency"]["detected_code"] == "USD"
+    assert second_currency["currency"]["detected_code"] == "INR"
     assert sha256(first.stored_path.read_bytes()).hexdigest() == first_hash
     assert sha256(second.stored_path.read_bytes()).hexdigest() == second_hash

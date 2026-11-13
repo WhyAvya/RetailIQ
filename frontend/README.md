@@ -14,3 +14,6 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the Oxlint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+# Branding assets
+
+Set `VITE_RETAILIQ_LOGO_URL` to the final RetailIQ logo asset URL. The navigation and upload card reuse it automatically. Set `VITE_RETAILIQ_FAVICON_URL` when the browser icon uses a separate asset; otherwise the configured logo URL is reused. Until a final asset is supplied, the existing green `R` monogram remains in the interface and no placeholder image is generated.

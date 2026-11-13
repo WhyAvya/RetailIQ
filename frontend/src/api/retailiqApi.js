@@ -43,6 +43,10 @@ export function fetchEvaluationReport(options = {}) {
   return requestJson('/api/evaluation/report', options)
 }
 
+export function fetchCurrencyMetadata(uploadId, options = {}) {
+  return requestJson(`/api/analytics/${uploadId}/currency`, options)
+}
+
 export function fetchIndexStatus(uploadId, options = {}) {
   return requestJson(`/api/uploads/${uploadId}/index-status`, options)
 }

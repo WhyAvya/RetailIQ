@@ -17,6 +17,7 @@ from backend.dataset_selection import (
     DatasetSelectionError,
     DatasetUnavailableError,
     calculate_selected_category_performance,
+    calculate_selected_currency_metadata,
     calculate_selected_dashboard,
     calculate_selected_dataset_kpis,
     calculate_selected_filter_options,
@@ -404,6 +405,11 @@ async def profit_analysis(
 @app.get("/api/analytics/{upload_id}/filter-options")
 async def analytics_filter_options(upload_id: UUID):
     return await _analytics_response(calculate_selected_filter_options, upload_id)
+
+
+@app.get("/api/analytics/{upload_id}/currency")
+async def analytics_currency(upload_id: UUID):
+    return await _analytics_response(calculate_selected_currency_metadata, upload_id)
 
 
 @app.get("/api/analytics/{upload_id}/dashboard")
