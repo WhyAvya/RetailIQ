@@ -105,3 +105,27 @@ def test_retry_endpoint_does_not_queue_when_job_is_active(monkeypatch):
 
     assert response["active"] is True
     assert background_tasks.tasks == []
+
+
+def test_ready_status_is_invalidated_when_ephemeral_index_is_missing(monkeypatch):
+    upload_id = uuid4()
+    transitions = []
+    monkeypatch.setattr(
+        main_module,
+        "get_upload_metadata",
+        lambda _upload_id: {"upload_id": str(upload_id), "status": "ready"},
+    )
+    monkeypatch.setattr(main_module, "is_indexing_active", lambda _upload_id: False)
+    monkeypatch.setattr(main_module, "ChromaVectorStore", lambda: type("EmptyStore", (), {"count": lambda self, _id: 0})())
+    monkeypatch.setattr(
+        main_module,
+        "transition_upload_status",
+        lambda *args: transitions.append(args) or True,
+    )
+
+    response = asyncio.run(main_module.upload_index_status(upload_id))
+
+    assert response["state"] == "failed"
+    assert response["ready"] is False
+    assert response["retryable"] is True
+    assert transitions == [(upload_id, "failed", ("ready",))]

@@ -29,7 +29,7 @@ from backend.dataset_selection import (
     calculate_selected_profit_analysis,
     calculate_selected_sales_by_region,
 )
-from backend.file_storage import FileStorageError, store_original_csv
+from backend.file_storage import FileStorageError, resolve_stored_upload_path, store_original_csv
 from backend.indexing_jobs import is_indexing_active, run_indexing_job
 from backend.llm_service import (
     LLMAuthenticationError,
@@ -60,6 +60,8 @@ from backend.upload_metadata import (
     list_upload_metadata,
     persist_upload_or_cleanup,
     recover_interrupted_uploads,
+    invalidate_missing_uploads,
+    mark_ready_uploads_retryable_if_index_missing,
     transition_upload_status,
 )
 from backend.anonymous_sessions import (
@@ -74,6 +76,7 @@ from backend.anonymous_sessions import (
 )
 from backend.runtime_config import (
     ALLOWED_ORIGINS,
+    CHROMA_STORAGE_PATH,
     CSRF_COOKIE_NAME,
     MAX_CSV_COLUMNS,
     MAX_CSV_ROWS,
@@ -84,6 +87,7 @@ from backend.runtime_config import (
     SESSION_TTL_SECONDS,
 )
 from backend.file_storage import UPLOAD_DIRECTORY
+from backend.embeddings import EMBEDDING_INDEX_VERSION
 from backend.vector_store import ChromaVectorStore
 from evaluation.report_service import (
     EvaluationReportUnavailableError,
@@ -93,6 +97,13 @@ from evaluation.report_service import (
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     try:
+        await run_in_threadpool(invalidate_missing_uploads, UPLOAD_DIRECTORY)
+        await run_in_threadpool(
+            mark_ready_uploads_retryable_if_index_missing,
+            CHROMA_STORAGE_PATH,
+            None,
+            EMBEDDING_INDEX_VERSION,
+        )
         await run_in_threadpool(recover_interrupted_uploads)
         await run_in_threadpool(_cleanup_expired_sessions)
     except (SessionStoreError, DatabaseOperationError):
@@ -427,6 +438,36 @@ async def upload_index_status(upload_id: UUID, request: Request = None):
         raise HTTPException(status_code=503, detail="Indexing status is temporarily unavailable.") from exc
     if metadata is None:
         raise HTTPException(status_code=404, detail="The requested upload was not found.")
+    if "stored_file_path" in metadata:
+        try:
+            await run_in_threadpool(resolve_stored_upload_path, metadata["stored_file_path"])
+        except FileStorageError as exc:
+            await run_in_threadpool(
+                invalidate_missing_uploads,
+                UPLOAD_DIRECTORY,
+                None,
+                metadata.get("owner_hash"),
+            )
+            raise HTTPException(
+                status_code=404,
+                detail="Temporary dataset files were lost after a restart. Please upload the CSV again.",
+            ) from exc
+    if metadata["status"] == "ready" and not is_indexing_active(upload_id):
+        try:
+            has_index = await run_in_threadpool(lambda: ChromaVectorStore().count(upload_id) > 0)
+        except Exception:
+            has_index = False
+        if not has_index:
+            try:
+                await run_in_threadpool(
+                    transition_upload_status,
+                    upload_id,
+                    "failed",
+                    ("ready",),
+                )
+            except DatabaseOperationError as exc:
+                raise HTTPException(status_code=503, detail="Indexing status is temporarily unavailable.") from exc
+            metadata = {**metadata, "status": "failed"}
     return _index_status_payload(metadata, is_indexing_active(upload_id))
 
 
@@ -467,6 +508,12 @@ async def upload_history(request: Request = None):
         if request is None:
             uploads = await run_in_threadpool(list_upload_metadata)
         else:
+            await run_in_threadpool(
+                invalidate_missing_uploads,
+                UPLOAD_DIRECTORY,
+                None,
+                request.state.identity.token_hash,
+            )
             uploads = await run_in_threadpool(list_upload_metadata, None, 1, request.state.identity.token_hash)
     except DatabaseOperationError as exc:
         raise HTTPException(

@@ -12,15 +12,20 @@ from typing import Any, Callable
 
 from backend.chroma_metadata import FULL_DATASET_UPLOAD_ID
 from backend.chroma_metadata import load_metadata_source
-from backend.embeddings import get_embedding_model
+from backend.embeddings import (
+    EMBEDDING_DIMENSION,
+    EMBEDDING_INDEX_VERSION,
+    EMBEDDING_MODEL_NAME,
+    get_embedding_client,
+)
 from backend.rag_retrieval import RetrievalMatch, retrieve_semantic_matches
 from evaluation.c8_evaluation import BENCHMARK_PATH
 from evaluation.retrieval_evaluation import calculate_question_metrics
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "evaluation" / "reports" / "semantic_retrieval_optimization_baseline.json"
-DEFAULT_MARKDOWN = ROOT / "evaluation" / "reports" / "semantic_retrieval_optimization.md"
+DEFAULT_OUTPUT = ROOT / "evaluation" / "reports" / "semantic_retrieval_gemini_001.json"
+DEFAULT_MARKDOWN = ROOT / "evaluation" / "reports" / "semantic_retrieval_gemini_001.md"
 Retriever = Callable[[str, str, int], list[RetrievalMatch]]
 
 
@@ -31,8 +36,8 @@ def evaluate(
     benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
     questions = [item for item in benchmark["questions"] if item["type"] == "semantic"]
     load_started = time.perf_counter()
-    get_embedding_model()
-    model_load_ms = (time.perf_counter() - load_started) * 1000
+    get_embedding_client()
+    client_initialization_ms = (time.perf_counter() - load_started) * 1000
     results = []
     for item in questions:
         started = time.perf_counter()
@@ -101,12 +106,17 @@ def evaluate(
         "benchmark_path": benchmark_path.relative_to(ROOT).as_posix(),
         "benchmark_sha256": hashlib.sha256(benchmark_path.read_bytes()).hexdigest(),
         "query_count": len(results),
+        "embedding": {
+            "model": EMBEDDING_MODEL_NAME,
+            "dimension": EMBEDDING_DIMENSION,
+            "index_version": EMBEDDING_INDEX_VERSION,
+        },
         "metrics": {
             name: sum(item["metrics"][name] for item in results) / len(results)
             for name in metric_names
         },
         "latency_ms": {
-            "one_time_model_load": model_load_ms,
+            "one_time_embedding_client_initialization": client_initialization_ms,
             "average": sum(latencies) / len(latencies),
             "maximum": max(latencies),
             "total": sum(latencies),
@@ -190,6 +200,7 @@ def compare(baseline: dict[str, Any], optimized: dict[str, Any]) -> dict[str, An
             "unchanged": True,
             "query_count": optimized["query_count"],
         },
+        "embedding": optimized.get("embedding"),
         "diagnosis": {
             "root_causes": [
                 "Embedding each full row alongside many unrelated attributes likely dilutes the short product-name terms used by C8.",
@@ -200,14 +211,13 @@ def compare(baseline: dict[str, Any], optimized: dict[str, Any]) -> dict[str, An
             "label_analysis": label_analysis,
         },
         "implemented_changes": [
-            "Retrieve up to 30 MiniLM candidates instead of only the requested K.",
-            "Union those candidates with up to 30 lightweight lexical matches over product name, sub-category, and category.",
-            "Rerank the union with 70% lexical field coverage and 30% cosine similarity, then return the existing top-K schema.",
-            "Cache searchable text for up to eight uploads and invalidate it after reindexing.",
+            "Replace local MiniLM inference with 768-dimensional gemini-embedding-001 document and query embeddings.",
+            "Preserve the existing vector candidate pool, lexical candidate union, and 70/30 lexical-vector reranking.",
+            "Use a versioned Chroma collection so MiniLM and Gemini vector spaces cannot be mixed.",
         ],
         "not_implemented": [
-            "Embedding text was not changed: the hybrid reranker delivered the gain without reindexing or index-version migration.",
-            "No heavy cross-encoder, new model, or dependency was added.",
+            "Embedding text, relevance labels, benchmark queries, top-K settings, and reranking weights were not changed.",
+            "No cross-encoder or additional local model was added.",
         ],
         "metrics": metric_comparison,
         "latency_ms": {
@@ -217,12 +227,12 @@ def compare(baseline: dict[str, Any], optimized: dict[str, Any]) -> dict[str, An
             "optimized_warm_average_excluding_first_query": optimized_warm,
             "baseline_maximum": before_latency["maximum"],
             "optimized_maximum": after_latency["maximum"],
-            "note": "One-time MiniLM model loading is reported separately in raw runs and excluded from query latency. The optimized first query also fills the bounded searchable-document cache.",
+            "note": "Gemini query latency includes the remote embedding API call. The first query can also fill the bounded searchable-document cache.",
         },
         "indexing": {
-            "reindex_required": False,
-            "measured_additional_indexing_overhead_ms": 0.0,
-            "index_version_change": None,
+            "reindex_required": True,
+            "measured_additional_indexing_overhead_ms": None,
+            "index_version_change": EMBEDDING_INDEX_VERSION,
         },
         "citation_source_rows": {
             "all_valid": optimized["all_source_rows_valid"],
@@ -269,7 +279,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "No embedding text or stored vectors changed, so no reindex or index-version migration was required.",
+            "Stored vectors changed from MiniLM to Gemini, so a versioned reindex is required.",
             "",
             "## Per-query results",
             "",
@@ -295,7 +305,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"- Optimized average including first cache fill: {latency['optimized_average_including_cache_fill']:.2f} ms.",
             f"- Baseline warm average: {latency['baseline_warm_average_excluding_first_query']:.2f} ms.",
             f"- Optimized warm average: {latency['optimized_warm_average_excluding_first_query']:.2f} ms.",
-            "- Additional indexing overhead: 0 ms; existing embeddings are reused.",
+            "- Indexing overhead must be measured during the Gemini reindex; MiniLM vectors are not reused.",
             "- Citation/source-row validation: all returned rows were valid.",
             "",
             "## Remaining limitations",

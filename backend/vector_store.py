@@ -6,7 +6,13 @@ from threading import Lock
 from typing import Any
 from uuid import UUID
 
-from backend.embeddings import EmbeddedChunk, generate_embeddings
+from backend.embeddings import (
+    EMBEDDING_DIMENSION,
+    EMBEDDING_INDEX_VERSION,
+    EMBEDDING_MODEL_NAME,
+    EmbeddedChunk,
+    generate_embeddings,
+)
 from backend.dataset_selection import SessionFactory
 from backend.rag_preparation import (
     DEFAULT_MAX_CHUNK_CHARS,
@@ -15,10 +21,12 @@ from backend.rag_preparation import (
     prepare_selected_dataset_chunks,
 )
 from backend.runtime_config import CHROMA_STORAGE_PATH
+from backend.runtime_config import EMBEDDING_BATCH_SIZE
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CHROMA_DIRECTORY = CHROMA_STORAGE_PATH
-COLLECTION_NAME = "retailiq_chunks"
+COLLECTION_NAME = "retailiq_gemini_001_768_v1"
+INDEX_VERSION_FILENAME = ".embedding-index-version"
 DEFAULT_INDEX_BATCH_SIZE = 500
 SEARCHABLE_DOCUMENT_CACHE_SIZE = 8
 
@@ -57,7 +65,12 @@ def _collection(client: Any):
     try:
         return client.get_or_create_collection(
             name=COLLECTION_NAME,
-            metadata={"hnsw:space": "cosine"},
+            metadata={
+                "hnsw:space": "cosine",
+                "embedding_model": EMBEDDING_MODEL_NAME,
+                "embedding_dimension": EMBEDDING_DIMENSION,
+                "embedding_version": EMBEDDING_INDEX_VERSION,
+            },
         )
     except Exception as exc:
         raise VectorStoreUnavailableError("The vector collection is unavailable.") from exc
@@ -196,6 +209,10 @@ class ChromaVectorStore:
         query_embedding: Sequence[float],
         top_k: int,
     ) -> dict[str, Any]:
+        if len(query_embedding) != EMBEDDING_DIMENSION:
+            raise InvalidIndexInputError(
+                f"Query embeddings must contain exactly {EMBEDDING_DIMENSION} values."
+            )
         try:
             return self._collection.query(
                 query_embeddings=[list(query_embedding)],
@@ -227,6 +244,10 @@ class ChromaVectorStore:
                     "Every chunk must belong to the requested upload ID."
                 )
             _validate_metadata(chunk.metadata)
+            if len(chunk.embedding) != EMBEDDING_DIMENSION:
+                raise InvalidIndexInputError(
+                    f"Embeddings must contain exactly {EMBEDDING_DIMENSION} values."
+                )
             chunk_ids.add(chunk.chunk_id)
 
         try:
@@ -266,10 +287,21 @@ class ChromaVectorStore:
 
         self._invalidate_searchable_cache(upload_id_value)
 
+        stored_chunks = self.count(upload_id_value)
+        try:
+            (self.storage_directory / INDEX_VERSION_FILENAME).write_text(
+                EMBEDDING_INDEX_VERSION,
+                encoding="utf-8",
+            )
+        except OSError as exc:
+            raise VectorStoreUnavailableError(
+                "The vector index version could not be recorded."
+            ) from exc
+
         return IndexingResult(
             upload_id=upload_id_value,
             indexed_chunks=len(chunks),
-            stored_chunks=self.count(upload_id_value),
+            stored_chunks=stored_chunks,
             collection_name=COLLECTION_NAME,
         )
 
@@ -278,7 +310,7 @@ def index_prepared_chunks(
     upload_id: UUID | str,
     chunks: Sequence[DocumentChunk],
     storage_directory: Path | None = None,
-    embedding_batch_size: int = 32,
+    embedding_batch_size: int = EMBEDDING_BATCH_SIZE,
     index_batch_size: int = DEFAULT_INDEX_BATCH_SIZE,
     embedding_function: Callable[..., list[EmbeddedChunk]] = generate_embeddings,
 ) -> IndexingResult:
@@ -299,7 +331,7 @@ def index_selected_dataset(
     upload_storage_directory: Path | None = None,
     vector_storage_directory: Path | None = None,
     max_chunk_chars: int = DEFAULT_MAX_CHUNK_CHARS,
-    embedding_batch_size: int = 32,
+    embedding_batch_size: int = EMBEDDING_BATCH_SIZE,
     index_batch_size: int = DEFAULT_INDEX_BATCH_SIZE,
 ) -> IndexingResult:
     """Securely load, prepare, embed, and index one existing uploaded dataset."""

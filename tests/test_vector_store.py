@@ -5,7 +5,7 @@ from uuid import UUID
 import numpy as np
 import pytest
 
-from backend.embeddings import EMBEDDING_DIMENSION, EmbeddedChunk
+from backend.embeddings import EMBEDDING_DIMENSION, EMBEDDING_INDEX_VERSION, EmbeddedChunk
 from backend.rag_preparation import DocumentChunk
 from backend.vector_store import (
     ChromaVectorStore,
@@ -66,6 +66,9 @@ def test_persistence_reindexing_metadata_and_dataset_isolation(chroma_directory)
     assert all(item["region"] == "West" for item in stored["metadatas"])
     assert all(len(vector) == EMBEDDING_DIMENSION for vector in stored["embeddings"])
     assert np.isfinite(stored["embeddings"]).all()
+    assert (chroma_directory / ".embedding-index-version").read_text(
+        encoding="utf-8"
+    ) == EMBEDDING_INDEX_VERSION
 
     del store
     release_chroma_clients()

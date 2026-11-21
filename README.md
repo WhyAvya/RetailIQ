@@ -8,7 +8,7 @@ RetailIQ lets users upload retail CSV datasets, explore analytics, and ask quest
 - Explore revenue, profit, orders, customers, and category or regional charts.
 - Ask numerical, filtering, ranking, semantic, and mixed questions.
 - Run exact aggregations and filters with Pandas instead of an LLM.
-- Combine MiniLM vector similarity with keyword matching and 70/30 reranking.
+- Combine Gemini vector similarity with keyword matching and 70/30 reranking.
 - Generate grounded OpenRouter/Nemotron answers with original CSV row citations.
 - Detect dataset currency, format monetary values, and inspect saved evaluation results.
 
@@ -19,7 +19,7 @@ RetailIQ lets users upload retail CSV datasets, explore analytics, and ask quest
 | Frontend | React 19, Vite 8, Tailwind CSS 4, Plotly, react-markdown |
 | Backend | Python 3.10, FastAPI, Pandas, Uvicorn |
 | Database | PostgreSQL / Neon for upload metadata |
-| Embeddings / RAG | MiniLM-L6-v2, sentence-transformers, ChromaDB, lexical reranking |
+| Embeddings / RAG | Gemini Embedding 001 (768d), ChromaDB, lexical reranking |
 | LLM | OpenRouter with Nemotron |
 | Testing | pytest, Node test runner, Oxlint, Vite production build |
 
@@ -29,12 +29,12 @@ RetailIQ lets users upload retail CSV datasets, explore analytics, and ask quest
 flowchart LR
     A[CSV Upload] --> B[Validation & Storage]
     B --> C[Analytics]
-    B --> D[MiniLM Embedding Index]
+    B --> D[Gemini Embedding Index]
     D --> E[ChromaDB]
     C --> F[Query Routing]
     E --> F
     F -->|Numerical, filtering, ranking| G[Pandas]
-    F -->|Semantic| H[MiniLM + ChromaDB + lexical reranking]
+    F -->|Semantic| H[Gemini + ChromaDB + lexical reranking]
     H --> I[Nemotron]
     F -->|Mixed| J[Pandas + retrieved rows]
     G --> K[Answer]

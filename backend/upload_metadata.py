@@ -5,13 +5,13 @@ from typing import Any
 from uuid import UUID
 
 import pandas as pd
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from backend.csv_utils import read_csv_dataframe
 from backend.database.db import get_session_factory
-from backend.database.models import UploadMetadata
+from backend.database.models import AnonymousSession, UploadMetadata
 from backend.file_storage import (
     FileStorageError,
     StoredUpload,
@@ -143,6 +143,71 @@ def recover_interrupted_uploads(session_factory: SessionFactory | None = None) -
     except SQLAlchemyError as exc:
         session.rollback()
         raise DatabaseOperationError("Interrupted indexing jobs could not be recovered.") from exc
+    finally:
+        session.close()
+
+
+def invalidate_missing_uploads(
+    storage_directory: Path,
+    session_factory: SessionFactory | None = None,
+    owner_hash: str | None = None,
+) -> int:
+    """Remove durable metadata whose ephemeral CSV disappeared after a restart."""
+    directory = storage_directory.resolve()
+    session = _session(session_factory)
+    try:
+        statement = select(UploadMetadata)
+        if owner_hash is not None:
+            statement = statement.where(UploadMetadata.user_email == owner_hash)
+        records = list(session.scalars(statement).all())
+        missing = [record for record in records if not (directory / record.stored_file_path).is_file()]
+        if not missing:
+            return 0
+        upload_ids = [record.upload_id for record in missing]
+        owners = {record.user_email for record in missing if record.user_email}
+        session.execute(delete(UploadMetadata).where(UploadMetadata.upload_id.in_(upload_ids)))
+        if owners:
+            session.execute(delete(AnonymousSession).where(AnonymousSession.session_hash.in_(owners)))
+        session.commit()
+        return len(upload_ids)
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raise DatabaseOperationError("Unavailable ephemeral uploads could not be invalidated.") from exc
+    finally:
+        session.close()
+
+
+def mark_ready_uploads_retryable_if_index_missing(
+    index_directory: Path,
+    session_factory: SessionFactory | None = None,
+    expected_version: str | None = None,
+) -> int:
+    """Invalidate `ready` flags when Chroma is absent or uses another embedding space."""
+    directory = index_directory.resolve()
+    database_exists = (directory / "chroma.sqlite3").is_file()
+    version_matches = expected_version is None
+    if expected_version is not None:
+        try:
+            version_matches = (
+                (directory / ".embedding-index-version").read_text(encoding="utf-8").strip()
+                == expected_version
+            )
+        except OSError:
+            version_matches = False
+    if database_exists and version_matches:
+        return 0
+    session = _session(session_factory)
+    try:
+        result = session.execute(
+            update(UploadMetadata)
+            .where(UploadMetadata.processing_status == "ready")
+            .values(processing_status="failed")
+        )
+        session.commit()
+        return int(result.rowcount or 0)
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raise DatabaseOperationError("Missing ephemeral indexes could not be invalidated.") from exc
     finally:
         session.close()
 

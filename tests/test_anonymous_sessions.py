@@ -14,6 +14,11 @@ from backend.anonymous_sessions import (
 )
 from backend.database.db import Base
 from backend.database.models import AnonymousSession, UploadMetadata
+from backend.upload_metadata import (
+    get_upload_metadata,
+    invalidate_missing_uploads,
+    mark_ready_uploads_retryable_if_index_missing,
+)
 
 
 def _factory():
@@ -58,3 +63,62 @@ def test_expiry_and_immediate_deletion_remove_temporary_metadata():
     assert expired_session_hashes(factory) == [identity.token_hash]
     assert remove_session_records(identity.token_hash, factory) == [(upload_id, f"{upload_id}.csv")]
     assert session_uploads(identity.token_hash, factory) == []
+
+
+def test_ephemeral_restart_invalidates_missing_csv_and_owning_session(tmp_path):
+    factory = _factory()
+    identity = new_identity()
+    touch_session(identity, factory)
+    upload_id = uuid4()
+    with factory() as session:
+        session.add(UploadMetadata(upload_id=upload_id, user_email=identity.token_hash, original_filename="lost.csv", stored_file_path=f"{upload_id}.csv", file_size=10, processing_status="ready"))
+        session.commit()
+
+    assert invalidate_missing_uploads(tmp_path, factory) == 1
+    assert get_upload_metadata(upload_id, factory) is None
+    with factory() as session:
+        assert session.get(AnonymousSession, identity.token_hash) is None
+
+
+def test_missing_chroma_database_makes_ready_upload_retryable(tmp_path):
+    factory = _factory()
+    upload_id = uuid4()
+    with factory() as session:
+        session.add(UploadMetadata(upload_id=upload_id, original_filename="present.csv", stored_file_path=f"{upload_id}.csv", file_size=10, processing_status="ready"))
+        session.commit()
+
+    assert mark_ready_uploads_retryable_if_index_missing(tmp_path / "chroma", factory) == 1
+    assert get_upload_metadata(upload_id, factory)["status"] == "failed"
+
+
+def test_old_embedding_index_version_makes_ready_upload_retryable(tmp_path):
+    factory = _factory()
+    upload_id = uuid4()
+    index_directory = tmp_path / "chroma"
+    index_directory.mkdir()
+    (index_directory / "chroma.sqlite3").touch()
+    (index_directory / ".embedding-index-version").write_text(
+        "minilm-384-v1",
+        encoding="utf-8",
+    )
+    with factory() as session:
+        session.add(
+            UploadMetadata(
+                upload_id=upload_id,
+                original_filename="present.csv",
+                stored_file_path=f"{upload_id}.csv",
+                file_size=10,
+                processing_status="ready",
+            )
+        )
+        session.commit()
+
+    assert (
+        mark_ready_uploads_retryable_if_index_missing(
+            index_directory,
+            factory,
+            "gemini-embedding-001-768-v1",
+        )
+        == 1
+    )
+    assert get_upload_metadata(upload_id, factory)["status"] == "failed"

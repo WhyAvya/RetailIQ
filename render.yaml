@@ -2,13 +2,10 @@ services:
   - type: web
     name: retailiq-api
     runtime: python
+    plan: free
     buildCommand: pip install -r backend/requirements.txt
     startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
-    disk:
-      name: retailiq-temporary-data
-      mountPath: /var/data/retailiq
-      sizeGB: 10
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.14
@@ -17,6 +14,8 @@ services:
       - key: DATABASE_URL_UNPOOLED
         sync: false
       - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
         sync: false
       - key: OPENROUTER_MODEL
         value: nvidia/nemotron-3-ultra-550b-a55b:free
@@ -27,12 +26,26 @@ services:
       - key: SESSION_COOKIE_SAMESITE
         value: none
       - key: UPLOAD_STORAGE_PATH
-        value: /var/data/retailiq/uploads
+        value: /tmp/retailiq/uploads
       - key: CHROMA_STORAGE_PATH
-        value: /var/data/retailiq/chroma
+        value: /tmp/retailiq/chroma
       - key: SESSION_TTL_SECONDS
         value: "1800"
       - key: MAX_CSV_ROWS
-        value: "50000"
+        value: "5000"
       - key: MAX_CSV_COLUMNS
         value: "200"
+      - key: MAX_UPLOAD_BYTES
+        value: "5242880"
+      - key: MAX_CONCURRENT_INDEX_JOBS
+        value: "1"
+      - key: EMBEDDING_BATCH_SIZE
+        value: "16"
+      - key: GEMINI_EMBEDDING_TIMEOUT_SECONDS
+        value: "30"
+      - key: GEMINI_EMBEDDING_RETRY_ATTEMPTS
+        value: "4"
+      - key: GEMINI_EMBEDDING_BACKOFF_SECONDS
+        value: "1"
+      - key: GEMINI_EMBEDDING_MAX_BACKOFF_SECONDS
+        value: "8"

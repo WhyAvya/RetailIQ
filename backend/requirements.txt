@@ -8,6 +8,6 @@ python-multipart
 pytest
 sqlalchemy
 psycopg[binary]
-sentence-transformers
+google-genai>=1.0,<4
 chromadb
 httpx
