@@ -112,10 +112,6 @@ function App() {
             <>
           <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14">
             <section className="motion-copy-enter max-w-xl">
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                CSV analytics + grounded AI
-              </p>
               <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
                 Understand any tabular dataset faster.
               </h1>

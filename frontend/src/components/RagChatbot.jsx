@@ -200,9 +200,6 @@ function RagChatbot({ selectedDataset, onDatasetSelected, currency, onCurrencyCh
         <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 id="chatbot-heading" className="text-2xl font-semibold text-slate-950">Ask questions about your retail data</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-              Exact numerical questions use dataset analytics. Record-level questions use retrieved CSV evidence and the configured AI model.
-            </p>
           </div>
           {state.messages.length > 0 && (
             <button type="button" onClick={() => dispatch({ type: 'clear' })} className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">

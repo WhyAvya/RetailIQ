@@ -5,7 +5,12 @@ function formatStatistic(value) {
 
 function DatasetReport({ profile, preprocessing }) {
   return (
-    <div className="mt-6 space-y-5 border-t border-slate-200 pt-6">
+    <div
+      role="region"
+      aria-label="Uploaded dataset quality report"
+      tabIndex={0}
+      className="mt-6 max-h-[70vh] space-y-5 overflow-y-auto overscroll-contain border-t border-slate-200 pt-6 pr-2 lg:max-h-[42rem]"
+    >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
           Data quality report

@@ -132,6 +132,18 @@ function EvaluationDashboard() {
 
   return (
     <section aria-labelledby="evaluation-heading" className="space-y-10">
+      <Reveal
+        as="aside"
+        revealKey="evaluation-reviewer-note"
+        aria-label="Evaluation page audience notice"
+        className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-950 shadow-sm sm:px-6"
+      >
+        <p className="font-semibold">Reviewer note</p>
+        <p className="mt-1">
+          This page documents benchmark and validation evidence for people reviewing the RetailIQ project. It is not part of the normal dataset-analysis workflow and has no direct relevance to day-to-day website use.
+        </p>
+      </Reveal>
+
       <Reveal as="header" revealKey="evaluation-header" className="rounded-2xl border border-emerald-950/10 bg-white p-6 shadow-[0_18px_55px_-30px_rgba(6,78,59,0.28)] sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>

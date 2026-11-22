@@ -28,7 +28,7 @@ function CurrencySelector({ currency, onChange }) {
             </span>
           </div>
           <p className="mt-1 text-xs leading-5 text-slate-500">
-            Formatting only—RetailIQ never converts or changes stored values.
+            Interpret monetary values in different currencies; the original data remains unchanged.
           </p>
         </div>
         <label className="text-xs font-medium text-slate-600" htmlFor="currency-selector">

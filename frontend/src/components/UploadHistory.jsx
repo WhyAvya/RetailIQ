@@ -126,7 +126,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
       )}
 
       {uploads.length > 0 && (
-        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="mt-5 space-y-5">
           <div className="space-y-2">
             {uploads.map((upload) => (
               <button
@@ -168,12 +168,8 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
             ))}
           </div>
 
+          {(isLoadingPreview || previewError || preview) && (
           <div className="min-w-0 rounded-xl border border-slate-200 bg-[#F5F8F3] p-4">
-            {!selectedId && (
-              <div className="flex min-h-40 items-center justify-center text-center text-sm text-slate-500">
-                Choose a saved upload to select it and view its dataset preview.
-              </div>
-            )}
             {isLoadingPreview && <p className="text-sm text-slate-500">Loading preview...</p>}
             {previewError && <p role="alert" className="text-sm text-red-700">{previewError}</p>}
             {preview && (
@@ -187,9 +183,14 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
                     {preview.columns.length} columns · {preview.preview_row_count} preview rows
                   </p>
                 </div>
-                <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+                <div
+                  role="region"
+                  aria-label="Selected dataset preview table"
+                  tabIndex={0}
+                  className="max-h-[32rem] overflow-auto overscroll-contain rounded-lg border border-slate-200 bg-white"
+                >
                   <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-600">
+                    <thead className="sticky top-0 z-10 bg-slate-50 text-slate-600 shadow-[0_1px_0_rgba(226,232,240,1)]">
                       <tr>
                         {preview.columns.map((column, index) => (
                           <th key={`${column}-${index}`} className="whitespace-nowrap px-3 py-2.5 font-semibold">
@@ -214,6 +215,7 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
               </div>
             )}
           </div>
+          )}
         </div>
       )}
     </section>
