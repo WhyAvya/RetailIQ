@@ -131,7 +131,7 @@ function EvaluationDashboard() {
   const numerical = answer.numerical_correctness
 
   return (
-    <section aria-labelledby="evaluation-heading" className="space-y-10">
+    <section aria-labelledby="evaluation-heading" className="space-y-8 sm:space-y-10">
       <Reveal
         as="aside"
         revealKey="evaluation-reviewer-note"
@@ -148,7 +148,7 @@ function EvaluationDashboard() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Verified reports</p>
-            <h1 id="evaluation-heading" className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">RetailIQ evaluation results</h1>
+            <h1 id="evaluation-heading" className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">RetailIQ evaluation results</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
               Results are shown by benchmark so differently scoped tests are not combined. Actual system measurements, deterministic checks, fixtures, and pending attempts are labeled separately.
             </p>

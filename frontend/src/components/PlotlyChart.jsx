@@ -39,7 +39,7 @@ function PlotlyChart({ data, layout, ariaLabel }) {
     }
   }, [data, layout])
 
-  return <div ref={chartRef} role="img" aria-label={ariaLabel} className="h-80 w-full" />
+  return <div ref={chartRef} role="img" aria-label={ariaLabel} className="h-64 w-full sm:h-80" />
 }
 
 export default PlotlyChart

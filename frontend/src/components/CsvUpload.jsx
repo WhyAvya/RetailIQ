@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import DatasetReport from './DatasetReport.jsx'
 import BrandLogo from './BrandLogo.jsx'
 import { uploadCsv } from '../api/retailiqApi.js'
 
@@ -54,20 +53,19 @@ function FileIcon() {
   )
 }
 
-function CsvUpload({ onUploadComplete }) {
+function CsvUpload({ onUploadComplete, onUploadReset }) {
   const inputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [uploadResult, setUploadResult] = useState(null)
 
   const selectFile = (files) => {
     if (isUploading) return
 
     setMessage('')
-    setUploadResult(null)
+    onUploadReset?.()
 
     if (files.length > 1) {
       setSelectedFile(null)
@@ -103,7 +101,7 @@ function CsvUpload({ onUploadComplete }) {
     setSelectedFile(null)
     setError('')
     setMessage('')
-    setUploadResult(null)
+    onUploadReset?.()
   }
 
   const handleUpload = async () => {
@@ -112,7 +110,7 @@ function CsvUpload({ onUploadComplete }) {
     setIsUploading(true)
     setError('')
     setMessage('')
-    setUploadResult(null)
+    onUploadReset?.()
 
     try {
       const data = await uploadCsv(selectedFile)
@@ -122,7 +120,6 @@ function CsvUpload({ onUploadComplete }) {
           `${data.rows.toLocaleString()} rows and ${data.columns.toLocaleString()} columns were found. ` +
           'AI indexing will continue in the background.',
       )
-      setUploadResult(data)
       onUploadComplete?.(data)
     } catch (uploadError) {
       setError(
@@ -248,13 +245,6 @@ function CsvUpload({ onUploadComplete }) {
         >
           {message}
         </p>
-      )}
-
-      {uploadResult && (
-        <DatasetReport
-          profile={uploadResult.profile}
-          preprocessing={uploadResult.preprocessing}
-        />
       )}
     </section>
   )

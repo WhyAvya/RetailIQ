@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { clearSessionData, fetchCurrencyMetadata } from './api/retailiqApi.js'
 import AnalyticsDashboard from './components/AnalyticsDashboard.jsx'
 import CsvUpload from './components/CsvUpload.jsx'
+import DatasetReport from './components/DatasetReport.jsx'
 import EvaluationDashboard from './components/EvaluationDashboard.jsx'
 import RagChatbot from './components/RagChatbot.jsx'
 import UploadHistory from './components/UploadHistory.jsx'
@@ -14,6 +15,7 @@ function App() {
   const [selectedDataset, setSelectedDataset] = useState(null)
   const [activeView, setActiveView] = useState('workspace')
   const [currencyByDataset, setCurrencyByDataset] = useState({})
+  const [uploadReport, setUploadReport] = useState(null)
   const selectedId = selectedDataset?.uploadId || ''
   const currency = selectedId ? currencyByDataset[selectedId] : null
 
@@ -65,30 +67,32 @@ function App() {
     await clearSessionData()
     setSelectedDataset(null)
     setCurrencyByDataset({})
+    setUploadReport(null)
     setHistoryRefresh((value) => value + 1)
   }
 
   return (
     <div className="min-h-screen bg-[#F5F8F3] text-[#1F2937]">
       <header className="motion-header-enter sticky top-0 z-30 border-b border-emerald-950/10 bg-white/95 shadow-[0_1px_12px_rgba(6,78,59,0.06)] backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <BrandLogo />
-          <div className="flex w-full items-center gap-2 sm:w-auto"><nav aria-label="Primary navigation" className="flex flex-1 rounded-xl border border-emerald-950/10 bg-[#F5F8F3] p-1 text-xs font-semibold sm:flex-none sm:text-sm">
+        <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:flex sm:gap-3 sm:px-8 sm:py-3">
+          <div className="sm:order-1"><BrandLogo /></div>
+          <button type="button" onClick={clearData} className="min-h-10 whitespace-nowrap rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-50 sm:order-3">Clear my data</button>
+          <nav aria-label="Primary navigation" className="col-span-2 flex w-full rounded-xl border border-emerald-950/10 bg-[#F5F8F3] p-1 text-xs font-semibold sm:order-2 sm:ml-auto sm:w-auto sm:text-sm">
             {[
               ['workspace', 'Workspace'],
               ['chatbot', 'Ask AI'],
               ['evaluation', 'Evaluation'],
             ].map(([view, label]) => (
-              <button key={view} type="button" aria-current={activeView === view ? 'page' : undefined} onClick={() => setActiveView(view)} className={`flex-1 rounded-lg px-4 py-2.5 transition sm:flex-none ${activeView === view ? 'bg-[#064E3B] text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-[#064E3B]'}`}>
+              <button key={view} type="button" aria-current={activeView === view ? 'page' : undefined} onClick={() => setActiveView(view)} className={`flex-1 whitespace-nowrap rounded-lg px-2.5 py-2.5 transition sm:flex-none sm:px-4 ${activeView === view ? 'bg-[#064E3B] text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-[#064E3B]'}`}>
                 {label}
               </button>
             ))}
-          </nav><button type="button" onClick={clearData} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-50">Clear my data</button></div>
+          </nav>
         </div>
       </header>
 
       <main className="overflow-x-clip">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-8 sm:py-10 lg:py-12">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-10 lg:py-12">
           {selectedDataset && (
             <div className="motion-content-enter mb-6 flex min-w-0 flex-col gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
@@ -110,16 +114,16 @@ function App() {
           )}
           {activeView === 'workspace' ? (
             <>
-          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14">
             <section className="motion-copy-enter max-w-xl">
-              <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
+              <h1 className="text-3xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
                 Understand any tabular dataset faster.
               </h1>
               <p className="mt-5 max-w-lg text-base leading-7 text-slate-600 sm:text-lg">
                 Upload a CSV to explore exact summaries, relevant charts, and grounded
                 natural-language answers with source-row citations.
               </p>
-              <div className="mt-8 grid max-w-md grid-cols-2 gap-3 text-sm text-slate-600">
+              <div className="mt-6 grid max-w-md grid-cols-2 gap-2.5 text-sm text-slate-600 sm:mt-8 sm:gap-3">
                 <div className="rounded-xl border border-slate-200 bg-white/70 p-3.5">
                   <p className="font-semibold text-slate-800">CSV format</p>
                   <p className="mt-1 text-xs leading-5 text-slate-500">Tabular data with a header row</p>
@@ -132,18 +136,34 @@ function App() {
             </section>
 
             <Reveal revealKey="workspace-upload" delay={70} className="min-w-0">
-              <CsvUpload onUploadComplete={(data) => { setSelectedDataset({ uploadId: data.upload_id, filename: data.filename, status: data.status }); setHistoryRefresh((value) => value + 1) }} />
+              <CsvUpload
+                onUploadComplete={(data) => {
+                  setUploadReport(data)
+                  setSelectedDataset({ uploadId: data.upload_id, filename: data.filename, status: data.status })
+                  setHistoryRefresh((value) => value + 1)
+                }}
+                onUploadReset={() => setUploadReport(null)}
+              />
             </Reveal>
           </div>
 
-          <Reveal revealKey="workspace-datasets" delay={55} className="mt-10 lg:mt-14">
+          {uploadReport && (
+            <Reveal revealKey="workspace-upload-report" delay={55} className="mt-8">
+              <DatasetReport
+                profile={uploadReport.profile}
+                preprocessing={uploadReport.preprocessing}
+              />
+            </Reveal>
+          )}
+
+          <Reveal revealKey="workspace-datasets" delay={55} className="mt-8 sm:mt-10 lg:mt-14">
             <UploadHistory
               refreshToken={historyRefresh}
               onDatasetSelected={(uploadId, filename, status) => setSelectedDataset(uploadId ? { uploadId, filename, status } : null)}
             />
           </Reveal>
 
-          <Reveal revealKey="workspace-analytics" delay={55} className="mt-10">
+          <Reveal revealKey="workspace-analytics" delay={55} className="mt-8 sm:mt-10">
             <AnalyticsDashboard
               key={selectedDataset?.uploadId || 'no-dataset'}
               uploadId={selectedDataset?.uploadId || null}

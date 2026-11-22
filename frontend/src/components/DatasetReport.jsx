@@ -9,7 +9,7 @@ function DatasetReport({ profile, preprocessing }) {
       role="region"
       aria-label="Uploaded dataset quality report"
       tabIndex={0}
-      className="mt-6 max-h-[70vh] space-y-5 overflow-y-auto overscroll-contain border-t border-slate-200 pt-6 pr-2 lg:max-h-[42rem]"
+      className="max-h-[70vh] space-y-5 overflow-y-auto overscroll-contain rounded-2xl border border-slate-200 bg-white p-5 pr-3 shadow-[0_18px_55px_-30px_rgba(15,23,42,0.25)] sm:p-7 sm:pr-4 lg:max-h-[42rem]"
     >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">

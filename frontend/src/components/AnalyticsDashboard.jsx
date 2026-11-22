@@ -126,9 +126,9 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
         onReset={resetFilters}
       />}
 
-      {result?.kind === 'generic' ? <div className="mt-10"><GenericDashboard result={result} /></div> : <>
+      {result?.kind === 'generic' ? <div className="mt-8 sm:mt-10"><GenericDashboard result={result} /></div> : <>
 
-      <div className="mt-10">
+      <div className="mt-8 sm:mt-10">
         <KpiDashboard
           uploadId={uploadId}
           result={result}
@@ -138,7 +138,7 @@ function AnalyticsDashboard({ uploadId, currency, onCurrencyChange }) {
         />
       </div>
 
-      <div className="mt-10">
+      <div className="mt-8 sm:mt-10">
         <AnalyticsCharts
           uploadId={uploadId}
           result={result}

@@ -6,24 +6,24 @@ import Reveal from './Reveal.jsx'
 function ChartState({ uploadId, state, children }) {
   if (!uploadId) {
     return (
-      <div className="flex h-80 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 text-center text-sm text-slate-500">
+      <div className="flex h-56 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 text-center text-sm text-slate-500 sm:h-80 sm:px-5">
         Select a dataset to view this chart.
       </div>
     )
   }
   if (state.isLoading) {
-    return <div className="h-80 animate-pulse rounded-xl bg-slate-100" aria-label="Loading chart" />
+    return <div className="h-56 animate-pulse rounded-xl bg-slate-100 sm:h-80" aria-label="Loading chart" />
   }
   if (state.error) {
     return (
-      <p role="alert" className="flex h-80 items-center justify-center rounded-xl border border-red-200 bg-red-50 px-5 text-center text-sm text-red-700">
+      <p role="alert" className="flex h-56 items-center justify-center rounded-xl border border-red-200 bg-red-50 px-4 text-center text-sm text-red-700 sm:h-80 sm:px-5">
         {state.error}
       </p>
     )
   }
   if (state.result && !state.result.available) {
     return (
-      <div className="flex h-80 flex-col items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-5 text-center">
+      <div className="flex h-56 flex-col items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-4 text-center sm:h-80 sm:px-5">
         <p className="text-sm font-semibold text-amber-900">Chart unavailable</p>
         <p className="mt-1 text-xs leading-5 text-amber-700">{state.result.reason}</p>
       </div>
