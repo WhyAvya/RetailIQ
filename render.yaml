@@ -41,6 +41,8 @@ services:
         value: "1"
       - key: EMBEDDING_BATCH_SIZE
         value: "16"
+      - key: GEMINI_EMBEDDING_REQUESTS_PER_MINUTE
+        value: "90"
       - key: GEMINI_EMBEDDING_TIMEOUT_SECONDS
         value: "30"
       - key: GEMINI_EMBEDDING_RETRY_ATTEMPTS

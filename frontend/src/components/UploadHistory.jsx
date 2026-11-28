@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchDatasetPreview, fetchUploads } from '../api/retailiqApi.js'
+import { indexingStatusText } from './indexingStatus.js'
 
 function formatFileSize(bytes) {
   if (bytes < 1024) return `${bytes} bytes`
@@ -164,6 +165,11 @@ function UploadHistory({ refreshToken, onDatasetSelected }) {
                 <p className="mt-2 text-xs text-slate-500">
                   {formatUploadDate(upload.uploaded_at)} · {formatFileSize(upload.size)}
                 </p>
+                {(upload.status === 'pending' || upload.status === 'indexing') && (
+                  <p className="mt-2 text-xs font-medium text-amber-700">
+                    {indexingStatusText(upload)}
+                  </p>
+                )}
               </button>
             ))}
           </div>

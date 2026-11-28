@@ -231,7 +231,7 @@ function RagChatbot({ selectedDataset, onDatasetSelected, currency, onCurrencyCh
         )}
         {selectedId && selectedUpload && !ragReady && (
           <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-            <span>{indexingStatusText(selectedUpload.status)}</span>
+            <span>{indexingStatusText(selectedUpload)}</span>
             {selectedUpload.status === 'failed' && (
               <button type="button" onClick={retrySelectedIndexing} className="font-semibold underline">Retry</button>
             )}

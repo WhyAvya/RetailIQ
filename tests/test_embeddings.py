@@ -42,9 +42,10 @@ class FakeClient:
 
 
 class FakeApiError(Exception):
-    def __init__(self, status_code):
+    def __init__(self, status_code, details=None):
         super().__init__(f"private API error {status_code}")
         self.status_code = status_code
+        self.details = details
 
 
 def embedding_response(count, dimension=EMBEDDING_DIMENSION, value=1.0):
@@ -89,6 +90,26 @@ def test_document_embeddings_are_batched_normalized_and_768_dimensions():
         **chunks[0].metadata,
         "embedding_version": EMBEDDING_INDEX_VERSION,
     }
+
+
+def test_document_embeddings_are_paced_by_input_count(monkeypatch):
+    client = FakeClient()
+    clock = {"now": 0.0}
+    delays = []
+
+    def sleep(delay):
+        delays.append(delay)
+        clock["now"] += delay
+
+    monkeypatch.setattr(embeddings, "GEMINI_EMBEDDING_REQUESTS_PER_MINUTE", 60)
+    monkeypatch.setattr(embeddings, "_next_embedding_request_at", 0.0)
+    monkeypatch.setattr(embeddings.time, "monotonic", lambda: clock["now"])
+    monkeypatch.setattr(embeddings.time, "sleep", sleep)
+
+    generate_embeddings(make_chunks(5), batch_size=2, client=client)
+
+    assert delays == [2.0, 2.0]
+    assert [len(call["contents"]) for call in client.models.calls] == [2, 2, 1]
 
 
 def test_empty_input_does_not_initialize_or_call_client():
@@ -156,6 +177,30 @@ def test_retryable_api_error_uses_exponential_backoff(monkeypatch):
     assert len(result) == EMBEDDING_DIMENSION
     assert delays == [0.25, 0.5]
     assert len(client.models.calls) == 3
+
+
+def test_quota_retry_honors_server_retry_delay(monkeypatch):
+    retry_details = {
+        "error": {
+            "details": [
+                {
+                    "@type": "type.googleapis.com/google.rpc.RetryInfo",
+                    "retryDelay": "53s",
+                }
+            ]
+        }
+    }
+    client = FakeClient([FakeApiError(429, retry_details), embedding_response(1)])
+    delays = []
+    monkeypatch.setattr(embeddings, "GEMINI_EMBEDDING_REQUESTS_PER_MINUTE", 0)
+    monkeypatch.setattr(embeddings, "GEMINI_EMBEDDING_RETRY_ATTEMPTS", 2)
+    monkeypatch.setattr(embeddings.time, "sleep", delays.append)
+
+    result = generate_query_embedding("sales", client)
+
+    assert len(result) == EMBEDDING_DIMENSION
+    assert delays == [53.0]
+    assert len(client.models.calls) == 2
 
 
 def test_quota_exhaustion_is_safe_and_bounded(monkeypatch):

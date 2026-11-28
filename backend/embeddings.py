@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
+import re
 import time
 from dataclasses import dataclass
 from functools import lru_cache
+from threading import Lock
 from typing import Any, Sequence
 
 import numpy as np
@@ -16,6 +18,7 @@ from backend.runtime_config import (
     EMBEDDING_BATCH_SIZE,
     GEMINI_EMBEDDING_BACKOFF_SECONDS,
     GEMINI_EMBEDDING_MAX_BACKOFF_SECONDS,
+    GEMINI_EMBEDDING_REQUESTS_PER_MINUTE,
     GEMINI_EMBEDDING_RETRY_ATTEMPTS,
     GEMINI_EMBEDDING_TIMEOUT_SECONDS,
 )
@@ -27,6 +30,8 @@ DEFAULT_EMBEDDING_BATCH_SIZE = EMBEDDING_BATCH_SIZE
 DOCUMENT_TASK_TYPE = "RETRIEVAL_DOCUMENT"
 QUERY_TASK_TYPE = "RETRIEVAL_QUERY"
 RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
+_rate_limit_lock = Lock()
+_next_embedding_request_at = 0.0
 
 
 class EmbeddingError(RuntimeError):
@@ -104,6 +109,62 @@ def _is_timeout(error: Exception) -> bool:
     return "timeout" in type(error).__name__.casefold() or "timed out" in str(error).casefold()
 
 
+def _wait_for_rate_limit(input_count: int) -> None:
+    """Pace embedding inputs because Gemini quotas count each input text."""
+    requests_per_minute = GEMINI_EMBEDDING_REQUESTS_PER_MINUTE
+    if requests_per_minute <= 0:
+        return
+
+    global _next_embedding_request_at
+    spacing = 60.0 * input_count / requests_per_minute
+    with _rate_limit_lock:
+        now = time.monotonic()
+        scheduled_at = max(now, _next_embedding_request_at)
+        _next_embedding_request_at = scheduled_at + spacing
+    delay = scheduled_at - now
+    if delay > 0:
+        time.sleep(delay)
+
+
+def _duration_seconds(value: object) -> float | None:
+    if isinstance(value, (int, float)) and value >= 0:
+        return float(value)
+    if isinstance(value, str):
+        match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)s?\s*", value)
+        if match:
+            return float(match.group(1))
+    return None
+
+
+def _find_retry_delay(value: object) -> float | None:
+    if isinstance(value, dict):
+        for key in ("retryDelay", "retry_delay"):
+            delay = _duration_seconds(value.get(key))
+            if delay is not None:
+                return delay
+        for nested in value.values():
+            delay = _find_retry_delay(nested)
+            if delay is not None:
+                return delay
+    elif isinstance(value, (list, tuple)):
+        for nested in value:
+            delay = _find_retry_delay(nested)
+            if delay is not None:
+                return delay
+    return None
+
+
+def _retry_after_seconds(error: Exception) -> float | None:
+    delay = _find_retry_delay(getattr(error, "details", None))
+    if delay is not None:
+        return delay
+    response = getattr(error, "response", None)
+    headers = getattr(response, "headers", None)
+    if headers is not None:
+        return _duration_seconds(headers.get("retry-after"))
+    return None
+
+
 def _extract_vectors(response: Any, expected_count: int) -> np.ndarray:
     embeddings = getattr(response, "embeddings", None)
     if embeddings is None:
@@ -131,6 +192,7 @@ def _embed_batch(texts: list[str], task_type: str, client: Any | None = None) ->
     attempts = max(1, GEMINI_EMBEDDING_RETRY_ATTEMPTS)
     for attempt in range(attempts):
         try:
+            _wait_for_rate_limit(len(texts))
             response = service.models.embed_content(
                 model=EMBEDDING_MODEL_NAME,
                 contents=texts,
@@ -146,7 +208,8 @@ def _embed_batch(texts: list[str], task_type: str, client: Any | None = None) ->
             status = _status_code(exc)
             retryable = status in RETRYABLE_STATUS_CODES or _is_timeout(exc)
             if retryable and attempt + 1 < attempts:
-                delay = min(
+                retry_after = _retry_after_seconds(exc) if status == 429 else None
+                delay = retry_after if retry_after is not None else min(
                     GEMINI_EMBEDDING_BACKOFF_SECONDS * (2**attempt),
                     GEMINI_EMBEDDING_MAX_BACKOFF_SECONDS,
                 )

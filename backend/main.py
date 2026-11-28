@@ -30,7 +30,12 @@ from backend.dataset_selection import (
     calculate_selected_sales_by_region,
 )
 from backend.file_storage import FileStorageError, resolve_stored_upload_path, store_original_csv
-from backend.indexing_jobs import is_indexing_active, run_indexing_job
+from backend.indexing_jobs import (
+    get_indexing_progress,
+    is_indexing_active,
+    prepare_indexing_estimate,
+    run_indexing_job,
+)
 from backend.llm_service import (
     LLMAuthenticationError,
     LLMConfigurationError,
@@ -404,6 +409,8 @@ async def upload_csv(
     finally:
         await file.close()
 
+    prepare_indexing_estimate(stored_upload.upload_id, len(dataframe))
+    progress = get_indexing_progress(stored_upload.upload_id) or {}
     background_tasks.add_task(run_indexing_job, stored_upload.upload_id)
     return {
         "filename": stored_upload.original_filename,
@@ -415,18 +422,24 @@ async def upload_csv(
         "column_names": [str(column) for column in dataframe.columns],
         "profile": profile,
         "preprocessing": preprocessing,
+        **progress,
     }
 
 
 def _index_status_payload(metadata: dict[str, Any], active: bool) -> dict[str, Any]:
     state = str(metadata["status"])
-    return {
+    payload = {
         "upload_id": metadata["upload_id"],
         "state": state,
         "ready": state == "ready",
         "active": active,
         "retryable": (state == "failed" or state in {"pending", "indexing"}) and not active,
     }
+    if state in {"pending", "indexing"}:
+        progress = get_indexing_progress(UUID(str(metadata["upload_id"])))
+        if progress is not None:
+            payload.update(progress)
+    return payload
 
 
 @app.get("/api/uploads/{upload_id}/index-status")
@@ -521,9 +534,18 @@ async def upload_history(request: Request = None):
             detail="Upload history is temporarily unavailable.",
         ) from exc
 
+    uploads_with_progress = []
+    for upload in uploads:
+        progress = (
+            get_indexing_progress(UUID(str(upload["upload_id"])))
+            if upload["status"] in {"pending", "indexing"}
+            else None
+        )
+        uploads_with_progress.append({**upload, **(progress or {})})
+
     return {
         "temporary_session": True,
-        "uploads": uploads,
+        "uploads": uploads_with_progress,
     }
 
 

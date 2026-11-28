@@ -32,6 +32,15 @@ def test_upload_queues_indexing_with_pending_status(monkeypatch, tmp_path):
         return {"status": processing_status}
 
     monkeypatch.setattr(main_module, "persist_upload_or_cleanup", persist)
+    monkeypatch.setattr(main_module, "prepare_indexing_estimate", lambda *_args: None)
+    monkeypatch.setattr(
+        main_module,
+        "get_indexing_progress",
+        lambda _upload_id: {
+            "estimated_seconds_remaining": 1,
+            "progress_percent": 0,
+        },
+    )
     background_tasks = BackgroundTasks()
     upload = UploadFile(filename="small.csv", file=BytesIO(contents))
 
@@ -39,6 +48,7 @@ def test_upload_queues_indexing_with_pending_status(monkeypatch, tmp_path):
 
     assert response["upload_id"] == str(upload_id)
     assert response["status"] == "pending"
+    assert response["estimated_seconds_remaining"] == 1
     assert len(background_tasks.tasks) == 1
     assert background_tasks.tasks[0].func is main_module.run_indexing_job
     assert background_tasks.tasks[0].args == (upload_id,)
@@ -62,6 +72,29 @@ def test_index_status_reports_active_and_retryable(monkeypatch):
         "active": False,
         "retryable": True,
     }
+
+
+def test_index_status_includes_active_countdown(monkeypatch):
+    upload_id = uuid4()
+    monkeypatch.setattr(
+        main_module,
+        "get_upload_metadata",
+        lambda _upload_id: {"upload_id": str(upload_id), "status": "indexing"},
+    )
+    monkeypatch.setattr(main_module, "is_indexing_active", lambda _upload_id: True)
+    monkeypatch.setattr(
+        main_module,
+        "get_indexing_progress",
+        lambda _upload_id: {
+            "estimated_seconds_remaining": 125,
+            "progress_percent": 20,
+        },
+    )
+
+    response = asyncio.run(main_module.upload_index_status(upload_id))
+
+    assert response["estimated_seconds_remaining"] == 125
+    assert response["progress_percent"] == 20
 
 
 def test_retry_endpoint_queues_one_recoverable_job(monkeypatch):

@@ -36,13 +36,14 @@ Embedding configuration supplied by the blueprint:
 
 ```text
 EMBEDDING_BATCH_SIZE=16
+GEMINI_EMBEDDING_REQUESTS_PER_MINUTE=90
 GEMINI_EMBEDDING_TIMEOUT_SECONDS=30
 GEMINI_EMBEDDING_RETRY_ATTEMPTS=4
 GEMINI_EMBEDDING_BACKOFF_SECONDS=1
 GEMINI_EMBEDDING_MAX_BACKOFF_SECONDS=8
 ```
 
-The Google API key is read only by the FastAPI backend and must not be exposed through Vite variables. Transient timeouts, HTTP 429 quota responses, and server errors are retried with bounded exponential backoff. Persistent failures mark indexing as retryable or return a generic retrieval-unavailable response without exposing provider details.
+The Google API key is read only by the FastAPI backend and must not be exposed through Vite variables. The blueprint paces embedding inputs to 90 per minute, below the commonly enforced 100-RPM free-tier limit. Gemini counts each text in a batch against this quota, so batching 16 rows does not count as only one request. Transient timeouts and server errors use bounded exponential backoff; HTTP 429 responses honor Google's server-provided retry delay when present. Set `GEMINI_EMBEDDING_REQUESTS_PER_MINUTE=0` to disable local pacing, or raise it to match the quota shown for a paid production key. Persistent failures mark indexing as retryable or return a generic retrieval-unavailable response without exposing provider details.
 
 No embedding model is downloaded during build or per request. The first embedding request initializes the lightweight Google SDK client and makes a network call, so its latency depends on Render wake-up time, Google API latency, and current quota. Render Free service spin-down remains the dominant cold-start risk.
 
